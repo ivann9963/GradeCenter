@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradeCenter.API", "GradeCenter\GradeCenter.API.csproj", "{AB0DA157-5FE0-4043-A896-DEE8A2C14D5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GradeCenter.Services", "GradeCenter.Services\GradeCenter.Services.csproj", "{952FB0FC-28DF-40C4-98FB-00870F5FC8E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradeCenter.Services", "GradeCenter.Services\GradeCenter.Services.csproj", "{952FB0FC-28DF-40C4-98FB-00870F5FC8E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GradeCenter.Data", "GradeCenter.Data\GradeCenter.Data.csproj", "{C67544AB-DD9F-4D9A-BCD5-AE9676A622EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradeCenter.Data", "GradeCenter.Data\GradeCenter.Data.csproj", "{C67544AB-DD9F-4D9A-BCD5-AE9676A622EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GradeCenter.Tests", "GradeCenter.Tests\GradeCenter.Tests.csproj", "{21CA82DA-DE44-49BF-9A6E-CF0C307394C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradeCenter.Tests", "GradeCenter.Tests\GradeCenter.Tests.csproj", "{21CA82DA-DE44-49BF-9A6E-CF0C307394C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GradeCenter.API", "GradeCenter.API\GradeCenter.API.csproj", "{03B7151B-341D-48D1-AAAC-10D142D9CC8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AB0DA157-5FE0-4043-A896-DEE8A2C14D5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB0DA157-5FE0-4043-A896-DEE8A2C14D5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB0DA157-5FE0-4043-A896-DEE8A2C14D5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB0DA157-5FE0-4043-A896-DEE8A2C14D5A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{952FB0FC-28DF-40C4-98FB-00870F5FC8E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{952FB0FC-28DF-40C4-98FB-00870F5FC8E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{952FB0FC-28DF-40C4-98FB-00870F5FC8E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{21CA82DA-DE44-49BF-9A6E-CF0C307394C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21CA82DA-DE44-49BF-9A6E-CF0C307394C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21CA82DA-DE44-49BF-9A6E-CF0C307394C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03B7151B-341D-48D1-AAAC-10D142D9CC8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B7151B-341D-48D1-AAAC-10D142D9CC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B7151B-341D-48D1-AAAC-10D142D9CC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B7151B-341D-48D1-AAAC-10D142D9CC8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
