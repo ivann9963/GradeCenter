@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "4c0daac2-2ca2-4608-a26b-449675ee4e73",
+		"name": "GradeCenter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "AccountController",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7029/api/Account/Register?userName=test1&email=test1%40test.com&password=tesT_123",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7029",
+							"path": [
+								"api",
+								"Account",
+								"Register"
+							],
+							"query": [
+								{
+									"key": "userName",
+									"value": "test1"
+								},
+								{
+									"key": "email",
+									"value": "test1%40test.com"
+								},
+								{
+									"key": "password",
+									"value": "tesT_123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjgyODc5MjkxLCJleHAiOjE2ODI4Nzk1OTEsImlhdCI6MTY4Mjg3OTI5MX0.3SfdzgqLri0XTZVVRFFO_PSj_29uOq_3LnolYTPR7KA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7273/api/Account/Login?userName=test1&password=tesT_123",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7273",
+							"path": [
+								"api",
+								"Account",
+								"Login"
+							],
+							"query": [
+								{
+									"key": "userName",
+									"value": "test1"
+								},
+								{
+									"key": "password",
+									"value": "tesT_123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Logged User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjgzNTU5MTkxLCJleHAiOjE2ODM1NTk0OTEsImlhdCI6MTY4MzU1OTE5MX0.Nwx6FCMKIJdY_eAMitwG_kVCcl946qorMyQLOhZR3t0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7029/api/Account/GetLoggedUser",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7029",
+							"path": [
+								"api",
+								"Account",
+								"GetLoggedUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjgyODY5NDI4LCJleHAiOjE2ODI4Njk3MjgsImlhdCI6MTY4Mjg2OTQyOH0.GPFsJYCXAZCY5oQMagFHD5F0_SawwKx5XcMltzh7jDc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7029/api/Account/GetUserById?userId=61daa664-cca2-4b52-a84e-120ddddaab73",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7029",
+							"path": [
+								"api",
+								"Account",
+								"GetUserById"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "61daa664-cca2-4b52-a84e-120ddddaab73"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjgzNTU5MTkxLCJleHAiOjE2ODM1NTk0OTEsImlhdCI6MTY4MzU1OTE5MX0.Nwx6FCMKIJdY_eAMitwG_kVCcl946qorMyQLOhZR3t0",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
