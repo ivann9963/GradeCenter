@@ -105,7 +105,8 @@ namespace GradeCenter.Tests
                 Id = "1",
                 UserName = "testUser",
                 PasswordHash = "oldPassword".GetHashCode().ToString(),
-                PhoneNumber = "1234567890"
+                PhoneNumber = "1234567890",
+                UserRole = UserRoles.Principle
             };
 
             string newPassword = "newPassword";
@@ -117,6 +118,7 @@ namespace GradeCenter.Tests
             // Assert
             Assert.Equal(newPassword.GetHashCode().ToString(), loggedUser.PasswordHash);
             Assert.Equal(newPhoneNumber, loggedUser.PhoneNumber);
+            Assert.Equal(UserRoles.Principle, loggedUser.UserRole);
             _dbMock.Verify(db => db.SaveChanges(), Times.Once);
         }
 
