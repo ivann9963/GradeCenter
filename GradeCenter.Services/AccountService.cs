@@ -22,9 +22,9 @@ namespace GradeCenter.Services
             _signInManager = signInManager;
         }
 
-        public string Login(string email, string password)
+        public string Login(string userName, string password)
         {
-            var user = _db?.Users?.SingleOrDefault(u => u.UserName == email);
+            var user = _db?.Users?.SingleOrDefault(u => u.UserName == userName);
 
             if (user == null)
             {
