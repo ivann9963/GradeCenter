@@ -82,6 +82,13 @@ namespace GradeCenter.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GradeCenter v1"));
             }
 
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<GradeCenterContext>();
+                dbContext.Database.Migrate();
+
+            }
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
