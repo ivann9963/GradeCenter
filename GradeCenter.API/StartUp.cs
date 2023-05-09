@@ -48,7 +48,7 @@ namespace GradeCenter.API
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HopeFund", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GradeCenter", Version = "v1" });
             });
 
             var key = Encoding.ASCII.GetBytes(SECRET);
@@ -79,7 +79,7 @@ namespace GradeCenter.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HopeFund v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GradeCenter v1"));
             }
 
             app.UseHttpsRedirection();

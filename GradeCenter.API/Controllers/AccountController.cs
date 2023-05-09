@@ -18,6 +18,13 @@ namespace GradeCenter.API.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Creates an object of type User and stores it in the database.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         [HttpPost("Register")]
         public async Task<IActionResult> Register(string userName, string email, string password)
         {
@@ -26,6 +33,12 @@ namespace GradeCenter.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Checks if the user exists and returns a JWT token.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         [HttpPost("Login")]
         public IActionResult Login(string userName, string password)
         {
@@ -37,6 +50,12 @@ namespace GradeCenter.API.Controllers
             return Ok(token);
         }
 
+        /// <summary>
+        /// Currently updates only password and phonenumber.
+        /// </summary>
+        /// <param name="newPassword"></param>
+        /// <param name="newPhoneNumber"></param>
+        /// <returns></returns>
         [HttpPut("Update")]
         public async Task<IActionResult> Update(string newPassword, string newPhoneNumber)
         {
@@ -50,14 +69,10 @@ namespace GradeCenter.API.Controllers
             return Ok();
         }
 
-        [HttpGet("IsLoggedIn")]
-        public bool IsLoggedIn()
-        {
-            var user = User.Identity;
-
-            return user.IsAuthenticated;
-        }
-
+        /// <summary>
+        /// Takes the JWT token and uses the userManager to find the corresponding object.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetLoggedUser")]
         public async Task<User> GetLoggedUser()
         {
@@ -66,6 +81,11 @@ namespace GradeCenter.API.Controllers
             return loggedUser;
         }
 
+        /// <summary>
+        /// Finds the concrete user from the database based on the UserId provided.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("GetUserById")]
         public async Task<User> GetUserById(string userId)
         {

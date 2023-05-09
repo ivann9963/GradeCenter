@@ -22,6 +22,15 @@ namespace GradeCenter.Services
             _signInManager = signInManager;
         }
 
+        /// <summary>
+        /// Takes a username and password as parameters
+        /// and returns a JWT token after authenticating the user. 
+        /// The method searches for the user in the database and generates 
+        /// a JWT token using the JwtSecurityTokenHandler class.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public string Login(string userName, string password)
         {
             var user = _db?.Users?.SingleOrDefault(u => u.UserName == userName);
@@ -51,6 +60,12 @@ namespace GradeCenter.Services
             return tokenHandler.WriteToken(token);
         }
 
+        /// <summary>
+        /// Updates the password and phone number of the logged-in user.
+        /// </summary>
+        /// <param name="loggedUser"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="newPhoneNumber"></param>
         public void UpdateUser(User loggedUser, string newPassword, string newPhoneNumber)
         {
             loggedUser.PasswordHash = newPassword.GetHashCode().ToString(); // TODO: Check if okay
@@ -59,6 +74,14 @@ namespace GradeCenter.Services
             _db.SaveChanges();
         }
 
+        /// <summary>
+        /// Takes a username, email, and password as parameters and 
+        /// creates a new user in the database using the UserManager object.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public async Task Register(string userName, string email, string password)
         {
             var userModel = new User
@@ -72,6 +95,11 @@ namespace GradeCenter.Services
             await _db.SaveChangesAsync();
         }
 
+
+        /// <summary>
+        /// Sets the IsActive property of the logged-in user to false in the database.
+        /// </summary>
+        /// <param name="loggedUser"></param>
         public void Deactivate(User loggedUser)
         {
             loggedUser.IsActive = false;
@@ -79,6 +107,11 @@ namespace GradeCenter.Services
             _db.SaveChanges();
         }
 
+        /// <summary>
+        /// Returns a User object from the database based on the given user ID.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public User? GetUserById(string userId)
         {
             var user = _db?.Users?.FirstOrDefault(u => u.Id == userId);
