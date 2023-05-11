@@ -1,5 +1,6 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Services;
+using GradeCenter.Services.Schools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ namespace GradeCenter.API
             services.AddRazorPages();   // TODO: Check if needed
 
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<ISchoolService, SchoolService>();
 
             services.AddCors(options =>
             {
