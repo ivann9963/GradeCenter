@@ -83,9 +83,9 @@ namespace GradeCenter.Services.Schools
             school.Address = updatedSchool.Address;
 
 
-            if (updatedStudents != null && school.Principal != null) school.Principal.Students = updatedStudents.ToList();
+            if (updatedStudents != null && school.Principal != null) school.Principal.Students.Union(updatedStudents);
 
-            if (updatedTeachers != null && school.Principal != null) school.Principal.Teachers = updatedTeachers.ToList();
+            if (updatedTeachers != null && school.Principal != null) school.Principal.Teachers.Union(updatedTeachers);
 
             if (updatedPrincipal != null && school.Principal != null) school.Principal = updatedPrincipal;
 
