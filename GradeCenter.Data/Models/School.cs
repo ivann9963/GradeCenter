@@ -1,28 +1,21 @@
-﻿using GradeCenter.Data.Models.Common;
+﻿using GradeCenter.Data.Models.Account;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GradeCenter.Data.Models
 {
-    public class School: BaseModel<int>
+    public class School
     {
-        public School()
-        {
-            this.Students = new HashSet<Student>();
-            this.Parents = new HashSet<Parent>();
-        }
-
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Number { get; set; }
         [Required]
         public string Name { get; set; }
-
         [Required]
         public string Address { get; set; }
-
-        [Required]
+        public bool IsActive { get; set; } = true;
         [ForeignKey("Principal")]
-        public int PrincipalId { get; set; }
-        public Principal Principal { get; set; }
-        public ICollection<Student> Students { get; set; }
-        public ICollection<Parent> Parents { get; set; }
+        public string? PrincipalId { get; set; }
+        public virtual User? Principal { get; set; }
     }
 }
