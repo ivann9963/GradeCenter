@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GradeCenter.Data;
+using GradeCenter.Data.Models.Account;
+using System.Collections;
 
 namespace GradeCenter.Services.Schools
 {
@@ -17,15 +19,25 @@ namespace GradeCenter.Services.Schools
         }
 
         /// <summary>
-        /// Takes an id as a paramater
+        /// Gets all existing school entries in the database.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<School> Read()
+        {
+            return _db.Schools.Where(school => school.IsActive)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Takes an number as a paramater
         /// and returns the associated 
         /// School entity instance.
         /// </summary>
-        /// <param name="id"></param>        
+        /// <param name="number"></param>        
         /// <returns></returns>
-        public School? GetSchoolById(int id)
+        public School? GetSchoolByNumber(int number)
         {
-            var school = _db?.Schools?.FirstOrDefault(school => school.Id == id);
+            var school = _db?.Schools?.FirstOrDefault(school => school.Number == number);
 
             return school;
         }
@@ -35,28 +47,18 @@ namespace GradeCenter.Services.Schools
         /// in the database. Whilst ensuring there is a 
         /// relationship with a principal entity.
         /// </summary>
-        /// <param name="newName"></param>
-        /// <param name="newAddress"></param>
-        /// <param name="principalId"></param>
-        /// <param name="principalFirstName"></param>
-        /// <param name="principalLastName"></param>
+        /// <param name="newSchool"></param>
         /// <returns></returns> 
-        public async Task Create(string newName, string newAddress, int principalId, string principalFirstName, string principalLastName)
+        public async Task Create(School newSchool)
         {
-            var principal = _db?.Principals?.FirstOrDefault(principal => principal.Id == principalId);
-            principal ??= EnsurePrincipalCreated(principalFirstName, principalLastName).GetAwaiter().GetResult();
-
-            // TO DO: Decide whether to extract principal logic
-            // in a distinguished service in order to follow seperation of concern principles.
-
             var school = new School
             {
-                Name = newName,
-                Address = newAddress,
-                PrincipalId = principal.Id,
+                Name = newSchool.Name,
+                Number = newSchool.Number,
+                Address = newSchool.Address
             };
 
-            _db?.Schools?.AddAsync(school);
+            await _db.Schools.AddAsync(school);
 
             await _db.SaveChangesAsync();
         }
@@ -65,21 +67,28 @@ namespace GradeCenter.Services.Schools
         /// Updates an existing School 
         /// entity instance in the database.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="newName"></param>
-        /// <param name="newAddress"></param>
+        /// <param name="number"></param>
+        /// <param name="updatedSchool"></param>
+        /// <param name="students"></param>
+        /// <param name="teachers"></param>
+        /// <param name="principal"></param>
         /// <returns></returns>
-        public async Task Update(int id, string newName, string newAddress)
+        public async Task Update(int number, School? updatedSchool, IEnumerable<User>? updatedStudents, IEnumerable<User>? updatedTeachers, User? updatedPrincipal)
         {
-            var school = GetSchoolById(id);
+            var school = GetSchoolByNumber(number);
 
-            if (school == null)
-            {
-                return;
-            }
+            if (school == null) return;
             
-            school.Name = newName;
-            school.Address = newAddress;
+            school.Name = updatedSchool.Name;
+            school.Address = updatedSchool.Address;
+
+
+            if (updatedStudents != null && school.Principal != null) school.Principal.Students = updatedStudents.ToList();
+
+            if (updatedTeachers != null && school.Principal != null) school.Principal.Teachers = updatedTeachers.ToList();
+
+            if (updatedPrincipal != null && school.Principal != null) school.Principal = updatedPrincipal;
+
 
             await _db.SaveChangesAsync();
         }
@@ -88,41 +97,21 @@ namespace GradeCenter.Services.Schools
         /// Delete an existing School entity instance
         /// in the database.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="number"></param>
         /// <returns></returns>
-        public async Task Delete(int id)
+        public async Task Delete(int number)
         {
-            var school = GetSchoolById(id);
+            var school = GetSchoolByNumber(number);
 
             if (school == null)
             {
                 return;
             }
 
-            school.IsDeleted = true;
+            school.IsActive = false;
 
             await _db.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Ensures that a relational Principal entity
-        /// is created.
-        /// </summary>
-        /// <param name="newFirstName"></param>
-        /// <param name="newLastName"></param>
-        /// <returns></returns>
-        public async Task<Principal> EnsurePrincipalCreated(string newFirstName, string newLastName)
-        {
-            var principal = new Principal
-            {
-                FirstName = newFirstName,
-                LastName = newLastName
-            };
-
-            _db?.Principals?.Add(principal);
-            await _db.SaveChangesAsync();
-
-            return principal;
-        }
     }
 }

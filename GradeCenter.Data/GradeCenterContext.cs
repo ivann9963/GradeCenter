@@ -17,8 +17,6 @@ namespace GradeCenter.Data
 
         public virtual DbSet<User>? Users { get; set; }
         public virtual DbSet<School>? Schools { get; set; }
-        public virtual DbSet<Principal>? Principals { get; set; }
-        public virtual DbSet<Parent>? Parents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -28,22 +26,20 @@ namespace GradeCenter.Data
             builder.Entity<IdentityUserLogin<string>>()
                 .HasKey(l => new { l.LoginProvider, l.ProviderKey });
 
-            // Configure entity relationships
+
+            // Configure the User entity relations
+            builder.Entity<User>()
+                .HasMany(l => l.Parents)
+                .WithMany(l => l.Students);
+
+
+            // Configure the School entity relations
 
             builder.Entity<School>()
                 .HasOne(l => l.Principal)
                 .WithOne(l => l.School)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Student>()
-                .HasOne(l => l.School)
-                .WithMany(l => l.Students)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Parent>()
-                .HasOne(l => l.School)
-                .WithMany(l => l.Parents)
-                .OnDelete(DeleteBehavior.Cascade);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
