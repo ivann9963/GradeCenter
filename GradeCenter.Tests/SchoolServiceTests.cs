@@ -3,9 +3,7 @@ using Moq;
 using Xunit;
 using GradeCenter.Data.Models;
 using GradeCenter.Services.Schools;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using GradeCenter.Data.Models.Account;
 
 namespace GradeCenter.Tests
 {
@@ -14,7 +12,6 @@ namespace GradeCenter.Tests
         // Set up the necessary Mock objects and instantiate the SchoolService object
         private readonly Mock<GradeCenterContext> _dbMock;
         private readonly ISchoolService _schoolService;
-
         public SchoolServiceTests()
         {
             _dbMock = new Mock<GradeCenterContext>();
@@ -30,7 +27,7 @@ namespace GradeCenter.Tests
             _dbMock.Setup(m => m.Schools).Returns(mockSettings.Object);
 
             // Act
-            var result = _schoolService.Read();
+            var result = _schoolService.GetAllSchools();
 
             // Assert
             Assert.Equal(1, result.Count());
@@ -46,7 +43,6 @@ namespace GradeCenter.Tests
            
             // Set up the database mock to return 1 (success) when SaveChangesAsync is called
             // and ensure that the AddAsync method is called during run-time.
-
             _dbMock.Setup(m => m.Schools).Returns(mockSettings.Object);
 
             mockSettings.Setup(m => m.AddAsync(It.IsAny<School>(), default));
@@ -56,7 +52,6 @@ namespace GradeCenter.Tests
             var school = new School
             {
                 Address = "testAddress",
-                Number = 123,
                 Name = "testSchool"
             };
 
@@ -77,11 +72,12 @@ namespace GradeCenter.Tests
             // Act
             var updatedSchool = new School
             {
+                Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
                 Address = "UpdatedAddress",
                 Name = "UpdatedName"
             };
 
-            await _schoolService.Update(125, updatedSchool, null, null, null);
+            await _schoolService.Update(updatedSchool);
 
             var school = _dbMock.Object.Schools.First();
 
@@ -102,7 +98,7 @@ namespace GradeCenter.Tests
             _dbMock.Setup(m => m.Schools).Returns(mockSettings.Object);
 
             //Act
-            await _schoolService.Delete(125);
+            await _schoolService.Delete("testSchool");
 
             var school = _dbMock.Object.Schools.First();
 
@@ -118,8 +114,8 @@ namespace GradeCenter.Tests
         {
             var school = new School
             {
+                Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
                 Address = "testAddress",
-                Number = 125,
                 Name = "testSchool"
             };
 

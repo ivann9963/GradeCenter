@@ -5,10 +5,11 @@ namespace GradeCenter.Services.Schools
 {
     public interface ISchoolService
     {
-        School? GetSchoolByNumber(int number);
-        IEnumerable<School> Read();
+        School? GetSchoolByName(string name);
+        School? GetSchoolById(string id);
+        IEnumerable<School> GetAllSchools();
         Task Create(School newSchool);
-        Task Update(int number, School? updatedSchool, IEnumerable<User>? updatedStudents, IEnumerable<User>? updatedTeachers, User? newPrincipal);
-        Task Delete(int number);
+        Task Update(School? updatedSchool);
+        Task Delete(string name);
     }
 }

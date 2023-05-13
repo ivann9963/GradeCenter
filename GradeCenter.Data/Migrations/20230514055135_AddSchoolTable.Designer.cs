@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GradeCenter.Data.Migrations
 {
     [DbContext(typeof(GradeCenterContext))]
-    [Migration("20230512101218_AddSchools")]
-    partial class AddSchools
+    [Migration("20230514055135_AddSchoolTable")]
+    partial class AddSchoolTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,9 +26,8 @@ namespace GradeCenter.Data.Migrations
 
             modelBuilder.Entity("GradeCenter.Data.Models.School", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -41,17 +40,7 @@ namespace GradeCenter.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PrincipalId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PrincipalId")
-                        .IsUnique()
-                        .HasFilter("[PrincipalId] IS NOT NULL");
 
                     b.ToTable("Schools");
                 });
@@ -254,21 +243,6 @@ namespace GradeCenter.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("UserUser", b =>
-                {
-                    b.Property<string>("ParentsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("StudentsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ParentsId", "StudentsId");
-
-                    b.HasIndex("StudentsId");
-
-                    b.ToTable("UserUser");
-                });
-
             modelBuilder.Entity("GradeCenter.Data.Models.Account.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -286,22 +260,14 @@ namespace GradeCenter.Data.Migrations
 
                     b.Property<string>("SchoolId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("UserRole")
                         .HasColumnType("int");
 
+                    b.HasIndex("SchoolId");
+
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("GradeCenter.Data.Models.School", b =>
-                {
-                    b.HasOne("GradeCenter.Data.Models.Account.User", "Principal")
-                        .WithOne("School")
-                        .HasForeignKey("GradeCenter.Data.Models.School", "PrincipalId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Principal");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -355,21 +321,6 @@ namespace GradeCenter.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserUser", b =>
-                {
-                    b.HasOne("GradeCenter.Data.Models.Account.User", null)
-                        .WithMany()
-                        .HasForeignKey("ParentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GradeCenter.Data.Models.Account.User", null)
-                        .WithMany()
-                        .HasForeignKey("StudentsId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("GradeCenter.Data.Models.Account.User", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
@@ -377,12 +328,19 @@ namespace GradeCenter.Data.Migrations
                         .HasForeignKey("GradeCenter.Data.Models.Account.User", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.HasOne("GradeCenter.Data.Models.School", "School")
+                        .WithMany("Users")
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("School");
                 });
 
-            modelBuilder.Entity("GradeCenter.Data.Models.Account.User", b =>
+            modelBuilder.Entity("GradeCenter.Data.Models.School", b =>
                 {
-                    b.Navigation("School")
-                        .IsRequired();
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
