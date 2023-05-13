@@ -18,10 +18,6 @@ namespace GradeCenter.Data.Models.Account
         public virtual School School { get; set; }
         public bool IsActive { get; set; } = false;
         public UserRoles UserRole { get; set; }
-
-        public ICollection<User> Students { get; set; } = new HashSet<User>();
-        public ICollection<User> Parents { get; set; } = new HashSet<User>();
-        public ICollection<User> Teachers { get; set; } = new HashSet<User>();
     }
 
     public enum UserRoles

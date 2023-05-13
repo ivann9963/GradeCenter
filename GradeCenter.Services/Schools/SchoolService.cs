@@ -1,12 +1,6 @@
-﻿using System;
-using GradeCenter.Data.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GradeCenter.Data.Models;
 using GradeCenter.Data;
 using GradeCenter.Data.Models.Account;
-using System.Collections;
 
 namespace GradeCenter.Services.Schools
 {
@@ -19,28 +13,37 @@ namespace GradeCenter.Services.Schools
         }
 
         /// <summary>
-        /// Gets all existing school entries in the database.
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<School> Read()
-        {
-            return _db.Schools.Where(school => school.IsActive)
-                .ToList();
-        }
-
-        /// <summary>
-        /// Takes an number as a paramater
+        /// Takes a name as a paramater
         /// and returns the associated 
         /// School entity instance.
         /// </summary>
-        /// <param name="number"></param>        
+        /// <param name="name"></param>        
         /// <returns></returns>
-        public School? GetSchoolByNumber(int number)
-        {
-            var school = _db?.Schools?.FirstOrDefault(school => school.Number == number);
+        public School? GetSchoolByName(string name)
+            => _db?.Schools
+                   .Where(school => school.IsActive)
+                   .FirstOrDefault(school => school.Name.ToLower() == name.ToLower());
 
-            return school;
-        }
+        /// <summary>
+        /// Takes an id as a paramater
+        /// and returns the associated
+        /// School entity instance.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public School? GetSchoolById(string id)
+            => _db?.Schools
+                   .Where(school => school.IsActive)
+                   .FirstOrDefault(school => school.Id.ToString() == id);
+
+        /// <summary>
+        /// Gets all existing school entries in the database.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<School> GetAllSchools()
+            => _db.Schools
+                 .Where(school => school.IsActive)
+                 .ToList();
 
         /// <summary>
         /// Creates a new School entity instance
@@ -54,7 +57,6 @@ namespace GradeCenter.Services.Schools
             var school = new School
             {
                 Name = newSchool.Name,
-                Number = newSchool.Number,
                 Address = newSchool.Address
             };
 
@@ -67,28 +69,27 @@ namespace GradeCenter.Services.Schools
         /// Updates an existing School 
         /// entity instance in the database.
         /// </summary>
-        /// <param name="number"></param>
+        /// <param name="schoolName"></param>
         /// <param name="updatedSchool"></param>
         /// <param name="students"></param>
         /// <param name="teachers"></param>
         /// <param name="principal"></param>
         /// <returns></returns>
-        public async Task Update(int number, School? updatedSchool, IEnumerable<User>? updatedStudents, IEnumerable<User>? updatedTeachers, User? updatedPrincipal)
+        public async Task Update(School? updatedSchool)
         {
-            var school = GetSchoolByNumber(number);
+            var school = GetSchoolById(updatedSchool.Id.ToString());
 
-            if (school == null) return;
-            
+            if (school == null)
+                return;
+
             school.Name = updatedSchool.Name;
             school.Address = updatedSchool.Address;
 
+            if (updatedSchool.Users.Any(user => user.UserRole.Equals(UserRoles.Principle)))
+                return;
 
-            if (updatedStudents != null && school.Principal != null) school.Principal.Students.Union(updatedStudents);
-
-            if (updatedTeachers != null && school.Principal != null) school.Principal.Teachers.Union(updatedTeachers);
-
-            if (updatedPrincipal != null && school.Principal != null) school.Principal = updatedPrincipal;
-
+            if (updatedSchool.Users.Any())
+                school.Users.Union(updatedSchool.Users);
 
             await _db.SaveChangesAsync();
         }
@@ -97,21 +98,18 @@ namespace GradeCenter.Services.Schools
         /// Delete an existing School entity instance
         /// in the database.
         /// </summary>
-        /// <param name="number"></param>
+        /// <param name="schoolName"></param>
         /// <returns></returns>
-        public async Task Delete(int number)
+        public async Task Delete(string schoolName)
         {
-            var school = GetSchoolByNumber(number);
+            var school = GetSchoolByName(schoolName);
 
             if (school == null)
-            {
                 return;
-            }
 
             school.IsActive = false;
 
             await _db.SaveChangesAsync();
         }
-
     }
 }

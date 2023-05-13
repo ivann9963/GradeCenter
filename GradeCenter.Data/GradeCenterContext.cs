@@ -3,7 +3,6 @@ using GradeCenter.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace GradeCenter.Data
 {
@@ -26,20 +25,12 @@ namespace GradeCenter.Data
             builder.Entity<IdentityUserLogin<string>>()
                 .HasKey(l => new { l.LoginProvider, l.ProviderKey });
 
-
-            // Configure the User entity relations
+            // Configure a one-to-many relationship
+            // between Users and School.
             builder.Entity<User>()
-                .HasMany(l => l.Parents)
-                .WithMany(l => l.Students);
-
-
-            // Configure the School entity relations
-
-            builder.Entity<School>()
-                .HasOne(l => l.Principal)
-                .WithOne(l => l.School)
+                .HasOne(l => l.School)
+                .WithMany(l => l.Users)
                 .OnDelete(DeleteBehavior.Cascade);
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
