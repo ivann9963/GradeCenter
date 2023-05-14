@@ -96,6 +96,8 @@ namespace GradeCenter.API
 
             app.UseRouting();
 
+            app.UseCors("AllowReact");
+         
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -104,8 +106,6 @@ namespace GradeCenter.API
             {
                 endpoints.MapControllers();
             });
-
-            app.UseCors("AllowReact");
         }
     }
 }

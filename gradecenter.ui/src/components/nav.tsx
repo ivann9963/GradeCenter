@@ -4,6 +4,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from "@material-ui/core/ListItem";
 import HomeIcon from "@material-ui/icons/Home";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import { School } from "@mui/icons-material";
 
 export default function Nav() {
   return (
@@ -14,7 +15,7 @@ export default function Nav() {
               <ListItem button key={text} component="a" href={'/' + text.toLowerCase()}>
                 <ListItemIcon>
                   {
-                    [<HomeIcon />, <HomeIcon />, <HomeIcon />][index]
+                    [<HomeIcon />, <School />, <HomeIcon />][index]
                   }
                 </ListItemIcon>
                 <ListItemText primary={text} />

@@ -40,6 +40,9 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SchoolCreateRequestModel requestModel)
         {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+
             User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (!loggedUser.UserRole.Equals(UserRoles.Admin))
@@ -60,7 +63,7 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>
-        //[Authorize]
+        [Authorize]
         [HttpPut("Update")]
         public async Task<IActionResult> Update(SchoolUpdateRequestModel requestModel)
         {
@@ -93,6 +96,9 @@ namespace GradeCenter.API.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string name)
         {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+
             User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (!loggedUser.UserRole.Equals(UserRoles.Admin))

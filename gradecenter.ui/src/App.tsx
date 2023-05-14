@@ -6,6 +6,7 @@ import Drawer from "./components/drawer";
 import Register from "./components/account/registerPage";
 import Login from "./components/account/loginPage";
 import Home from "./components/home/home"; // Import the Home component
+import Schools from "./components/school/schoolPage";
 
 export default function App() {
   const getComponent = (component: JSX.Element) => {
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={getComponent(<Home />)} /> {/* Add the new route */}
         <Route path="/" element={getComponent(<Home />)} /> {/* Add the new route */}
+        <Route path="/schools" element={<Schools />} />
       </Routes>
     </BrowserRouter>
   );
