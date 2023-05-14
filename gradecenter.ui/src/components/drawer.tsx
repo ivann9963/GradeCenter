@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import React, { useState, useEffect, useRef } from "react";
 import Nav from "./nav";
 import IconButton from "@mui/material/IconButton";
+import { Margin } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -136,7 +137,7 @@ export default function MiniDrawer() {
         </Drawer>
       )}
       <Box component="main" sx={{ flexGrow: 1, p: 3, paddingLeft: 23 }}>
-        <DrawerHeader />
+        {/* <DrawerHeader /> */}
       </Box>
     </Box>
   );
