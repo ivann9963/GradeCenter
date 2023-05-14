@@ -25,8 +25,8 @@ namespace GradeCenter.API.Controllers
         /// Reads all the existing School entities in the database.
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Read")]
-        public async Task<IActionResult> Read()
+        [HttpGet("GetAllSchools")]
+        public async Task<IActionResult> GetAllSchools()
         {
             return Ok(_schoolService.GetAllSchools());
         }
