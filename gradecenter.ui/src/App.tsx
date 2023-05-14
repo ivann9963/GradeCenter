@@ -28,7 +28,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={getComponent(<Home />)} /> {/* Add the new route */}
         <Route path="/" element={getComponent(<Home />)} /> {/* Add the new route */}
-        <Route path="/schools" element={<Schools />} />
+        <Route path="/schools" element={getComponent(<Schools />)} />
       </Routes>
     </BrowserRouter>
   );
