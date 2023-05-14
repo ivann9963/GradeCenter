@@ -75,9 +75,9 @@ export default function Schools() {
   };
 
   const [open, setOpen] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState({ name: '', address: '' });
+  const [selectedSchool, setSelectedSchool] = useState({ name: "", address: "" });
 
-  const handleClickOpen = (school: React.SetStateAction<{ name: string; address: string; }>) => {
+  const handleClickOpen = (school: React.SetStateAction<{ name: string; address: string }>) => {
     setSelectedSchool(school);
     setOpen(true);
   };
@@ -88,14 +88,13 @@ export default function Schools() {
 
   const handleEdit = () => {
     const token = sessionStorage["jwt"];
-    
+
     axios
       .put(`https://localhost:7273/api/School/Update`, selectedSchool, {
-        headers: { 
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-       
       })
       .then(() => {
         getAllSchools();
@@ -104,9 +103,74 @@ export default function Schools() {
       .catch((error) => console.error(error));
   };
 
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [newSchool, setNewSchool] = useState({ name: "", address: "" });
+
+  const handleCreateOpen = () => {
+    setCreateDialogOpen(true);
+  };
+
+  const handleCreateClose = () => {
+    setCreateDialogOpen(false);
+  };
+
+  const handleCreate = () => {
+    const token = sessionStorage["jwt"];
+
+    axios
+      .post(`https://localhost:7273/api/School/Create`, newSchool, {
+        headers: { 
+            "Content-Type": "application/json", 
+            Authorization: `Bearer ${token}` 
+        },
+      })
+      .then(() => {
+        getAllSchools();
+        handleCreateClose();
+      })
+      .catch((error) => console.error(error));
+  };
+
   return (
-    <Container style={{ padding: "7em 6em" }}>
-      <Grid container spacing={3} columns={{ xs: 12, sm: 8, md: 12 }} marginLeft={10}>
+    <Container style={{ padding: "4em 6em" }}>
+      <Box display="flex" justifyContent="flex-end">
+        <Button onClick={handleCreateOpen} variant="outlined" style={{ marginRight: "-80px" }}>
+          + NEW
+        </Button>
+      </Box>
+      <Dialog open={createDialogOpen} onClose={handleCreateClose} aria-labelledby="create-dialog-title">
+        <DialogTitle id="create-dialog-title">Create School</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="new-name"
+            label="School Name"
+            type="text"
+            fullWidth
+            value={newSchool.name}
+            onChange={(e) => setNewSchool({ ...newSchool, name: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            id="new-address"
+            label="Address"
+            type="text"
+            fullWidth
+            value={newSchool.address}
+            onChange={(e) => setNewSchool({ ...newSchool, address: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCreateClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCreate} color="primary">
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Grid container spacing={3} columns={{ xs: 12, sm: 8, md: 12 }} marginLeft={10} marginTop={1}>
         {schools.map((school, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Card elevation={18}>

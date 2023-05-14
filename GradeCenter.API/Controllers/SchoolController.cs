@@ -36,7 +36,6 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>
-        [Authorize]
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SchoolCreateRequestModel requestModel)
         {
@@ -44,7 +43,7 @@ namespace GradeCenter.API.Controllers
                 return Unauthorized();
 
             User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
-
+            
             if (!loggedUser.UserRole.Equals(UserRoles.Admin))
                 return Unauthorized();
 
