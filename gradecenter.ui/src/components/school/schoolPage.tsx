@@ -10,8 +10,13 @@ import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import CardHeader from "@mui/material/CardHeader";
 import Divider from "@material-ui/core/Divider";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
 
-const url = `https://localhost:7273/api/School/Read`;
+const url = `https://localhost:7273/api/School/GetAllSchools`;
 var schools = [];
 axios({
   method: "get",
@@ -31,7 +36,7 @@ export default function Schools() {
   }, []);
 
   const getAllSchools = () => {
-    const url = `https://localhost:7273/api/School/Read`;
+    const url = `https://localhost:7273/api/School/GetAllSchools`;
 
     axios({
       method: "get",
@@ -46,7 +51,7 @@ export default function Schools() {
 
   const onDelete = (schoolName: string): void => {
     const url = `https://localhost:7273/api/School/Delete`;
-    const token = sessionStorage['jwt'];
+    const token = sessionStorage["jwt"];
 
     console.log(token);
 
@@ -58,13 +63,45 @@ export default function Schools() {
       },
       headers: {
         "Content-Type": "text/plain;charset=utf-8",
-        "Authorization": `Bearer ${token}` 
+        Authorization: `Bearer ${token}`,
       },
-    }).then((res) => {
-      getAllSchools();
-    }).catch((error) => {
+    })
+      .then((res) => {
+        getAllSchools();
+      })
+      .catch((error) => {
         console.error(error);
-    });
+      });
+  };
+
+  const [open, setOpen] = useState(false);
+  const [selectedSchool, setSelectedSchool] = useState({ name: '', address: '' });
+
+  const handleClickOpen = (school: React.SetStateAction<{ name: string; address: string; }>) => {
+    setSelectedSchool(school);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleEdit = () => {
+    const token = sessionStorage["jwt"];
+    
+    axios
+      .put(`https://localhost:7273/api/School/Update`, selectedSchool, {
+        headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+       
+      })
+      .then(() => {
+        getAllSchools();
+        handleClose();
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -83,9 +120,41 @@ export default function Schools() {
                     <IconButton color="default" onClick={() => onDelete(school["name"])}>
                       <DeleteIcon />
                     </IconButton>
-                    <IconButton color="default">
+                    <IconButton color="default" onClick={() => handleClickOpen(school)}>
                       <EditIcon />
                     </IconButton>
+                    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                      <DialogTitle id="form-dialog-title">Edit School</DialogTitle>
+                      <DialogContent>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="School Name"
+                          type="text"
+                          fullWidth
+                          value={selectedSchool["name"]}
+                          onChange={(e) => setSelectedSchool({ ...selectedSchool, name: e.target.value })}
+                        />
+                        <TextField
+                          margin="dense"
+                          id="address"
+                          label="Address"
+                          type="text"
+                          fullWidth
+                          value={selectedSchool["address"]}
+                          onChange={(e) => setSelectedSchool({ ...selectedSchool, address: e.target.value })}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                          Cancel
+                        </Button>
+                        <Button onClick={handleEdit} color="primary">
+                          Edit
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </Box>
                 </Box>
                 <Typography variant="body2" color="text.secondary">

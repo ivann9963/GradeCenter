@@ -20,9 +20,13 @@ namespace GradeCenter.Services.Schools
         /// <param name="name"></param>        
         /// <returns></returns>
         public School? GetSchoolByName(string name)
-            => _db?.Schools
+        {
+            var school = _db?.Schools
                    .Where(school => school.IsActive)
                    .FirstOrDefault(school => school.Name.ToLower() == name.ToLower());
+
+            return school;
+        }
 
         /// <summary>
         /// Takes an id as a paramater
@@ -32,18 +36,26 @@ namespace GradeCenter.Services.Schools
         /// <param name="id"></param>
         /// <returns></returns>
         public School? GetSchoolById(string id)
-            => _db?.Schools
-                   .Where(school => school.IsActive)
-                   .FirstOrDefault(school => school.Id.ToString() == id);
+        {
+            var school = _db?.Schools
+                .Where(school => school.IsActive)
+                .FirstOrDefault(school => school.Id == id);
+
+            return school;
+        }
 
         /// <summary>
         /// Gets all existing school entries in the database.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<School> GetAllSchools()
-            => _db.Schools
-                 .Where(school => school.IsActive)
-                 .ToList();
+        {
+            var school = _db.Schools
+                .Where(school => school.IsActive)
+                .ToList();
+
+            return school;
+        }
 
         /// <summary>
         /// Creates a new School entity instance
@@ -77,7 +89,7 @@ namespace GradeCenter.Services.Schools
         /// <returns></returns>
         public async Task Update(School? updatedSchool)
         {
-            var school = GetSchoolById(updatedSchool.Id.ToString());
+            var school = GetSchoolById(updatedSchool.Id);
 
             if (school == null)
                 return;
