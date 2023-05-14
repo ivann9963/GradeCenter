@@ -92,7 +92,6 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        [Authorize]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string name)
         {

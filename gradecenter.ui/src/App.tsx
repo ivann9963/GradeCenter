@@ -11,7 +11,6 @@ import Schools from "./components/school/schoolPage";
 export default function App() {
   const getComponent = (component: JSX.Element) => {
     const jwt: String = sessionStorage['jwt'];
-    console.log(jwt);
 
     if(jwt && jwt.length > 10) {
       return component;
