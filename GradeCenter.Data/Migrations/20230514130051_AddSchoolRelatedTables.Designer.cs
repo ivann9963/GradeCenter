@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GradeCenter.Data.Migrations
 {
     [DbContext(typeof(GradeCenterContext))]
-    [Migration("20230514055135_AddSchoolTable")]
-    partial class AddSchoolTable
+    [Migration("20230514130051_AddSchoolRelatedTables")]
+    partial class AddSchoolRelatedTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -109,6 +109,10 @@ namespace GradeCenter.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -160,6 +164,8 @@ namespace GradeCenter.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -267,7 +273,7 @@ namespace GradeCenter.Data.Migrations
 
                     b.HasIndex("SchoolId");
 
-                    b.ToTable("Users");
+                    b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -323,12 +329,6 @@ namespace GradeCenter.Data.Migrations
 
             modelBuilder.Entity("GradeCenter.Data.Models.Account.User", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithOne()
-                        .HasForeignKey("GradeCenter.Data.Models.Account.User", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
                     b.HasOne("GradeCenter.Data.Models.School", "School")
                         .WithMany("Users")
                         .HasForeignKey("SchoolId")
