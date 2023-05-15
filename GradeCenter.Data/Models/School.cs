@@ -13,6 +13,6 @@ namespace GradeCenter.Data.Models
         [Required]
         public string Address { get; set; }
         public bool IsActive { get; set; } = true;
-        public ICollection<User> People { get; set; } = new HashSet<User>();
+        public ICollection<AspNetUser> People { get; set; } = new HashSet<AspNetUser>();
     }
 }

@@ -13,10 +13,10 @@ namespace GradeCenter.Services
     {
         public const string SECRET = "THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE  IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING";
         private readonly GradeCenterContext _db;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<AspNetUser> _userManager;
+        private readonly SignInManager<AspNetUser> _signInManager;
 
-        public AccountService(UserManager<User> userManager, GradeCenterContext dietHelperDbContext, SignInManager<User> signInManager)
+        public AccountService(UserManager<AspNetUser> userManager, GradeCenterContext dietHelperDbContext, SignInManager<AspNetUser> signInManager)
         {
             _userManager = userManager;
             _db = dietHelperDbContext;
@@ -34,7 +34,7 @@ namespace GradeCenter.Services
         /// <returns></returns>
         public async Task<string> Login(string userName, string password)
         {
-            var user = _db?.Users?.SingleOrDefault(u => u.UserName == userName);
+            var user = _db?.AspNetUsers?.SingleOrDefault(u => u.UserName == userName);
 
             if (user == null)
             {
@@ -70,7 +70,7 @@ namespace GradeCenter.Services
         /// <param name="loggedUser"></param>
         /// <param name="newPassword"></param>
         /// <param name="newPhoneNumber"></param>
-        public void UpdateUser(User loggedUser, string newPassword, string newPhoneNumber)
+        public void UpdateUser(AspNetUser loggedUser, string newPassword, string newPhoneNumber)
         {
             loggedUser.PasswordHash = newPassword.GetHashCode().ToString(); // TODO: Check if okay
             loggedUser.PhoneNumber = newPhoneNumber;
@@ -88,7 +88,7 @@ namespace GradeCenter.Services
         /// <returns></returns>
         public async Task Register(string userName, string email, string password)
         {
-            var userModel = new User
+            var userModel = new AspNetUser
             {
                 FirstName = userName,
                 LastName = userName,
@@ -108,7 +108,7 @@ namespace GradeCenter.Services
         /// Sets the IsActive property of the logged-in user to false in the database.
         /// </summary>
         /// <param name="loggedUser"></param>
-        public void Deactivate(User loggedUser)
+        public void Deactivate(AspNetUser loggedUser)
         {
             loggedUser.IsActive = false;
 
@@ -120,7 +120,7 @@ namespace GradeCenter.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public User? GetUserById(string userId)
+        public AspNetUser? GetUserById(string userId)
         {
             var user = _db?.Users?
                 .Include(c => c.ChildrenRelations)
@@ -130,7 +130,7 @@ namespace GradeCenter.Services
             return user;
         }
 
-        public void AddChild(User parent, Guid childId)
+        public void AddChild(AspNetUser parent, Guid childId)
         {
             var child = _db?.Users?.FirstOrDefault(u => u.Id == childId);
 
