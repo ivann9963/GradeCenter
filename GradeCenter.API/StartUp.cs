@@ -1,4 +1,5 @@
 ﻿using GradeCenter.Data;
+using GradeCenter.Data.Models.Account;
 using GradeCenter.Services;
 using GradeCenter.Services.Schools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,7 +29,7 @@ namespace GradeCenter.API
             services.AddDbContext<GradeCenterContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<GradeCenterContext>()
                 .AddDefaultTokenProviders();
 

@@ -2,6 +2,7 @@
 using GradeCenter.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 
 namespace GradeCenter.API.Controllers
 {
@@ -10,9 +11,9 @@ namespace GradeCenter.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<User> _userManager;
 
-        public AccountController(IAccountService accountService, UserManager<IdentityUser> userManager)
+        public AccountController(IAccountService accountService, UserManager<User> userManager)
         {
             _accountService = accountService;
             _userManager = userManager;
@@ -40,14 +41,27 @@ namespace GradeCenter.API.Controllers
         /// <param name="password"></param>
         /// <returns></returns>
         [HttpPost("Login")]
-        public IActionResult Login(string userName, string password)
+        public async Task<IActionResult> Login(string userName, string password)
         {
-            var token = _accountService.Login(userName, password);
+            var token = await _accountService.Login(userName, password);
 
             if (token == null || token == string.Empty)
                 return BadRequest(new { message = "User name or password is incorrect" });
 
             return Ok(token);
+        }
+
+        [HttpPut("AddChild")]
+        public async Task<IActionResult> AddChild(Guid childId)
+        {
+            User parent = (User)await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (parent == null)
+                return Unauthorized(new { message = "User must be authorized to perform this operation." });
+
+            _accountService.AddChild(parent, childId);
+
+            return Ok();
         }
 
         /// <summary>

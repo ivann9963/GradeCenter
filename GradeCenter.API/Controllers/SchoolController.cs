@@ -13,10 +13,10 @@ namespace GradeCenter.API.Controllers
     [ApiController]
     public class SchoolController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly ISchoolService _schoolService;
 
-        public SchoolController(UserManager<IdentityUser> userManager, ISchoolService schoolService)
+        public SchoolController(UserManager<User> userManager, ISchoolService schoolService)
         {
             _userManager = userManager;
             _schoolService = schoolService;
