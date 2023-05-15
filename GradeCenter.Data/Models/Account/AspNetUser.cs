@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace GradeCenter.Data.Models.Account
 {
     [Table("AspNetUsers")]
-    public class User : IdentityUser<Guid>
+    public class AspNetUser : IdentityUser<Guid>
     {
         [Required]
         public string? FirstName { get; set; }

@@ -13,10 +13,10 @@ namespace GradeCenter.API.Controllers
     [ApiController]
     public class SchoolController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<AspNetUser> _userManager;
         private readonly ISchoolService _schoolService;
 
-        public SchoolController(UserManager<User> userManager, ISchoolService schoolService)
+        public SchoolController(UserManager<AspNetUser> userManager, ISchoolService schoolService)
         {
             _userManager = userManager;
             _schoolService = schoolService;
@@ -42,7 +42,7 @@ namespace GradeCenter.API.Controllers
             if (!User.Identity.IsAuthenticated)
                 return Unauthorized();
 
-            User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
             
             if (!loggedUser.UserRole.Equals(UserRoles.Admin))
                 return Unauthorized();
@@ -69,7 +69,7 @@ namespace GradeCenter.API.Controllers
             if (!User.Identity.IsAuthenticated)
                 return Unauthorized();
 
-            User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (!loggedUser.UserRole.Equals(UserRoles.Admin))
                 return Unauthorized();
@@ -78,7 +78,7 @@ namespace GradeCenter.API.Controllers
                 return BadRequest(ModelState);
 
             var mappedSchoolModel = FactoryBuilder.ToObject<School>(requestModel);
-            var mappedUserModels = FactoryBuilder.ToObject<List<User>>(requestModel.Users);
+            var mappedUserModels = FactoryBuilder.ToObject<List<AspNetUser>>(requestModel.Users);
             mappedSchoolModel.People ??= mappedUserModels;
 
             await _schoolService.Update(mappedSchoolModel);
@@ -97,7 +97,7 @@ namespace GradeCenter.API.Controllers
             if (!User.Identity.IsAuthenticated)
                 return Unauthorized();
 
-            User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (!loggedUser.UserRole.Equals(UserRoles.Admin))
                 return Unauthorized();

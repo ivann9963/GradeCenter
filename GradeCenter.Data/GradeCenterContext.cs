@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace GradeCenter.Data
 {
-    public class GradeCenterContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    public class GradeCenterContext : IdentityDbContext<AspNetUser, IdentityRole<Guid>, Guid>
     {
         public GradeCenterContext() { }
 
@@ -15,7 +15,7 @@ namespace GradeCenter.Data
         {
         }
 
-        public virtual DbSet<User>? Users { get; set; }
+        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<School>? Schools { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,7 +28,7 @@ namespace GradeCenter.Data
 
             // Configure a one-to-many relationship
             // between Users and School.
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<AspNetUser>()
                 .HasOne(l => l.School)
                 .WithMany(l => l.People)
                 .OnDelete(DeleteBehavior.Cascade);

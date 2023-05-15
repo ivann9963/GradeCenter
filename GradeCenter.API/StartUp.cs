@@ -29,7 +29,7 @@ namespace GradeCenter.API
             services.AddDbContext<GradeCenterContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<User, IdentityRole<Guid>>()
+            services.AddIdentity<AspNetUser, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<GradeCenterContext>()
                 .AddDefaultTokenProviders();
 

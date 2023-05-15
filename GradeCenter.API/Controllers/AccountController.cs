@@ -11,9 +11,9 @@ namespace GradeCenter.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private UserManager<User> _userManager;
+        private UserManager<AspNetUser> _userManager;
 
-        public AccountController(IAccountService accountService, UserManager<User> userManager)
+        public AccountController(IAccountService accountService, UserManager<AspNetUser> userManager)
         {
             _accountService = accountService;
             _userManager = userManager;
@@ -54,7 +54,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddChild")]
         public async Task<IActionResult> AddChild(Guid childId)
         {
-            User parent = (User)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser parent = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (parent == null)
                 return Unauthorized(new { message = "User must be authorized to perform this operation." });
@@ -73,7 +73,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(string newPassword, string newPhoneNumber)
         {
-            User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (loggedUser == null)
                 return Unauthorized(new { message = "User must be authorized to perform this operation." });
@@ -88,9 +88,9 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetLoggedUser")]
-        public async Task<User> GetLoggedUser()
+        public async Task<AspNetUser> GetLoggedUser()
         {
-            User loggedUser = (User)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
 
             return loggedUser;
         }
@@ -101,7 +101,7 @@ namespace GradeCenter.API.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("GetUserById")]
-        public async Task<User> GetUserById(string userId)
+        public async Task<AspNetUser> GetUserById(string userId)
         {
             var user = _accountService.GetUserById(userId);
 
