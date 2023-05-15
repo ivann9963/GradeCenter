@@ -29,7 +29,7 @@ namespace GradeCenter.Data
             // between Users and School.
             builder.Entity<User>()
                 .HasOne(l => l.School)
-                .WithMany(l => l.Users)
+                .WithMany(l => l.People)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

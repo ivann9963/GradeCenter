@@ -79,7 +79,7 @@ namespace GradeCenter.API.Controllers
 
             var mappedSchoolModel = FactoryBuilder.ToObject<School>(requestModel);
             var mappedUserModels = FactoryBuilder.ToObject<List<User>>(requestModel.Users);
-            mappedSchoolModel.Users ??= mappedUserModels;
+            mappedSchoolModel.People ??= mappedUserModels;
 
             await _schoolService.Update(mappedSchoolModel);
 
