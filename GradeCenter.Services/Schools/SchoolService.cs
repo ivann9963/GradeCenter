@@ -97,11 +97,11 @@ namespace GradeCenter.Services.Schools
             school.Name = updatedSchool.Name;
             school.Address = updatedSchool.Address;
 
-            if (updatedSchool.Users.Any(user => user.UserRole.Equals(UserRoles.Principle)))
+            if (updatedSchool.People.Any(user => user.UserRole.Equals(UserRoles.Principle)))
                 return;
 
-            if (updatedSchool.Users.Any())
-                school.Users.Union(updatedSchool.Users);
+            if (updatedSchool.People.Any())
+                school.People.Union(updatedSchool.People);
 
             await _db.SaveChangesAsync();
         }
