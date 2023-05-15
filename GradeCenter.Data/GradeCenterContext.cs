@@ -3,10 +3,11 @@ using GradeCenter.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace GradeCenter.Data
 {
-    public class GradeCenterContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class GradeCenterContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public GradeCenterContext() { }
 
@@ -17,19 +18,34 @@ namespace GradeCenter.Data
         public virtual DbSet<User>? Users { get; set; }
         public virtual DbSet<School>? Schools { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
 
             // Configure the primary key for IdentityUserLogin<string>
-            builder.Entity<IdentityUserLogin<string>>()
+            modelBuilder.Entity<IdentityUserLogin<string>>()
                 .HasKey(l => new { l.LoginProvider, l.ProviderKey });
 
             // Configure a one-to-many relationship
             // between Users and School.
-            builder.Entity<User>()
+            modelBuilder.Entity<User>()
                 .HasOne(l => l.School)
                 .WithMany(l => l.People)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserRelation>()
+                .HasKey(ur => new { ur.ParentId, ur.ChildId });
+
+            modelBuilder.Entity<UserRelation>()
+                .HasOne(ur => ur.Parent)
+                .WithMany(u => u.ChildrenRelations)
+                .HasForeignKey(ur => ur.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserRelation>()
+                .HasOne(ur => ur.Child)
+                .WithMany(u => u.ParentRelations)
+                .HasForeignKey(ur => ur.ChildId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

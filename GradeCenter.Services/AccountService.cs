@@ -1,6 +1,7 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,10 +13,10 @@ namespace GradeCenter.Services
     {
         public const string SECRET = "THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE  IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING";
         private readonly GradeCenterContext _db;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountService(UserManager<IdentityUser> userManager, GradeCenterContext dietHelperDbContext, SignInManager<IdentityUser> signInManager)
+        public AccountService(UserManager<User> userManager, GradeCenterContext dietHelperDbContext, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _db = dietHelperDbContext;
@@ -31,7 +32,7 @@ namespace GradeCenter.Services
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public string Login(string userName, string password)
+        public async Task<string> Login(string userName, string password)
         {
             var user = _db?.Users?.SingleOrDefault(u => u.UserName == userName);
 
@@ -39,6 +40,9 @@ namespace GradeCenter.Services
             {
                 return string.Empty;
             }
+
+            if (!await _userManager.CheckPasswordAsync(user, password))
+                return string.Empty;
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -86,8 +90,12 @@ namespace GradeCenter.Services
         {
             var userModel = new User
             {
+                FirstName = userName,
+                LastName = userName,
                 UserName = userName,
                 Email = email,
+                UserRole = UserRoles.Student,
+                IsActive = true,
             };
 
             await _userManager.CreateAsync(userModel, password);
@@ -114,9 +122,27 @@ namespace GradeCenter.Services
         /// <returns></returns>
         public User? GetUserById(string userId)
         {
-            var user = _db?.Users?.FirstOrDefault(u => u.Id == userId);
+            var user = _db?.Users?
+                .Include(c => c.ChildrenRelations)
+                .Include(p => p.ParentRelations)
+                .FirstOrDefault(u => u.Id == Guid.Parse(userId));
 
             return user;
+        }
+
+        public void AddChild(User parent, Guid childId)
+        {
+            var child = _db?.Users?.FirstOrDefault(u => u.Id == childId);
+
+            UserRelation userRelation = new UserRelation();
+            userRelation.Child = child;
+            userRelation.ChildId = childId;
+            userRelation.Parent = parent;
+            userRelation.ParentId = parent.Id;
+
+            parent.ChildrenRelations.Add(userRelation);
+
+            _db.SaveChanges();
         }
     }
 }
