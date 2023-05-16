@@ -1,0 +1,82 @@
+@startuml
+
+class User {
+    IsActive : boolean
+    UserRole : enum
+    Children : List<User>
+    Parents : List<User>
+    Attendances : List<Attendance>
+    Grades : List<Grade>
+}
+
+enum UserRoles {
+    Admin : 0
+    Principle : 1
+    Teacher : 2
+    Parent : 3
+    Student : 4
+}
+
+class School {
+    Name : string
+    Address : string
+    Principle : User
+    Teachers : List<User>
+    SchoolClass : List<SchoolClass>
+}
+
+class SchoolClass {
+    Year : number
+    Subcategory : string
+    HeadTeacher : User
+    Students : List<User>
+    Curriculum : List<Subject>
+}
+
+class Subject {
+    Name : string
+    Occurance : string
+    SchoolClass : SchoolClass
+    Teacher : User
+}
+
+class Grade {
+    Rate : number
+    Subject : Subject
+    Student : User
+}
+
+class Attendance {
+    Date : Date
+    Subject : Subject
+    Student : User
+}
+
+class PerformanceStatistic {
+    AttendanceRate : number
+    AverageGrades : Dictionary<Subject, number>
+}
+
+class TeacherStatistic {
+    Teacher : User
+    Approval : number
+}
+
+class SchoolReview {
+    Observations : List<ObservationsTypes>
+    Rating : number
+}
+
+UserRoles <- User
+School --> User
+School --> SchoolClass
+SchoolClass --> Subject
+Subject <-- Grade
+Subject <-- Attendance
+User <-- Grade
+User <-- Attendance
+Subject <-- PerformanceStatistic
+User <-- TeacherStatistic
+School <-- SchoolReview
+
+@enduml
