@@ -17,6 +17,7 @@ namespace GradeCenter.Data.Models.Account
         public virtual School? School { get; set; }
         public bool? IsActive { get; set; } = false;
         public UserRoles? UserRole { get; set; }
+        public SchoolClass? SchoolClass { get; set; }
 
         public virtual ICollection<UserRelation> ChildrenRelations { get; set; } = new HashSet<UserRelation>();
         public virtual ICollection<UserRelation> ParentRelations { get; set; } = new HashSet<UserRelation>();

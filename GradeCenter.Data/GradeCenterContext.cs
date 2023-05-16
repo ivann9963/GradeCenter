@@ -17,6 +17,8 @@ namespace GradeCenter.Data
 
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<School>? Schools { get; set; }
+        public virtual DbSet<SchoolClass> SchoolClasses { get; set; }
+        public virtual DbSet<Discipline> Disciplines { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +49,16 @@ namespace GradeCenter.Data
                 .WithMany(u => u.ParentRelations)
                 .HasForeignKey(ur => ur.ChildId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SchoolClass>()
+                .HasMany(s => s.Students)
+                .WithOne(c => c.SchoolClass)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SchoolClass>()
+                .HasMany(s => s.Curriculum)
+                .WithOne(c => c.SchoolClass)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
