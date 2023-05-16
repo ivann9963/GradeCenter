@@ -14,12 +14,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7029/api/Account/Register?userName=test1&email=test1%40test.com&password=tesT_123",
+							"raw": "https://localhost:7273/api/Account/Register?userName=test3&email=test3%40test.com&password=tesT_123",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7029",
+							"port": "7273",
 							"path": [
 								"api",
 								"Account",
@@ -28,11 +28,11 @@
 							"query": [
 								{
 									"key": "userName",
-									"value": "test1"
+									"value": "test3"
 								},
 								{
 									"key": "email",
-									"value": "test1%40test.com"
+									"value": "test3%40test.com"
 								},
 								{
 									"key": "password",
@@ -92,7 +92,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjgzNTU5MTkxLCJleHAiOjE2ODM1NTk0OTEsImlhdCI6MTY4MzU1OTE5MX0.Nwx6FCMKIJdY_eAMitwG_kVCcl946qorMyQLOhZR3t0",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjg0MTU1MzM3LCJleHAiOjE2ODQxNTU2MzcsImlhdCI6MTY4NDE1NTMzN30.NH-ahm1bWV5E0eKIAnGXGUnqN79UU3gbje9UaVUjoRo",
 									"type": "string"
 								}
 							]
@@ -100,12 +100,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7029/api/Account/GetLoggedUser",
+							"raw": "https://localhost:7273/api/Account/GetLoggedUser",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7029",
+							"port": "7273",
 							"path": [
 								"api",
 								"Account",
@@ -131,12 +131,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7029/api/Account/GetUserById?userId=61daa664-cca2-4b52-a84e-120ddddaab73",
+							"raw": "https://localhost:7273/api/Account/GetUserById?userId=1284D032-94EC-4E97-8043-08DB55432E2E",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7029",
+							"port": "7273",
 							"path": [
 								"api",
 								"Account",
@@ -145,7 +145,44 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "61daa664-cca2-4b52-a84e-120ddddaab73"
+									"value": "1284D032-94EC-4E97-8043-08DB55432E2E"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Child",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjg0MTU1MDcyLCJleHAiOjE2ODQxNTUzNzIsImlhdCI6MTY4NDE1NTA3Mn0.RfiuZVQ-Pbmd4FApl3isr0fIzqs8Y1XW0y5zAqysmWc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7273/api/Account/AddChild?childId=1284D032-94EC-4E97-8043-08DB55432E2E",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7273",
+							"path": [
+								"api",
+								"Account",
+								"AddChild"
+							],
+							"query": [
+								{
+									"key": "childId",
+									"value": "1284D032-94EC-4E97-8043-08DB55432E2E"
 								}
 							]
 						}
@@ -181,6 +218,149 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "SchoolController",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjg0MjI2MDcyLCJleHAiOjE2ODQyMjYzNzIsImlhdCI6MTY4NDIyNjA3Mn0.XgJxlt2XwvlOQ1FnDZ_vvRLibzO2hb93MHvSUyRbmJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"school 5\",\r\n  \"address\": \"sdasd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7273/api/School/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7273",
+							"path": [
+								"api",
+								"School",
+								"Create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjg0MjI2MDcyLCJleHAiOjE2ODQyMjYzNzIsImlhdCI6MTY4NDIyNjA3Mn0.XgJxlt2XwvlOQ1FnDZ_vvRLibzO2hb93MHvSUyRbmJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7273/api/School/Delete?name=school%205",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7273",
+							"path": [
+								"api",
+								"School",
+								"Delete"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "school%205"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNjg0MjI2MDcyLCJleHAiOjE2ODQyMjYzNzIsImlhdCI6MTY4NDIyNjA3Mn0.XgJxlt2XwvlOQ1FnDZ_vvRLibzO2hb93MHvSUyRbmJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"d246790e-0762-41e1-8cfb-113f88686fcb\",\r\n  \"name\": \"School 6\",\r\n  \"address\": \"Sofia\",\r\n  \"users\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7273/api/School/Update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7273",
+							"path": [
+								"api",
+								"School",
+								"Update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Schools",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7273/api/School/GetAllSchools",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7273",
+							"path": [
+								"api",
+								"School",
+								"GetAllSchools"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
