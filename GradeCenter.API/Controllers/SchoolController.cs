@@ -1,5 +1,5 @@
 ﻿using GradeCenter.API.Common;
-using GradeCenter.API.Models.Request;
+using GradeCenter.API.Models.Request.SchoolRequests;
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services.Schools;
@@ -37,20 +37,14 @@ namespace GradeCenter.API.Controllers
         /// <param name="requestModel"></param>
         /// <returns></returns>
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(SchoolCreateRequestModel requestModel)
+        public async Task<IActionResult> Create(SchoolCreateRequest requestModel)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
+            var checkedReqeust = await ValidateRequest();
 
-            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
-            
-            if (!loggedUser.UserRole.Equals(UserRoles.Admin))
-                return Unauthorized();
+            if (checkedReqeust != null)
+                return checkedReqeust;
 
-            if (!this.ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var mappedSchoolModel = FactoryBuilder.ToObject<School>(requestModel);
+            School mappedSchoolModel = ExtractSchool(requestModel);
 
             await _schoolService.Create(mappedSchoolModel);
 
@@ -64,22 +58,14 @@ namespace GradeCenter.API.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(SchoolUpdateRequestModel requestModel)
+        public async Task<IActionResult> Update(SchoolUpdateRequest requestModel)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
+            var checkedReqeust = await ValidateRequest();
 
-            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
+            if (checkedReqeust != null)
+                return checkedReqeust;
 
-            if (!loggedUser.UserRole.Equals(UserRoles.Admin))
-                return Unauthorized();
-
-            if (!this.ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var mappedSchoolModel = FactoryBuilder.ToObject<School>(requestModel);
-            var mappedUserModels = FactoryBuilder.ToObject<List<AspNetUser>>(requestModel.Users);
-            mappedSchoolModel.People ??= mappedUserModels;
+            School mappedSchoolModel = ExtractSchool(requestModel);
 
             await _schoolService.Update(mappedSchoolModel);
 
@@ -94,20 +80,58 @@ namespace GradeCenter.API.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string name)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
+            var checkedReqeust = await ValidateRequest();
 
-            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
-
-            if (!loggedUser.UserRole.Equals(UserRoles.Admin))
-                return Unauthorized();
-
-            if (!this.ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (checkedReqeust != null)
+                return checkedReqeust;
 
             await _schoolService.Delete(name);
 
             return Ok();
+        }
+
+        private async Task<IActionResult> ValidateRequest()
+        {
+            var loggedUser = await GetLoggedUser();
+
+            if (loggedUser == null || !IsAdmin(loggedUser))
+                return Unauthorized();
+
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid model state.");
+
+            return null;
+        }
+
+        private static School ExtractSchool(SchoolCreateRequest requestModel)
+        {
+            var model = requestModel;
+            List<AspNetUser> users = new List<AspNetUser>();
+
+            if (requestModel is SchoolUpdateRequest updateRequest 
+                && updateRequest.Users != null && updateRequest.Users.Count >= 0)
+            {
+                model = updateRequest;
+                users = updateRequest.Users.Select(x => new AspNetUser { Id = x.UserId }).ToList();
+            }
+
+            return new School
+            {
+                Id = model is SchoolUpdateRequest updateModel ? updateModel.Id : null,
+                Name = model.Name,
+                Address = model.Address,
+                People = users
+            };
+        }
+
+        private async Task<AspNetUser> GetLoggedUser()
+        {
+            return await _userManager.FindByNameAsync(User.Identity.Name);
+        }
+
+        private bool IsAdmin(AspNetUser user)
+        {
+            return user.UserRole.Equals(UserRoles.Admin);
         }
     }
 }
