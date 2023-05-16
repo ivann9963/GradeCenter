@@ -5,11 +5,20 @@ class AccountController {
     + Login(username: string, password: string)
     + AddChild(childId: Guid)
     + Update(newPassword: string, newPhoneNumber: string)
-    + GetLoggedUser()
-    + GetUserById(userId: string)
+    + GetLoggedUser(): User
+    + GetUserById(userId: string): User
 }
 
 class AccountService {
+    + Register(username: string, email: string, password: string): User
+    + Login(username: string, password: string): User
+    + AddChild(childId: Guid): User
+    + Update(newPassword: string, newPhoneNumber: string): User
+    + GetLoggedUser(): User
+    + GetUserById(userId: string): User
+}
+
+interface IAccountService {
     + Register(username: string, email: string, password: string)
     + Login(username: string, password: string)
     + AddChild(childId: Guid)
@@ -18,62 +27,55 @@ class AccountService {
     + GetUserById(userId: string)
 }
 
-interface IAccountService {
-    + Register()
-    + Login()
-    + AddChild()
-    + Update()
-    + GetLoggedUser()
-    + GetUserById()
-}
-
 class SchoolController {
-    + GetAllSchools()
-    + Create(requestModel: SchoolCreateRequest)
-    + Update(requestModel: SchoolUpdateRequest)
-    + Delete(name: string)
-    - ValidateRequest()
-    - ExtractSchool(SchoolCreateRequest requestModel)
-    - GetLoggedUser()
-    - IsAdmin(AspNetUser user)
+    + GetAllSchools(): List<School>
+    + Create(requestModel: SchoolCreateRequest): School
+    + Update(requestModel: SchoolUpdateRequest): School
+    + Delete(name: string): void
+    - ValidateRequest(): void
+    - ExtractSchool(requestModel: SchoolCreateRequest): School
+    - GetLoggedUser(): User
+    - IsAdmin(user: AspNetUser): bool
 }
 
 class SchoolService {
+    + GetAllSchools(): List<School>
+    + Create(newSchool: School): School
+    + Update(updatedSchool: School): School
+    + Delete(schoolName: string): void
+}
+
+interface ISchoolService {
     + GetAllSchools()
     + Create(newSchool: School)
     + Update(updatedSchool: School)
     + Delete(schoolName: string)
 }
 
-interface ISchoolService {
-    + GetAllSchools()
-    + Create()
-    + Update()
-    + Delete()
-}
-
 class CurricullumController {
-    + Create(requestModel: CurricullumCreateRequest)
-    + Update(requestModel: CurricullumUpdateRequest)
-    + Delete(id: Guid)
-    + GetBySchoolClass(schoolClassId: Guid)
+    + Create(requestModel: CurricullumCreateRequest): Curricullum
+    + Update(requestModel: CurricullumUpdateRequest): Curricullum
+    + Delete(id: Guid): void
+    + GetBySchoolClass(schoolClassId: Guid): List<Curricullum>
 }
 
 class CurricullumService {
+    + Create(newCurriculum: Curricullum): Curricullum
+    + Update(updatedCurriculum: Curricullum): Curricullum
+    + Delete(curriculumId: Guid): void
+    + GetBySchoolClass(schoolClassId: Guid): List<Curricullum>
+}
+
+interface ICurricullumService {
     + Create(newCurriculum: Curricullum)
     + Update(updatedCurriculum: Curricullum)
     + Delete(curriculumId: Guid)
     + GetBySchoolClass(schoolClassId: Guid)
 }
 
-interface ICurricullumService {
-    + Create()
-    + Update()
-    + Delete()
-    + GetBySchoolClass()
-}
+database GradeCenterContext {
 
-database GradeCenterContext
+}
 
 AccountController ...> IAccountService : uses
 SchoolController ...> ISchoolService : uses
