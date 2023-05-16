@@ -40,11 +40,10 @@ class SchoolController {
 
 class SchoolService {
     + GetAllSchools()
-    + Create(requestModel: SchoolCreateRequest)
-    + Update(requestModel: SchoolUpdateRequest)
-    + Delete(name: string)
+    + Create(newSchool: School)
+    + Update(updatedSchool: School)
+    + Delete(schoolName: string)
 }
-
 
 interface ISchoolService {
     + GetAllSchools()
@@ -53,23 +52,40 @@ interface ISchoolService {
     + Delete()
 }
 
-
-class SchoolCreateRequest {
-    + name: string
-    + adress: string
+class CurricullumController {
+    + Create(requestModel: CurricullumCreateRequest)
+    + Update(requestModel: CurricullumUpdateRequest)
+    + Delete(id: Guid)
+    + GetBySchoolClass(schoolClassId: Guid)
 }
 
-class SchoolUpdateRequest {
-    + Id: string
-    + People: List<User>
+class CurricullumService {
+    + Create(newCurriculum: Curricullum)
+    + Update(updatedCurriculum: Curricullum)
+    + Delete(curriculumId: Guid)
+    + GetBySchoolClass(schoolClassId: Guid)
 }
 
-SchoolCreateRequest <|-- SchoolUpdateRequest : Inheritance
-AccountController ..> IAccountService : uses
-SchoolController ..> ISchoolService : uses
-SchoolController ..> SchoolCreateRequest : uses
-SchoolController ..> SchoolUpdateRequest : uses
-SchoolService ..|> ISchoolService : implements
-AccountService ..|> IAccountService : implements
+interface ICurricullumService {
+    + Create()
+    + Update()
+    + Delete()
+    + GetBySchoolClass()
+}
+
+database GradeCenterContext
+
+AccountController ...> IAccountService : uses
+SchoolController ...> ISchoolService : uses
+CurricullumController ...> ICurricullumService : uses
+CurricullumController ...> ISchoolService : uses
+
+ISchoolService <|.. SchoolService : implements
+IAccountService <|.. AccountService : implements
+ICurricullumService <|.. CurricullumService : implements
+
+SchoolService --> GradeCenterContext
+AccountService --> GradeCenterContext
+CurricullumService --> GradeCenterContext
 
 @enduml
