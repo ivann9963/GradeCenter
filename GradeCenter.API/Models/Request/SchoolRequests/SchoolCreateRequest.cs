@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GradeCenter.API.Models.Request
+namespace GradeCenter.API.Models.Request.SchoolRequests
 {
-    public class SchoolCreateRequestModel
+    public class SchoolCreateRequest
     {
         [Required]
         public string Name { get; set; }
