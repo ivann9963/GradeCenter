@@ -1,0 +1,75 @@
+@startuml
+
+class AccountController {
+    + Register(username: string, email: string, password: string)
+    + Login(username: string, password: string)
+    + AddChild(childId: Guid)
+    + Update(newPassword: string, newPhoneNumber: string)
+    + GetLoggedUser()
+    + GetUserById(userId: string)
+}
+
+class AccountService {
+    + Register(username: string, email: string, password: string)
+    + Login(username: string, password: string)
+    + AddChild(childId: Guid)
+    + Update(newPassword: string, newPhoneNumber: string)
+    + GetLoggedUser()
+    + GetUserById(userId: string)
+}
+
+interface IAccountService {
+    + Register()
+    + Login()
+    + AddChild()
+    + Update()
+    + GetLoggedUser()
+    + GetUserById()
+}
+
+class SchoolController {
+    + GetAllSchools()
+    + Create(requestModel: SchoolCreateRequest)
+    + Update(requestModel: SchoolUpdateRequest)
+    + Delete(name: string)
+    - ValidateRequest()
+    - ExtractSchool(SchoolCreateRequest requestModel)
+    - GetLoggedUser()
+    - IsAdmin(AspNetUser user)
+}
+
+class SchoolService {
+    + GetAllSchools()
+    + Create(requestModel: SchoolCreateRequest)
+    + Update(requestModel: SchoolUpdateRequest)
+    + Delete(name: string)
+}
+
+
+interface ISchoolService {
+    + GetAllSchools()
+    + Create()
+    + Update()
+    + Delete()
+}
+
+
+class SchoolCreateRequest {
+    + name: string
+    + adress: string
+}
+
+class SchoolUpdateRequest {
+    + Id: string
+    + People: List<User>
+}
+
+SchoolCreateRequest <|-- SchoolUpdateRequest : Inheritance
+AccountController ..> IAccountService : uses
+SchoolController ..> ISchoolService : uses
+SchoolController ..> SchoolCreateRequest : uses
+SchoolController ..> SchoolUpdateRequest : uses
+SchoolService ..|> ISchoolService : implements
+AccountService ..|> IAccountService : implements
+
+@enduml
