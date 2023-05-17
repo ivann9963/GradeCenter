@@ -52,21 +52,30 @@ class CurricullumController {
     + Create(requestModel: CurricullumCreateRequest): Curricullum
     + Update(requestModel: CurricullumUpdateRequest): Curricullum
     + Delete(id: Guid): void
-    + GetBySchoolClass(schoolClassId: Guid): List<Curricullum>
+    + GetClassesForDay(Guid schoolClassId, DayOfWeek day)
+    + GetLoggedUserClasses()
 }
 
 class CurricullumService {
     + Create(newCurriculum: Curricullum): Curricullum
     + Update(updatedCurriculum: Curricullum): Curricullum
     + Delete(curriculumId: Guid): void
-    + GetBySchoolClass(schoolClassId: Guid): List<Curricullum>
+    + GetClassesForDay(Guid schoolClassId, DayOfWeek day)
+    + GetLoggedUserClasses(Guid userId)
+    - GenerateCurriculum(List<Discipline> disciplines)
+    - GenerateAvailableDayAndTime()
+    - FindFreeTimeSlot()
+    - GenerateAllTimeSlots()
+    - IsValid(List<Discipline> disciplines)
+    - GetTeacherClasses(Discipline discipline)
 }
 
 interface ICurricullumService {
     + Create(newCurriculum: Curricullum)
     + Update(updatedCurriculum: Curricullum)
     + Delete(curriculumId: Guid)
-    + GetBySchoolClass(schoolClassId: Guid)
+    + GetClassesForDay(Guid schoolClassId, DayOfWeek day)
+    + GetLoggedUserClasses(Guid userId)
 }
 
 database GradeCenterContext {
@@ -85,9 +94,9 @@ SchoolController ...> ISchoolService : uses
 CurricullumController ...> ICurricullumService : uses
 CurricullumController ...> ISchoolService : uses
 
-AccountController ..> RequestValidator : uses
+AccountController .> RequestValidator : uses
 SchoolController ..> RequestValidator : uses
-CurricullumController .> RequestValidator : uses
+CurricullumController ..> RequestValidator : uses
 
 IAccountService <|.. AccountService : implements
 ISchoolService <|.. SchoolService : implements

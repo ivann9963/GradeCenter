@@ -57,7 +57,7 @@ namespace GradeCenter.Tests
             _curriculumService.Create(_disciplines);
 
             // Assert
-            _mockContext.Verify(m => m.Disciplines.AddRange(_disciplines), Times.Once);
+            _mockContext.Verify(m => m.Disciplines.AddRange(It.Is<List<Discipline>>(d => d.Count == 2)), Times.Once);
             _mockContext.Verify(m => m.SaveChanges(), Times.Once);
         }
 
