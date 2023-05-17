@@ -33,6 +33,19 @@ namespace GradeCenter.Services
             _db.Disciplines.UpdateRange(disciplines);
         }
 
+        public List<Discipline> GetClassesForDay(Guid schoolClassId, DayOfWeek day)
+        {
+            var disciplines = _db.Disciplines.Where(x => x.SchoolClass.Id == schoolClassId && x.OccuranceDay == day && x.IsActive).ToList();
+
+            return disciplines;
+        }
+
+        public List<Discipline> GetLoggedUserClasses(Guid userId)
+        {
+            var discipline = _db.Disciplines.Where(x => x.SchoolClass.Students.Any(s => s.Id == userId) && x.IsActive).ToList();
+
+            return discipline;
+        }
 
         /// <summary>
         /// The GenerateCurriculum method creates a school curriculum. 
