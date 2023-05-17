@@ -12,47 +12,26 @@ namespace GradeCenter.API.Controllers
     {
         private readonly UserManager<AspNetUser> _userManager;
         private readonly ICurriculumService _curriculumService;
+        private readonly RequestValidator _requestValidator;
 
         public CurriculumController(ICurriculumService curriculumService, UserManager<AspNetUser> userManager)
         {
             this._curriculumService = curriculumService;
             _userManager = userManager;
+            _requestValidator = new RequestValidator(_userManager, User);
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create(List<Discipline> curriculum, SchoolClass schoolClass)
         {
-            var checkedReqeust = await ValidateRequest();
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
 
-            if (checkedReqeust != null)
-                return checkedReqeust;
+            if (checkedRequest != null)
+                return checkedRequest;
 
             _curriculumService.Create(curriculum, schoolClass);
 
             return Ok();
-        }
-
-        private async Task<IActionResult> ValidateRequest()
-        {
-            var loggedUser = await GetLoggedUser();
-
-            if (loggedUser == null || !IsAdmin(loggedUser))
-                return Unauthorized();
-
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid model state.");
-
-            return null;
-        }
-
-        private async Task<AspNetUser> GetLoggedUser()
-        {
-            return await _userManager.FindByNameAsync(User.Identity.Name);
-        }
-
-        private bool IsAdmin(AspNetUser user)
-        {
-            return user.UserRole.Equals(UserRoles.Admin);
         }
     }
 }
