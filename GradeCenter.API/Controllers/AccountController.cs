@@ -12,11 +12,13 @@ namespace GradeCenter.API.Controllers
     {
         private readonly IAccountService _accountService;
         private UserManager<AspNetUser> _userManager;
+        private readonly RequestValidator _requestValidator;
 
         public AccountController(IAccountService accountService, UserManager<AspNetUser> userManager)
         {
             _accountService = accountService;
             _userManager = userManager;
+            _requestValidator = new RequestValidator(_userManager, User);
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddChild")]
         public async Task<IActionResult> AddChild(Guid childId)
         {
-            AspNetUser parent = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser parent = await _requestValidator.GetLoggedUser();
 
             if (parent == null)
                 return Unauthorized(new { message = "User must be authorized to perform this operation." });
@@ -73,7 +75,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(string newPassword, string newPhoneNumber)
         {
-            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser loggedUser = await _requestValidator.GetLoggedUser();
 
             if (loggedUser == null)
                 return Unauthorized(new { message = "User must be authorized to perform this operation." });
@@ -90,7 +92,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetLoggedUser")]
         public async Task<AspNetUser> GetLoggedUser()
         {
-            AspNetUser loggedUser = (AspNetUser)await _userManager.FindByNameAsync(User.Identity.Name);
+            AspNetUser loggedUser = await _requestValidator.GetLoggedUser();
 
             return loggedUser;
         }

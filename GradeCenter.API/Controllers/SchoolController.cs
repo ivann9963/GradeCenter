@@ -15,18 +15,22 @@ namespace GradeCenter.API.Controllers
     {
         private readonly UserManager<AspNetUser> _userManager;
         private readonly ISchoolService _schoolService;
+        private readonly RequestValidator _requestValidator;
+        private readonly ModelsFactory _modelsFactory;
 
         public SchoolController(UserManager<AspNetUser> userManager, ISchoolService schoolService)
         {
             _userManager = userManager;
             _schoolService = schoolService;
+            _requestValidator = new RequestValidator(_userManager, User);
+            _modelsFactory = new ModelsFactory();
         }
         /// <summary>
         /// Reads all the existing School entities in the database.
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllSchools")]
-        public async Task<IActionResult> GetAllSchools()
+        public IActionResult GetAllSchools()
         {
             return Ok(_schoolService.GetAllSchools());
         }
@@ -39,12 +43,12 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SchoolCreateRequest requestModel)
         {
-            var checkedReqeust = await ValidateRequest();
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
 
-            if (checkedReqeust != null)
-                return checkedReqeust;
+            if (checkedRequest != null)
+                return checkedRequest;
 
-            School mappedSchoolModel = ExtractSchool(requestModel);
+            School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
 
             await _schoolService.Create(mappedSchoolModel);
 
@@ -60,12 +64,12 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(SchoolUpdateRequest requestModel)
         {
-            var checkedReqeust = await ValidateRequest();
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
 
-            if (checkedReqeust != null)
-                return checkedReqeust;
+            if (checkedRequest != null)
+                return checkedRequest;
 
-            School mappedSchoolModel = ExtractSchool(requestModel);
+            School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
 
             await _schoolService.Update(mappedSchoolModel);
 
@@ -80,58 +84,14 @@ namespace GradeCenter.API.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string name)
         {
-            var checkedReqeust = await ValidateRequest();
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
 
-            if (checkedReqeust != null)
-                return checkedReqeust;
+            if (checkedRequest != null)
+                return checkedRequest;
 
             await _schoolService.Delete(name);
 
             return Ok();
-        }
-
-        private async Task<IActionResult> ValidateRequest()
-        {
-            var loggedUser = await GetLoggedUser();
-
-            if (loggedUser == null || !IsAdmin(loggedUser))
-                return Unauthorized();
-
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid model state.");
-
-            return null;
-        }
-
-        private static School ExtractSchool(SchoolCreateRequest requestModel)
-        {
-            var model = requestModel;
-            List<AspNetUser> users = new List<AspNetUser>();
-
-            if (requestModel is SchoolUpdateRequest updateRequest 
-                && updateRequest.Users != null && updateRequest.Users.Count >= 0)
-            {
-                model = updateRequest;
-                users = updateRequest.Users.Select(x => new AspNetUser { Id = x.UserId }).ToList();
-            }
-
-            return new School
-            {
-                Id = model is SchoolUpdateRequest updateModel ? updateModel.Id : null,
-                Name = model.Name,
-                Address = model.Address,
-                People = users
-            };
-        }
-
-        private async Task<AspNetUser> GetLoggedUser()
-        {
-            return await _userManager.FindByNameAsync(User.Identity.Name);
-        }
-
-        private bool IsAdmin(AspNetUser user)
-        {
-            return user.UserRole.Equals(UserRoles.Admin);
         }
     }
 }
