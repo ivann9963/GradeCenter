@@ -32,10 +32,6 @@ class SchoolController {
     + Create(requestModel: SchoolCreateRequest): School
     + Update(requestModel: SchoolUpdateRequest): School
     + Delete(name: string): void
-    - ValidateRequest(): void
-    - ExtractSchool(requestModel: SchoolCreateRequest): School
-    - GetLoggedUser(): User
-    - IsAdmin(user: AspNetUser): bool
 }
 
 class SchoolService {
@@ -77,17 +73,28 @@ database GradeCenterContext {
 
 }
 
+class RequestValidator {
+    + ValidateRequest(): void
+    + ExtractSchool(requestModel: SchoolCreateRequest): School
+    + GetLoggedUser(): User
+    + IsAdmin(user: AspNetUser): bool
+}
+
 AccountController ...> IAccountService : uses
 SchoolController ...> ISchoolService : uses
 CurricullumController ...> ICurricullumService : uses
 CurricullumController ...> ISchoolService : uses
 
-ISchoolService <|.. SchoolService : implements
+AccountController ..> RequestValidator : uses
+SchoolController ..> RequestValidator : uses
+CurricullumController .> RequestValidator : uses
+
 IAccountService <|.. AccountService : implements
+ISchoolService <|.. SchoolService : implements
 ICurricullumService <|.. CurricullumService : implements
 
-SchoolService --> GradeCenterContext
 AccountService --> GradeCenterContext
+SchoolService --> GradeCenterContext
 CurricullumService --> GradeCenterContext
 
 @enduml
