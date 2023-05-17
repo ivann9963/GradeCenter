@@ -17,6 +17,7 @@ namespace GradeCenter.Services
             var curriculum = GenerateCurriculum(disciplines);
 
             _db.Disciplines.AddRange(curriculum);
+            _db.SaveChanges();
         }
 
         public void Update(List<Discipline> disciplines)
@@ -24,6 +25,7 @@ namespace GradeCenter.Services
             var updatedCurriculum = GenerateCurriculum(disciplines);
 
             _db.Disciplines.UpdateRange(updatedCurriculum);
+            _db.SaveChanges();
         }
 
         public void Delete(List<Discipline> disciplines)
@@ -31,6 +33,7 @@ namespace GradeCenter.Services
             disciplines.ForEach(d => d.IsActive = false);
             
             _db.Disciplines.UpdateRange(disciplines);
+            _db.SaveChanges();
         }
 
         public List<Discipline> GetClassesForDay(Guid schoolClassId, DayOfWeek day)
