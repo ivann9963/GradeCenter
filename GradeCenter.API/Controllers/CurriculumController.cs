@@ -60,5 +60,31 @@ namespace GradeCenter.API.Controllers
 
             return Ok();
         }
+
+        [HttpGet("GetLoggedUserClasses")]
+        public async Task<List<Discipline>?> GetLoggedUserClasses()
+        {
+            var loggedUser = await _requestValidator.GetLoggedUser();
+
+            if (loggedUser == null)
+                return null;
+
+            var loggedUserClasses = _curriculumService.GetLoggedUserClasses(loggedUser.Id);
+
+            return loggedUserClasses;
+        }
+
+        [HttpGet("GetClassesForDay")]
+        public async Task<List<Discipline>?> GetClassesForDay(Guid schoolClassId, DayOfWeek day)
+        {
+            var loggedUser = await _requestValidator.GetLoggedUser();
+
+            if (loggedUser == null)
+                return null;
+
+            var loggedUserClasses = _curriculumService.GetClassesForDay(schoolClassId, day);
+
+            return loggedUserClasses;
+        }
     }
 }
