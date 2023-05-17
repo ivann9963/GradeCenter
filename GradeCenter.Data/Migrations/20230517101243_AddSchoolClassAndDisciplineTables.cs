@@ -5,10 +5,34 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GradeCenter.Data.Migrations
 {
-    public partial class AddSchoolClassAndDiscipline : Migration
+    public partial class AddSchoolClassAndDisciplineTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<int>(
+                name: "UserRole",
+                table: "AspNetUsers",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "SchoolId",
+                table: "AspNetUsers",
+                type: "nvarchar(450)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "IsActive",
+                table: "AspNetUsers",
+                type: "bit",
+                nullable: true,
+                oldClrType: typeof(bool),
+                oldType: "bit");
+
             migrationBuilder.AddColumn<Guid>(
                 name: "SchoolClassId",
                 table: "AspNetUsers",
@@ -41,9 +65,11 @@ namespace GradeCenter.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Occurance = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OccuranceDay = table.Column<int>(type: "int", nullable: false),
+                    OccuranceTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     SchoolClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TeacherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    TeacherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,6 +136,36 @@ namespace GradeCenter.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "SchoolClassId",
                 table: "AspNetUsers");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "UserRole",
+                table: "AspNetUsers",
+                type: "int",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "SchoolId",
+                table: "AspNetUsers",
+                type: "nvarchar(450)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "IsActive",
+                table: "AspNetUsers",
+                type: "bit",
+                nullable: false,
+                defaultValue: false,
+                oldClrType: typeof(bool),
+                oldType: "bit",
+                oldNullable: true);
         }
     }
 }

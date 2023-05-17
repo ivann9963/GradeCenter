@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GradeCenter.Data.Migrations
 {
     [DbContext(typeof(GradeCenterContext))]
-    [Migration("20230516194442_AddSchoolClassAndDiscipline")]
-    partial class AddSchoolClassAndDiscipline
+    [Migration("20230517101243_AddSchoolClassAndDisciplineTables")]
+    partial class AddSchoolClassAndDisciplineTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -135,13 +135,18 @@ namespace GradeCenter.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Occurance")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OccuranceDay")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("OccuranceTime")
+                        .HasColumnType("time");
 
                     b.Property<Guid>("SchoolClassId")
                         .HasColumnType("uniqueidentifier");

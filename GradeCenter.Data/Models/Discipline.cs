@@ -1,5 +1,4 @@
 ﻿using GradeCenter.Data.Models.Account;
-using Microsoft.AspNetCore.Identity;
 
 namespace GradeCenter.Data.Models
 {
@@ -9,7 +8,9 @@ namespace GradeCenter.Data.Models
 
         public string Name { get; set; }
 
-        public string Occurance { get; set; }
+        public DayOfWeek OccuranceDay { get; set; }
+
+        public TimeSpan OccuranceTime { get; set; }
 
         public SchoolClass SchoolClass { get; set; }
 
