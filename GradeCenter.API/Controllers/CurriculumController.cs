@@ -22,14 +22,41 @@ namespace GradeCenter.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(List<Discipline> curriculum, SchoolClass schoolClass)
+        public async Task<IActionResult> Create(List<Discipline> curriculum)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
 
             if (checkedRequest != null)
                 return checkedRequest;
 
-            _curriculumService.Create(curriculum, schoolClass);
+            _curriculumService.Create(curriculum);
+
+            return Ok();
+        }
+
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(List<Discipline> curricullum)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            _curriculumService.Update(curricullum);
+
+            return Ok();
+        }
+
+
+        [HttpPost("Delete")]
+        public async Task<IActionResult> Delete(List<Discipline> curricullum)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            _curriculumService.Delete(curricullum);
 
             return Ok();
         }

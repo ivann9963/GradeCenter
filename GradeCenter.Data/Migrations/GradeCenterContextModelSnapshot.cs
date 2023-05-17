@@ -133,13 +133,18 @@ namespace GradeCenter.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Occurance")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OccuranceDay")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("OccuranceTime")
+                        .HasColumnType("time");
 
                     b.Property<Guid>("SchoolClassId")
                         .HasColumnType("uniqueidentifier");

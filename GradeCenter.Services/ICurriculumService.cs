@@ -4,8 +4,8 @@ namespace GradeCenter.Services
 {
     public interface ICurriculumService
     {
-        void Create(List<Discipline> disciplines, SchoolClass schoolClass);
-        void Update(List<Discipline> disciplines, SchoolClass schoolClass);
-        void Delete(Discipline discipline);
+        void Create(List<Discipline> disciplines);
+        void Update(List<Discipline> disciplines);
+        void Delete(List<Discipline> disciplines);
     }
 }
