@@ -61,24 +61,44 @@ namespace GradeCenter.Services
 
         private KeyValuePair<DayOfWeek, TimeSpan>? GenerateAvailableDayAndTime(List<KeyValuePair<DayOfWeek, TimeSpan>> teachersClasses, SchoolClass schoolClass, List<Discipline> currentCurriculum)
         {
-            // Random DayOfWeek
-            DayOfWeek randomDay = (DayOfWeek)Random.Next(1, 5);
+            // Generate all possible time slots
+            var allTimeSlots = new List<KeyValuePair<DayOfWeek, TimeSpan>>();
+            foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                if (day == DayOfWeek.Saturday || day == DayOfWeek.Sunday) continue; // Skip weekends
 
-            // Random TimeSpan
-            int startHour = 7;  // Start of the range (e.g., 8 AM)
-            int endHour = 14;   // End of the range (e.g., 6 PM)
-            int randomHour = Random.Next(startHour, endHour);
-            int randomMinute = Random.Next(0, 60);
+                for (int hour = 7; hour < 14; hour++)
+                {
+                    for (int minute = 0; minute < 60; minute += 10) // Assuming classes start every 10 minutes
+                    {
+                        allTimeSlots.Add(new KeyValuePair<DayOfWeek, TimeSpan>(day, new TimeSpan(hour, minute, 0)));
+                    }
+                }
+            }
 
-            TimeSpan randomTime = new(randomHour, randomMinute, 0);
+            // Shuffle the list
+            var randomTimeSlots = allTimeSlots.OrderBy(x => Random.Next()).ToList();
+            KeyValuePair<DayOfWeek, TimeSpan>? freeSlot = null;
 
-            var schoolClassIsBusy = currentCurriculum.Any(d => d.OccuranceDay == randomDay && d.OccuranceTime == randomTime);
-            var teacherIsBusy = teachersClasses.Any(c => c.Key == randomDay && c.Value == randomTime);
+            // Find a free time slot
+            foreach (var slot in randomTimeSlots)
+            {
+                var day = slot.Key;
+                var time = slot.Value;
 
-            if (schoolClassIsBusy || teacherIsBusy) 
-                return GenerateAvailableDayAndTime(teachersClasses, schoolClass, currentCurriculum);
+                var schoolClassIsBusy = currentCurriculum.Any(d => d.OccuranceDay == day && d.OccuranceTime == time);
+                var teacherIsBusy = teachersClasses.Any(c => c.Key == day && c.Value == time);
+                var disciplinesForDay = currentCurriculum.Count(d => d.OccuranceDay == day);
+                var maximumDisciplinesReached = disciplinesForDay >= 7;
 
-            return new KeyValuePair<DayOfWeek, TimeSpan>(randomDay, randomTime);
+                if (!schoolClassIsBusy && !teacherIsBusy && !maximumDisciplinesReached)
+                {
+                    freeSlot = slot;
+                    break;
+                }
+            }
+
+            return freeSlot;
         }
 
         private bool IsValid(List<Discipline> disciplines)
@@ -117,6 +137,7 @@ namespace GradeCenter.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
+                throw;
             }
         }
     }
