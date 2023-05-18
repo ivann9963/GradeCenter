@@ -97,13 +97,14 @@ namespace GradeCenter.Services.Schools
             currentSchool.Name = updatedSchool.Name;
             currentSchool.Address = updatedSchool.Address;
 
-            AddPrincipleToSchool(updatedSchool);
+            await AddPrincipleToSchool(updatedSchool);
 
             if (updatedSchool.People.Any())
                 currentSchool.People.Union(updatedSchool.People);
 
             await _db.SaveChangesAsync();
         }
+        
         
         public async Task AddPrincipleToSchool(School? updatedSchool)
         {
@@ -115,6 +116,17 @@ namespace GradeCenter.Services.Schools
             var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
             currentSchool.People.Remove(currentPrinciple);
             currentSchool.People.Add(newPrinciple); 
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task AddTeacherToSchool(School? updatedSchool)
+        {
+            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+
+            var newTeachers = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Teacher && x.IsActive.HasValue && x.IsActive.Value).ToList();
+
+            newTeachers.ForEach(t => currentSchool.People.Add(t));
 
             await _db.SaveChangesAsync();
         }
