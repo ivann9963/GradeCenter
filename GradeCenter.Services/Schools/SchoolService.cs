@@ -98,6 +98,8 @@ namespace GradeCenter.Services.Schools
             currentSchool.Address = updatedSchool.Address;
 
             await AddPrincipleToSchool(updatedSchool);
+            await AddTeachersToSchool(updatedSchool);
+            await AddStudentsToSchool(updatedSchool);
 
             if (updatedSchool.People.Any())
                 currentSchool.People.Union(updatedSchool.People);
@@ -108,6 +110,9 @@ namespace GradeCenter.Services.Schools
         
         public async Task AddPrincipleToSchool(School? updatedSchool)
         {
+            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Principle))
+                return;
+
             var currentPrinciple = _db.Users.FirstOrDefault(x => x.School.Id == updatedSchool.Id && x.UserRole == UserRoles.Principle);
             currentPrinciple.IsActive = false;
 
@@ -120,13 +125,30 @@ namespace GradeCenter.Services.Schools
             await _db.SaveChangesAsync();
         }
 
-        public async Task AddTeacherToSchool(School? updatedSchool)
+        public async Task AddTeachersToSchool(School? updatedSchool)
         {
+            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Teacher))
+                return;
+
             var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
 
             var newTeachers = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Teacher && x.IsActive.HasValue && x.IsActive.Value).ToList();
 
             newTeachers.ForEach(t => currentSchool.People.Add(t));
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task AddStudentsToSchool(School? updatedSchool)
+        {
+            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Student))
+                return;
+
+            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+
+            var newStudents = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Student && x.IsActive.HasValue && x.IsActive.Value).ToList();
+
+            newStudents.ForEach(s => currentSchool.People.Add(s));
 
             await _db.SaveChangesAsync();
         }
