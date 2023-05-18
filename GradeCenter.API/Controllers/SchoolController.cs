@@ -43,10 +43,12 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SchoolCreateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
 
-            if (checkedRequest != null)
-                return checkedRequest;
+            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            //if (checkedRequest != null)
+            //    return checkedRequest;
 
             School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
 

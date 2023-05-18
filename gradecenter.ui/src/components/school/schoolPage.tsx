@@ -1,14 +1,12 @@
 import { Container } from "@mui/system";
-import { Card, CardContent, CardActions, Typography, Button, Grid, Box } from "@mui/material";
+import { Card, CardActions, Typography, Button, Grid, Box } from "@mui/material";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
-import GroupIcon from "@mui/icons-material/Group";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
-import CardHeader from "@mui/material/CardHeader";
 import Divider from "@material-ui/core/Divider";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -119,9 +117,9 @@ export default function Schools() {
 
     axios
       .post(`https://localhost:7273/api/School/Create`, newSchool, {
-        headers: { 
-            "Content-Type": "application/json", 
-            Authorization: `Bearer ${token}` 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
       })
       .then(() => {

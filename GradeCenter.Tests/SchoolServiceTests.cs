@@ -74,7 +74,7 @@ namespace GradeCenter.Tests
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
                 Address = "UpdatedAddress",
-                Name = "UpdatedName"
+                Name = "UpdatedName",
             };
 
             await _schoolService.Update(updatedSchool);
@@ -89,6 +89,34 @@ namespace GradeCenter.Tests
             // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
             _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Once);
         }
+/*
+        [Fact]
+        public async Task UpdateSchool_ShouldUpdateAddressAndName()
+        {
+            // Arrange
+            var mockSettings = CreateDbSetMock();
+            _dbMock.Setup(m => m.Schools).Returns(mockSettings.Object);
+
+            // Act
+            var updatedSchool = new School
+            {
+                Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
+                Address = "UpdatedAddress",
+                Name = "UpdatedName",
+            };
+
+            await _schoolService.Update(updatedSchool);
+
+            var school = _dbMock.Object.Schools.First();
+
+            // Assert
+            // that the School Address and Name fields are updated accordingly.
+            Assert.Equal(school.Name, updatedSchool.Name);
+            Assert.Equal(school.Address, updatedSchool.Address);
+
+            // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
+            _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Once);
+        }*/
 
         [Fact]
         public async Task DeleteSchool_ShouldUpdateIsActive()
