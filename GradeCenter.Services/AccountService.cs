@@ -130,9 +130,10 @@ namespace GradeCenter.Services
             return user;
         }
 
-        public void AddChild(AspNetUser parent, Guid childId)
+        public void AddChild(Guid parentId, Guid childId)
         {
             var child = _db?.Users?.FirstOrDefault(u => u.Id == childId);
+            var parent = _db?.Users?.FirstOrDefault(u => u.Id == parentId);
 
             UserRelation userRelation = new UserRelation();
             userRelation.Child = child;

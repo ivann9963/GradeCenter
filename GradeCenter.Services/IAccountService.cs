@@ -4,7 +4,7 @@ namespace GradeCenter.Services
 {
     public interface IAccountService
     {
-        void AddChild(AspNetUser parent, Guid childId);
+        void AddChild(Guid parentId, Guid childId);
         void Deactivate(AspNetUser loggedUser);
         AspNetUser GetUserById(string userId);
         Task<string> Login(string email, string password);

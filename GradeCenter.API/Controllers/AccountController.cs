@@ -54,14 +54,14 @@ namespace GradeCenter.API.Controllers
         }
 
         [HttpPut("AddChild")]
-        public async Task<IActionResult> AddChild(Guid childId)
+        public async Task<IActionResult> AddChild(Guid parentId, Guid childId)
         {
-            AspNetUser parent = await _requestValidator.GetLoggedUser();
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
 
-            if (parent == null)
-                return Unauthorized(new { message = "User must be authorized to perform this operation." });
+            if (checkedRequest != null)
+                return checkedRequest;
 
-            _accountService.AddChild(parent, childId);
+            _accountService.AddChild(parentId, childId);
 
             return Ok();
         }
