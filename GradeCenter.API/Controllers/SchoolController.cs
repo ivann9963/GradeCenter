@@ -93,5 +93,25 @@ namespace GradeCenter.API.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Creates an object of type SchoolClass in the database.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("CreateClass")]
+        public async Task<IActionResult> CreateClass(SchoolClassCreateRequest request)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            SchoolClass mappedSchoolClassModel = _modelsFactory.ExtractSchoolClass(request);
+
+            await _schoolService.CreateClass(mappedSchoolClassModel);
+
+            return Ok();
+        }
     }
 }

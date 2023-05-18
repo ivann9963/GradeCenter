@@ -7,9 +7,12 @@ namespace GradeCenter.Services.Schools
     public class SchoolService : ISchoolService
     {
         private readonly GradeCenterContext _db;
-        public SchoolService(GradeCenterContext gradeCenterContext)
+        private readonly IAccountService _accountService;
+
+        public SchoolService(GradeCenterContext gradeCenterContext, IAccountService accountService)
         {
             _db = gradeCenterContext;
+            this._accountService = accountService;
         }
 
         /// <summary>
@@ -55,6 +58,12 @@ namespace GradeCenter.Services.Schools
                 .ToList();
 
             return school;
+        }
+
+        public AspNetUser? GetTeacherById(string id)
+        {
+            var teacher = this._accountService.GetUserById(id);
+            return teacher;
         }
 
         /// <summary>
@@ -169,6 +178,29 @@ namespace GradeCenter.Services.Schools
             school.IsActive = false;
 
             await _db.SaveChangesAsync();
+        }
+        public async Task CreateClass(SchoolClass newSchoolClass)
+        {
+            var teacher = GetTeacherById(newSchoolClass.HeadTeacher.Id.ToString());
+
+            if (teacher == null)
+                return;
+
+            newSchoolClass.HeadTeacher = teacher;
+
+            await _db.SchoolClasses.AddAsync(newSchoolClass);
+            await _db.SaveChangesAsync();
+        }
+        public Task EnrollForClass(string id, AspNetUser student)
+        {
+            // TODO:...
+            throw new NotImplementedException();
+        }
+
+        public Task WithdrawFromClass(string id, AspNetUser student)
+        {
+            // TODO:...
+            throw new NotImplementedException();
         }
     }
 }
