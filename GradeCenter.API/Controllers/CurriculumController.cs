@@ -21,6 +21,12 @@ namespace GradeCenter.API.Controllers
             _requestValidator = new RequestValidator(_userManager, User);
         }
 
+        /// <summary>
+        /// Accepts a list of disciplines to create a new curriculum. 
+        /// Validates the request before proceeding.
+        /// </summary>
+        /// <param name="curriculum"></param>
+        /// <returns></returns>
         [HttpPost("Create")]
         public async Task<IActionResult> Create(List<Discipline> curriculum)
         {
@@ -34,6 +40,12 @@ namespace GradeCenter.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Accepts a list of disciplines to update an existing curriculum. 
+        /// The request is validated before the update.
+        /// </summary>
+        /// <param name="curricullum"></param>
+        /// <returns></returns>
         [HttpPost("Update")]
         public async Task<IActionResult> Update(List<Discipline> curricullum)
         {
@@ -47,7 +59,11 @@ namespace GradeCenter.API.Controllers
             return Ok();
         }
 
-
+        /// <summary>
+        /// Deletes the disciplines provided from the curriculum after validating the request.
+        /// </summary>
+        /// <param name="curricullum"></param>
+        /// <returns></returns>
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete(List<Discipline> curricullum)
         {
@@ -61,6 +77,10 @@ namespace GradeCenter.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Retrieves the disciplines associated with the currently logged-in user.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetLoggedUserClasses")]
         public async Task<List<Discipline>?> GetLoggedUserClasses()
         {
@@ -74,6 +94,12 @@ namespace GradeCenter.API.Controllers
             return loggedUserClasses;
         }
 
+        /// <summary>
+        /// Gets the disciplines for a given school class and day.
+        /// </summary>
+        /// <param name="schoolClassId"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
         [HttpGet("GetClassesForDay")]
         public async Task<List<Discipline>?> GetClassesForDay(Guid schoolClassId, DayOfWeek day)
         {

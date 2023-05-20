@@ -12,6 +12,10 @@ namespace GradeCenter.Services
             _db = db;
         }
 
+        /// <summary>
+        /// Creates a new curriculum by adding the provided disciplines to the database.
+        /// </summary>
+        /// <param name="disciplines"></param>
         public void Create(List<Discipline> disciplines)
         {
             var curriculum = GenerateCurriculum(disciplines);
@@ -20,6 +24,10 @@ namespace GradeCenter.Services
             _db.SaveChanges();
         }
 
+        /// <summary>
+        /// Updates existing disciplines in the database with the provided ones.
+        /// </summary>
+        /// <param name="disciplines"></param>
         public void Update(List<Discipline> disciplines)
         {
             var updatedCurriculum = GenerateCurriculum(disciplines);
@@ -28,6 +36,10 @@ namespace GradeCenter.Services
             _db.SaveChanges();
         }
 
+        /// <summary>
+        /// Marks provided disciplines as inactive in the database.
+        /// </summary>
+        /// <param name="disciplines"></param>
         public void Delete(List<Discipline> disciplines)
         {
             disciplines.ForEach(d => d.IsActive = false);
@@ -36,6 +48,12 @@ namespace GradeCenter.Services
             _db.SaveChanges();
         }
 
+        /// <summary>
+        /// Fetches classes for a specific day for a given schoolClass from the database.
+        /// </summary>
+        /// <param name="schoolClassId"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
         public List<Discipline> GetClassesForDay(Guid schoolClassId, DayOfWeek day)
         {
             var disciplines = _db.Disciplines.Where(x => x.SchoolClass.Id == schoolClassId && x.OccuranceDay == day && x.IsActive).ToList();
@@ -43,6 +61,11 @@ namespace GradeCenter.Services
             return disciplines;
         }
 
+        /// <summary>
+        /// Fetches active classes for a specific user.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<Discipline> GetLoggedUserClasses(Guid userId)
         {
             var discipline = _db.Disciplines.Where(x => x.SchoolClass.Students.Any(s => s.Id == userId) && x.IsActive).ToList();
@@ -51,10 +74,9 @@ namespace GradeCenter.Services
         }
 
         /// <summary>
-        /// The GenerateCurriculum method creates a school curriculum. 
-        /// It assigns each subject in the list a day and time, ensuring
-        /// no clashes with the teacher's other classes or the class's other subjects. 
-        /// It returns the list of subjects with their assigned slots, if available. 
+        /// Assigns each subject in the list a day and time, 
+        /// ensuring no clashes with the teacher's or the schoolClass's other classes. 
+        /// It returns the list of disciplines with their assigned timeslot, if available. 
         /// If the subject list is invalid, it returns an empty curriculum.
         /// </summary>
         /// <param name="disciplines"></param>
@@ -81,6 +103,13 @@ namespace GradeCenter.Services
             return currentCurriculum;
         }
 
+        /// <summary>
+        /// Finds a free slot for a class considering the teacher's schedule and the existing curriculum.
+        /// </summary>
+        /// <param name="teachersClasses"></param>
+        /// <param name="schoolClass"></param>
+        /// <param name="currentCurriculum"></param>
+        /// <returns></returns>
         private KeyValuePair<DayOfWeek, TimeSpan>? GenerateAvailableDayAndTime(List<KeyValuePair<DayOfWeek, TimeSpan>> teachersClasses, SchoolClass schoolClass, List<Discipline> currentCurriculum)
         {
             // Generate all possible time slots
@@ -95,6 +124,13 @@ namespace GradeCenter.Services
             return freeSlot;
         }
 
+        /// <summary>
+        /// Determines a free slot that doesn't clash with the current curriculum or the teacher's classes.
+        /// </summary>
+        /// <param name="teachersClasses"></param>
+        /// <param name="currentCurriculum"></param>
+        /// <param name="randomTimeSlots"></param>
+        /// <returns></returns>
         private static KeyValuePair<DayOfWeek, TimeSpan>? FindFreeTimeSlot(List<KeyValuePair<DayOfWeek, TimeSpan>> teachersClasses, List<Discipline> currentCurriculum, List<KeyValuePair<DayOfWeek, TimeSpan>> randomTimeSlots)
         {
             KeyValuePair<DayOfWeek, TimeSpan>? freeSlot = null;
@@ -118,6 +154,10 @@ namespace GradeCenter.Services
             return freeSlot;
         }
 
+        /// <summary>
+        /// Generates a list of all possible time slots within a week, excluding weekends.
+        /// </summary>
+        /// <returns></returns>
         private List<KeyValuePair<DayOfWeek, TimeSpan>> GenerateAllTimeSlots()
         {
             var allTimeSlots = new List<KeyValuePair<DayOfWeek, TimeSpan>>();
@@ -137,12 +177,22 @@ namespace GradeCenter.Services
             return allTimeSlots;
         }
 
+        /// <summary>
+        /// Checks if the provided list of disciplines belongs to the same academic year.
+        /// </summary>
+        /// <param name="disciplines"></param>
+        /// <returns></returns>
         private static bool IsValid(List<Discipline> disciplines)
         {
             var year = disciplines?.FirstOrDefault()?.SchoolClass.Year;
             return year != null && !disciplines.Any(d => d.SchoolClass.Year != year);
         }
 
+        /// <summary>
+        /// Fetches a teacher's active classes from the database.
+        /// </summary>
+        /// <param name="discipline"></param>
+        /// <returns></returns>
         private List<KeyValuePair<DayOfWeek, TimeSpan>> GetTeacherClasses(Discipline discipline)
         {
             return _db.Disciplines
