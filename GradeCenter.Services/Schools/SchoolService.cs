@@ -106,21 +106,24 @@ namespace GradeCenter.Services.Schools
 
             await _db.SaveChangesAsync();
         }
-        
-        
+
         public async Task AddPrincipleToSchool(School? updatedSchool)
         {
             if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Principle))
                 return;
 
-            var currentPrinciple = _db.Users.FirstOrDefault(x => x.School.Id == updatedSchool.Id && x.UserRole == UserRoles.Principle);
-            currentPrinciple.IsActive = false;
-
             var newPrinciple = updatedSchool.People.FirstOrDefault(x => x.UserRole == UserRoles.Principle);
-
             var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
-            currentSchool.People.Remove(currentPrinciple);
-            currentSchool.People.Add(newPrinciple); 
+
+            var currentPrincipleExist = _db.AspNetUsers.Any(u => u.School.Id == updatedSchool.Id && u.UserRole == UserRoles.Principle);
+
+            if (currentPrincipleExist)
+            {
+                var currentPrinciple = _db.AspNetUsers.FirstOrDefault(x => x.School.Id == updatedSchool.Id && x.UserRole == UserRoles.Principle);
+                currentPrinciple.IsActive = false;
+                currentSchool.People.Remove(currentPrinciple);
+            }
+            currentSchool.People.Add(newPrinciple);
 
             await _db.SaveChangesAsync();
         }
@@ -131,9 +134,7 @@ namespace GradeCenter.Services.Schools
                 return;
 
             var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
-
             var newTeachers = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Teacher && x.IsActive.HasValue && x.IsActive.Value).ToList();
-
             newTeachers.ForEach(t => currentSchool.People.Add(t));
 
             await _db.SaveChangesAsync();
