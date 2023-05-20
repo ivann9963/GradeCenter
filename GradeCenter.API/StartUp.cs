@@ -37,6 +37,7 @@ namespace GradeCenter.API
 
             services.AddTransient<IAccountService, AccountService>();
             services.AddScoped<ISchoolService, SchoolService>();
+            services.AddTransient<ICurriculumService, CurriculumService>();
 
             services.AddCors(options =>
             {
