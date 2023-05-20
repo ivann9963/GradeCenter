@@ -18,7 +18,7 @@ namespace GradeCenter.API.Controllers
         {
             _accountService = accountService;
             _userManager = userManager;
-            _requestValidator = new RequestValidator(_userManager, User);
+            _requestValidator = new RequestValidator(_userManager);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddChild")]
         public async Task<IActionResult> AddChild(Guid parentId, Guid childId)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -75,7 +75,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(string newPassword, string newPhoneNumber)
         {
-            AspNetUser loggedUser = await _requestValidator.GetLoggedUser();
+            AspNetUser loggedUser = await _requestValidator.GetLoggedUser(User);
 
             if (loggedUser == null)
                 return Unauthorized(new { message = "User must be authorized to perform this operation." });
@@ -92,7 +92,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetLoggedUser")]
         public async Task<AspNetUser> GetLoggedUser()
         {
-            AspNetUser loggedUser = await _requestValidator.GetLoggedUser();
+            AspNetUser loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
 
             return loggedUser;
         }

@@ -22,7 +22,7 @@ namespace GradeCenter.API.Controllers
         {
             _userManager = userManager;
             _schoolService = schoolService;
-            _requestValidator = new RequestValidator(_userManager, User);
+            _requestValidator = new RequestValidator(_userManager);
             _modelsFactory = new ModelsFactory();
         }
         /// <summary>
@@ -43,7 +43,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SchoolCreateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -64,7 +64,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(SchoolUpdateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -84,7 +84,7 @@ namespace GradeCenter.API.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string name)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -102,7 +102,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("CreateClass")]
         public async Task<IActionResult> CreateClass(SchoolClassCreateRequest request)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -123,7 +123,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("EnrollForClass")]
         public async Task<IActionResult> EnrollForClass(EnrollWithdrawRequestModel requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -142,7 +142,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("WithdrawFromClass")]
         public async Task<IActionResult> WithdrawFromClass(EnrollWithdrawRequestModel requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;

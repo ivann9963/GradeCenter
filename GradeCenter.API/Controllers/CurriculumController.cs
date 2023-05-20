@@ -18,7 +18,7 @@ namespace GradeCenter.API.Controllers
         {
             this._curriculumService = curriculumService;
             _userManager = userManager;
-            _requestValidator = new RequestValidator(_userManager, User);
+            _requestValidator = new RequestValidator(_userManager);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(List<Discipline> curriculum)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -49,7 +49,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Update")]
         public async Task<IActionResult> Update(List<Discipline> curricullum)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -67,7 +67,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete(List<Discipline> curricullum)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -84,7 +84,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetLoggedUserClasses")]
         public async Task<List<Discipline>?> GetLoggedUserClasses()
         {
-            var loggedUser = await _requestValidator.GetLoggedUser();
+            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (loggedUser == null)
                 return null;
@@ -103,9 +103,9 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetClassesForDay")]
         public async Task<List<Discipline>?> GetClassesForDay(Guid schoolClassId, DayOfWeek day)
         {
-            var loggedUser = await _requestValidator.GetLoggedUser();
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
-            if (loggedUser == null)
+            if (checkedRequest != null)
                 return null;
 
             var loggedUserClasses = _curriculumService.GetClassesForDay(schoolClassId, day);
