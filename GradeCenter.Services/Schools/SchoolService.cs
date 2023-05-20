@@ -199,7 +199,7 @@ namespace GradeCenter.Services.Schools
             if (schoolClass == null)
                 return;
 
-            if (!IsStudentInClass(schoolClass, student))
+            if (IsStudentInClass(schoolClass, student))
                 return;
 
             schoolClass.Students.Remove(student);
