@@ -1,4 +1,6 @@
-﻿using GradeCenter.Data.Models;
+﻿using GradeCenter.API.Common;
+using GradeCenter.API.Models.Request.CurricullumRequests;
+using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services;
 using Microsoft.AspNetCore.Identity;
@@ -116,6 +118,25 @@ namespace GradeCenter.API.Controllers
                 return null;
 
             var loggedUserClasses = _curriculumService.GetClassesForDay(schoolClassId, day);
+
+            return loggedUserClasses;
+        }
+
+        /// <summary>
+        /// Gets all disciplines for a given school class.
+        /// </summary>
+        /// <param name="schoolClassId"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        [HttpGet("GetCurricullumForSchoolClass")]
+        public async Task<List<Discipline>?> GetCurricullumForSchoolClass(Guid schoolClassId)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return null;
+
+            var loggedUserClasses = _curriculumService.GetCurricullumForSchoolClass(schoolClassId);
 
             return loggedUserClasses;
         }

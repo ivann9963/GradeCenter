@@ -43,7 +43,7 @@ namespace GradeCenter.Services
         public void Delete(List<Discipline> disciplines)
         {
             disciplines.ForEach(d => d.IsActive = false);
-            
+
             _db.Disciplines.UpdateRange(disciplines);
             _db.SaveChanges();
         }
@@ -123,7 +123,7 @@ namespace GradeCenter.Services
 
             // Shuffle the list
             var randomTimeSlots = allTimeSlots.OrderBy(x => Guid.NewGuid()).ToList();
-            
+
             // Find a free time slot
             var freeSlot = FindFreeTimeSlot(teachersClasses, currentCurriculum, randomTimeSlots);
 
@@ -207,6 +207,15 @@ namespace GradeCenter.Services
                 .ThenBy(t => t.OccuranceTime)
                 .Select(x => new KeyValuePair<DayOfWeek, TimeSpan>(x.OccuranceDay, x.OccuranceTime))
                 .ToList();
+        }
+
+        public List<Discipline> GetCurricullumForSchoolClass(Guid schoolClassId)
+        {
+            var schoolClassCurricullum = _db.Disciplines
+                .Where(d => d.SchoolClassId == schoolClassId)
+                .ToList();
+
+            return schoolClassCurricullum;
         }
     }
 }
