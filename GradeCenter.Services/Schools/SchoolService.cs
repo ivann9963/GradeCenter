@@ -7,9 +7,12 @@ namespace GradeCenter.Services.Schools
     public class SchoolService : ISchoolService
     {
         private readonly GradeCenterContext _db;
-        public SchoolService(GradeCenterContext gradeCenterContext)
+        private readonly IAccountService _accountService;
+
+        public SchoolService(GradeCenterContext gradeCenterContext, IAccountService accountService)
         {
             _db = gradeCenterContext;
+            this._accountService = accountService;
         }
 
         /// <summary>
@@ -43,7 +46,13 @@ namespace GradeCenter.Services.Schools
 
             return school;
         }
+        public SchoolClass? GetSchoolClassById(string id)
+        {
+            var schoolClass = _db?.SchoolClasses
+                 .FirstOrDefault(schoolClass => schoolClass.Id == Guid.Parse(id));
 
+            return schoolClass;
+        }
         /// <summary>
         /// Gets all existing school entries in the database.
         /// </summary>
@@ -122,6 +131,94 @@ namespace GradeCenter.Services.Schools
             school.IsActive = false;
 
             await _db.SaveChangesAsync();
+        }
+
+
+        /// <summary>
+        /// Creates a new SchoolClass entity instance
+        /// in the database.
+        /// </summary>
+        /// <param name="newSchoolClass"></param>
+        /// <returns></returns>
+        public async Task CreateClass(SchoolClass newSchoolClass)
+        {
+            var teacher = _accountService.GetUserById(newSchoolClass.HeadTeacher.Id.ToString());
+            var school = GetSchoolById(newSchoolClass.School.Id);
+
+            if (teacher == null)
+                return;
+
+            if (school == null)
+                return;
+
+            newSchoolClass.HeadTeacher = teacher;
+            newSchoolClass.School = school;
+
+            await _db.SchoolClasses.AddAsync(newSchoolClass);
+            await _db.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Enrolls a new Student entity in the School Classes collection.
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="studentId"></param>
+        /// <returns></returns>
+        public async Task EnrollForClass(string classId, string studentId)
+        {
+            var student = _accountService.GetUserById(studentId);
+            var schoolClass = GetSchoolClassById(classId);
+
+            if (student == null)
+                return;
+
+            if (schoolClass == null)
+                return;
+
+            if (IsStudentInClass(schoolClass,student))
+                return;
+
+            schoolClass.Students.Add(student);
+
+            await this._db.SaveChangesAsync();
+        }
+        /// <summary>
+        /// Withdraws an existing Student entity in the School Classes collection.
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="studentId"></param>
+        /// <returns></returns>
+        public async Task WithdrawFromClass(string classId, string studentId)
+        {
+            var student = _accountService.GetUserById(studentId);
+            var schoolClass = GetSchoolClassById(classId);
+
+            if (student == null)
+                return;
+
+            if (schoolClass == null)
+                return;
+
+            if (IsStudentInClass(schoolClass, student))
+                return;
+
+            schoolClass.Students.Remove(student);
+
+            await this._db.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Asserts whether there is already an existing Student 
+        /// within a School Class.
+        /// </summary>
+        /// <param name="schoolClass"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        private bool IsStudentInClass(SchoolClass schoolClass, AspNetUser user)
+        {
+            var inClass = schoolClass.Students.Any(student => student.Id == user.Id);
+
+            return inClass;
         }
     }
 }

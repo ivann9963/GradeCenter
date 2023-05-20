@@ -93,5 +93,63 @@ namespace GradeCenter.API.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Creates an object of type SchoolClass in the database.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("CreateClass")]
+        public async Task<IActionResult> CreateClass(SchoolClassCreateRequest request)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            SchoolClass mappedSchoolClassModel = _modelsFactory.ExtractSchoolClass(request);
+
+            await _schoolService.CreateClass(mappedSchoolClassModel);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Updates an object of type SchoolClass in order to enroll
+        /// a new student.
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
+        [HttpPut("EnrollForClass")]
+        public async Task<IActionResult> EnrollForClass(EnrollWithdrawRequestModel requestModel)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _schoolService.EnrollForClass(requestModel.SchoolClassId, requestModel.StudentId);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Updates an object of type SchoolClass in order to withdraw
+        /// an existing student.
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
+        [HttpPut("WithdrawFromClass")]
+        public async Task<IActionResult> WithdrawFromClass(EnrollWithdrawRequestModel requestModel)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _schoolService.WithdrawFromClass(requestModel.SchoolClassId, requestModel.StudentId);
+
+            return Ok();
+        }
     }
 }

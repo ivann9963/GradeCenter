@@ -122,7 +122,7 @@ namespace GradeCenter.Services
         /// <returns></returns>
         public AspNetUser? GetUserById(string userId)
         {
-            var user = _db?.Users?
+            var user = _db?.AspNetUsers?
                 .Include(c => c.ChildrenRelations)
                 .Include(p => p.ParentRelations)
                 .FirstOrDefault(u => u.Id == Guid.Parse(userId));
@@ -130,9 +130,10 @@ namespace GradeCenter.Services
             return user;
         }
 
-        public void AddChild(AspNetUser parent, Guid childId)
+        public void AddChild(Guid parentId, Guid childId)
         {
             var child = _db?.Users?.FirstOrDefault(u => u.Id == childId);
+            var parent = _db?.Users?.FirstOrDefault(u => u.Id == parentId);
 
             UserRelation userRelation = new UserRelation();
             userRelation.Child = child;

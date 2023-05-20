@@ -26,5 +26,24 @@ namespace GradeCenter.API.Common
                 People = users
             };
         }
+        public SchoolClass ExtractSchoolClass(SchoolClassCreateRequest requestModel)
+        {
+            var model = requestModel;
+
+            return new SchoolClass
+            {
+                Id = Guid.Empty,
+                Department = model.Department,
+                HeadTeacher = new AspNetUser
+                {
+                    Id = requestModel.Teacher.UserId,
+                },
+                School = new School
+                {
+                    Id = requestModel.SchoolId
+                },
+                Year = model.Year
+            };
+        }
     }
 }
