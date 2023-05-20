@@ -13,12 +13,14 @@ namespace GradeCenter.API.Controllers
         private readonly UserManager<AspNetUser> _userManager;
         private readonly ICurriculumService _curriculumService;
         private readonly RequestValidator _requestValidator;
+        private readonly ModelsFactory _modelsFactory;
 
         public CurriculumController(ICurriculumService curriculumService, UserManager<AspNetUser> userManager)
         {
             this._curriculumService = curriculumService;
             _userManager = userManager;
             _requestValidator = new RequestValidator(_userManager);
+            _modelsFactory = new ModelsFactory();
         }
 
         /// <summary>
@@ -28,14 +30,16 @@ namespace GradeCenter.API.Controllers
         /// <param name="curriculum"></param>
         /// <returns></returns>
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(List<Discipline> curriculum)
+        public async Task<IActionResult> Create(List<DisciplineDto> disciplines)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
 
-            _curriculumService.Create(curriculum);
+            var curricullum = _modelsFactory.ExtractCurricullum(disciplines);
+
+            _curriculumService.Create(curricullum);
 
             return Ok();
         }
@@ -47,13 +51,14 @@ namespace GradeCenter.API.Controllers
         /// <param name="curricullum"></param>
         /// <returns></returns>
         [HttpPost("Update")]
-        public async Task<IActionResult> Update(List<Discipline> curricullum)
+        public async Task<IActionResult> Update(List<DisciplineDto> disciplines)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
 
+            var curricullum = _modelsFactory.ExtractCurricullum(disciplines);
             _curriculumService.Update(curricullum);
 
             return Ok();
@@ -65,12 +70,14 @@ namespace GradeCenter.API.Controllers
         /// <param name="curricullum"></param>
         /// <returns></returns>
         [HttpPost("Delete")]
-        public async Task<IActionResult> Delete(List<Discipline> curricullum)
+        public async Task<IActionResult> Delete(List<DisciplineDto> disciplines)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
+
+            var curricullum = _modelsFactory.ExtractCurricullum(disciplines);
 
             _curriculumService.Delete(curricullum);
 
