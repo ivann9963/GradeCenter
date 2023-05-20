@@ -59,6 +59,13 @@ namespace GradeCenter.Data
                 .HasMany(s => s.Curriculum)
                 .WithOne(c => c.SchoolClass)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure a one-to-one relationship
+            // between Schools and School Classes.
+            modelBuilder.Entity<School>()
+                .HasMany(s => s.SchoolClasses)
+                .WithOne(s => s.School)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)

@@ -9,7 +9,6 @@ namespace GradeCenter.Services.Schools
         School? GetSchoolByName(string name);
         School? GetSchoolById(string id);
         AspNetUser? GetTeacherById(string id);
-
         IEnumerable<School> GetAllSchools();
         Task Create(School newSchool);
         Task Update(School? updatedSchool);

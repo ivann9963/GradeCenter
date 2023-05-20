@@ -98,66 +98,19 @@ namespace GradeCenter.Services.Schools
         /// <returns></returns>
         public async Task Update(School? updatedSchool)
         {
-            var currentSchool = GetSchoolById(updatedSchool.Id);
+            var school = GetSchoolById(updatedSchool.Id);
 
-            if (currentSchool == null)
+            if (school == null)
                 return;
 
-            currentSchool.Name = updatedSchool.Name;
-            currentSchool.Address = updatedSchool.Address;
+            school.Name = updatedSchool.Name;
+            school.Address = updatedSchool.Address;
 
-            await AddPrincipleToSchool(updatedSchool);
-            await AddTeachersToSchool(updatedSchool);
-            await AddStudentsToSchool(updatedSchool);
+            if (updatedSchool.People.Any(user => user.UserRole.Equals(UserRoles.Principle)))
+                return;
 
             if (updatedSchool.People.Any())
-                currentSchool.People.Union(updatedSchool.People);
-
-            await _db.SaveChangesAsync();
-        }
-        
-        
-        public async Task AddPrincipleToSchool(School? updatedSchool)
-        {
-            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Principle))
-                return;
-
-            var currentPrinciple = _db.Users.FirstOrDefault(x => x.School.Id == updatedSchool.Id && x.UserRole == UserRoles.Principle);
-            currentPrinciple.IsActive = false;
-
-            var newPrinciple = updatedSchool.People.FirstOrDefault(x => x.UserRole == UserRoles.Principle);
-
-            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
-            currentSchool.People.Remove(currentPrinciple);
-            currentSchool.People.Add(newPrinciple); 
-
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task AddTeachersToSchool(School? updatedSchool)
-        {
-            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Teacher))
-                return;
-
-            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
-
-            var newTeachers = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Teacher && x.IsActive.HasValue && x.IsActive.Value).ToList();
-
-            newTeachers.ForEach(t => currentSchool.People.Add(t));
-
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task AddStudentsToSchool(School? updatedSchool)
-        {
-            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Student))
-                return;
-
-            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
-
-            var newStudents = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Student && x.IsActive.HasValue && x.IsActive.Value).ToList();
-
-            newStudents.ForEach(s => currentSchool.People.Add(s));
+                school.People.Union(updatedSchool.People);
 
             await _db.SaveChangesAsync();
         }
@@ -179,14 +132,27 @@ namespace GradeCenter.Services.Schools
 
             await _db.SaveChangesAsync();
         }
+
+
+        /// <summary>
+        /// Creates a new SchoolClass entity instance
+        /// in the database.
+        /// </summary>
+        /// <param name="newSchoolClass"></param>
+        /// <returns></returns>
         public async Task CreateClass(SchoolClass newSchoolClass)
         {
             var teacher = GetTeacherById(newSchoolClass.HeadTeacher.Id.ToString());
+            var school = GetSchoolById(newSchoolClass.School.Id);
 
             if (teacher == null)
                 return;
 
+            if (school == null)
+                return;
+            
             newSchoolClass.HeadTeacher = teacher;
+            newSchoolClass.School = school;
 
             await _db.SchoolClasses.AddAsync(newSchoolClass);
             await _db.SaveChangesAsync();

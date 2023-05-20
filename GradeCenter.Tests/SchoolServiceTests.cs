@@ -4,6 +4,10 @@ using Xunit;
 using GradeCenter.Data.Models;
 using GradeCenter.Services.Schools;
 using Microsoft.EntityFrameworkCore;
+using GradeCenter.Services;
+using GradeCenter.Data.Models.Account;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace GradeCenter.Tests
 {
@@ -11,11 +15,19 @@ namespace GradeCenter.Tests
     {
         // Set up the necessary Mock objects and instantiate the SchoolService object
         private readonly Mock<GradeCenterContext> _dbMock;
+        private readonly Mock<UserManager<AspNetUser>> _userManagerMock;
+        private readonly Mock<SignInManager<AspNetUser>> _signInManagerMock;
         private readonly ISchoolService _schoolService;
+        private readonly IAccountService _accountService;
         public SchoolServiceTests()
         {
+            var userStoreMock = new Mock<IUserStore<AspNetUser>>();
+            _userManagerMock = new Mock<UserManager<AspNetUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            _signInManagerMock = new Mock<SignInManager<AspNetUser>>(_userManagerMock.Object, new Mock<IHttpContextAccessor>().Object, new Mock<IUserClaimsPrincipalFactory<AspNetUser>>().Object, null, null, null);
             _dbMock = new Mock<GradeCenterContext>();
-            _schoolService = new SchoolService(_dbMock.Object);
+           
+            _accountService = new AccountService(_userManagerMock.Object, _dbMock.Object, _signInManagerMock.Object);
+            _schoolService = new SchoolService(_dbMock.Object, _accountService);
         }
 
         [Fact]

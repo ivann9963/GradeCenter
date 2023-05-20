@@ -38,6 +38,10 @@ namespace GradeCenter.API.Common
                 {
                     Id = requestModel.Teacher.UserId,
                 },
+                School = new School
+                {
+                    Id = requestModel.SchoolId
+                },
                 Year = model.Year
             };
         }
