@@ -113,5 +113,43 @@ namespace GradeCenter.API.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Updates an object of type SchoolClass in order to enroll
+        /// a new student.
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
+        [HttpPut("EnrollForClass")]
+        public async Task<IActionResult> EnrollForClass(EnrollWithdrawRequestModel requestModel)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _schoolService.EnrollForClass(requestModel.SchoolClassId, requestModel.StudentId);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Updates an object of type SchoolClass in order to withdraw
+        /// an existing student.
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
+        [HttpPut("WithdrawFromClass")]
+        public async Task<IActionResult> WithdrawFromClass(EnrollWithdrawRequestModel requestModel)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _schoolService.WithdrawFromClass(requestModel.SchoolClassId, requestModel.StudentId);
+
+            return Ok();
+        }
     }
 }

@@ -14,8 +14,8 @@ namespace GradeCenter.Data.Models
         public AspNetUser HeadTeacher { get; set; }
         public School School { get; set; }
 
-        public List<AspNetUser> Students { get; set; }
+        public List<AspNetUser> Students { get; set; } = new List<AspNetUser>();
 
-        public List<Discipline> Curriculum { get; set; }
+        public List<Discipline> Curriculum { get; set; } = new List<Discipline>();
     }
 }

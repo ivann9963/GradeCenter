@@ -8,13 +8,13 @@ namespace GradeCenter.Services.Schools
 
         School? GetSchoolByName(string name);
         School? GetSchoolById(string id);
-        AspNetUser? GetTeacherById(string id);
+        SchoolClass? GetSchoolClassById(string id);
         IEnumerable<School> GetAllSchools();
         Task Create(School newSchool);
         Task Update(School? updatedSchool);
         Task Delete(string name);
         Task CreateClass(SchoolClass newSchoolClass);
-        Task EnrollForClass(string id, AspNetUser student);
-        Task WithdrawFromClass(string id, AspNetUser student);
+        Task EnrollForClass(string classId, string studentId);
+        Task WithdrawFromClass(string classId, string studentId);
     }
 }
