@@ -78,6 +78,57 @@ namespace GradeCenter.API.Controllers
             return Ok();
         }
 
+        [HttpPut("AddPrincipal")]
+        public async Task<IActionResult> AddPrincipal(SchoolUpdateRequest requestModel)
+        { 
+            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            //if (checkedRequest != null)
+            //return checkedRequest;
+
+            School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
+
+            await _schoolService.AddPrincipleToSchool(mappedSchoolModel);
+
+            return Ok();
+        }
+
+        [HttpPut("AddTeachers")]
+        public async Task<IActionResult> AddTeachers(SchoolUpdateRequest requestModel)
+        {
+            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            //if (checkedRequest != null)
+            //return checkedRequest;
+
+            School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
+
+            await _schoolService.AddTeachersToSchool(mappedSchoolModel);
+
+            return Ok();
+        }
+
+        [HttpPut("AddStudents")]
+        public async Task<IActionResult> AddStudents(SchoolUpdateRequest requestModel)
+        {
+            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+
+            //if (checkedRequest != null)
+            //return checkedRequest;
+
+            School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
+
+            await _schoolService.AddStudentsToSchool(mappedSchoolModel);
+
+            return Ok();
+        }
+
         /// <summary>
         /// Soft deletes an object of type School in the database.
         /// </summary>

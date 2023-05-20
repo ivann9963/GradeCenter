@@ -10,6 +10,9 @@ namespace GradeCenter.Services.Schools
         IEnumerable<School> GetAllSchools();
         Task Create(School newSchool);
         Task Update(School? updatedSchool);
+        Task AddPrincipleToSchool(School? updatedSchool);
+        Task AddTeachersToSchool(School? updatedSchool);
+        Task AddStudentsToSchool(School? updatedSchool);
         Task Delete(string name);
     }
 }
