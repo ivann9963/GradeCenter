@@ -8,6 +8,9 @@ using GradeCenter.Data.Models.Account;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GradeCenter.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace GradeCenter.Tests
 {
@@ -15,10 +18,14 @@ namespace GradeCenter.Tests
     {
         // Set up the necessary Mock objects and instantiate the SchoolService object
         private readonly Mock<GradeCenterContext> _dbMock;
+        private readonly Mock<UserManager<AspNetUser>> _userManagerMock;
+        private readonly Mock<SignInManager<AspNetUser>> _signInManagerMock;
         private readonly ISchoolService _schoolService;
+        private readonly IAccountService _accountService;
         public SchoolServiceTests()
         {
             _dbMock = new Mock<GradeCenterContext>();
+
 
             var users = new List<AspNetUser> {
                 new AspNetUser
@@ -73,8 +80,12 @@ namespace GradeCenter.Tests
             dbSetMock.As<IQueryable<School>>().Setup(m => m.GetEnumerator()).Returns(schools.GetEnumerator());
 
             _dbMock.Setup(x => x.Schools).Returns(dbSetMock.Object);
-
-            _schoolService = new SchoolService(_dbMock.Object);
+            var userStoreMock = new Mock<IUserStore<AspNetUser>>();
+            _userManagerMock = new Mock<UserManager<AspNetUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            _signInManagerMock = new Mock<SignInManager<AspNetUser>>(_userManagerMock.Object, new Mock<IHttpContextAccessor>().Object, new Mock<IUserClaimsPrincipalFactory<AspNetUser>>().Object, null, null, null);
+            _accountService = new AccountService(_userManagerMock.Object, _dbMock.Object, _signInManagerMock.Object);
+            
+            _schoolService = new SchoolService(_dbMock.Object, _accountService);
         }
 
         [Fact]
