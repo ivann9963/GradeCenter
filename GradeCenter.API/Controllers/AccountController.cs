@@ -57,6 +57,7 @@ namespace GradeCenter.API.Controllers
         public async Task<IActionResult> AddChild(Guid parentId, Guid childId)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
+            AspNetUser parent = await _requestValidator.GetLoggedUser();
 
             if (checkedRequest != null)
                 return checkedRequest;

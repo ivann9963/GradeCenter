@@ -26,6 +26,7 @@ namespace GradeCenter.API.Common
                 People = users
             };
         }
+
         public SchoolClass ExtractSchoolClass(SchoolClassCreateRequest requestModel)
         {
             var model = requestModel;

@@ -207,7 +207,6 @@ namespace GradeCenter.Data.Migrations
                     b.HasIndex("HeadTeacherId");
 
                     b.HasIndex("SchoolId");
-
                     b.ToTable("SchoolClasses");
                 });
 
@@ -433,6 +432,7 @@ namespace GradeCenter.Data.Migrations
                     b.Navigation("HeadTeacher");
 
                     b.Navigation("School");
+                    b.Navigation("HeadTeacher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -498,6 +498,13 @@ namespace GradeCenter.Data.Migrations
                     b.Navigation("People");
 
                     b.Navigation("SchoolClasses");
+                });
+
+            modelBuilder.Entity("GradeCenter.Data.Models.SchoolClass", b =>
+                {
+                    b.Navigation("Curriculum");
+
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("GradeCenter.Data.Models.SchoolClass", b =>

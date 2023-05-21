@@ -150,6 +150,5 @@ namespace GradeCenter.API.Controllers
             await _schoolService.WithdrawFromClass(requestModel.SchoolClassId, requestModel.StudentId);
 
             return Ok();
-        }
     }
 }

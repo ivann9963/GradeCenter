@@ -1,6 +1,7 @@
 ﻿using GradeCenter.Data.Models.Account;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace GradeCenter.Data.Models
 {
     public class SchoolClass
@@ -17,5 +18,9 @@ namespace GradeCenter.Data.Models
         public List<AspNetUser> Students { get; set; } = new List<AspNetUser>();
 
         public List<Discipline> Curriculum { get; set; } = new List<Discipline>();
+
+        public List<AspNetUser> Students { get; set; }
+
+        public List<Discipline> Curriculum { get; set; }
     }
 }
