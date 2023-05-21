@@ -10,5 +10,9 @@ namespace GradeCenter.API.Models.Request.CurricullumRequests
         public Guid SchoolClassId { get; set; }
 
         public Guid TeacherId { get; set; }
+
+        public DayOfWeek? NewDay { get; set; }
+
+        public TimeSpan? NewTime { get; set; }
     }
 }

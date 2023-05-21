@@ -28,12 +28,32 @@ namespace GradeCenter.Services
         /// <summary>
         /// Updates existing disciplines in the database with the provided ones.
         /// </summary>
-        /// <param name="disciplines"></param>
-        public void Update(List<Discipline> disciplines)
+        /// <param name="updatedDisciplines"></param>
+        public void Update(List<Discipline> updatedDisciplines)
         {
-            var updatedCurriculum = GenerateCurriculum(disciplines);
+            var currentDisciplines = new List<Discipline>();
 
-            _db.Disciplines.UpdateRange(updatedCurriculum);
+            foreach (var discipline in updatedDisciplines)
+            {
+                var currentDiscipline = _db.Disciplines.FirstOrDefault(d => d.Name == discipline.Name
+                    && d.TeacherId == discipline.TeacherId && d.SchoolClassId == discipline.SchoolClassId);
+
+                currentDiscipline.OccuranceDay = discipline.OccuranceDay;
+                currentDiscipline.OccuranceTime = discipline.OccuranceTime;
+
+                currentDisciplines.Add(currentDiscipline);
+
+                _db.SaveChanges();
+            }
+
+            var schoolClassId = updatedDisciplines.FirstOrDefault().SchoolClassId;
+
+            var currentSchoolClassCurricullum = GetCurricullumForSchoolClass(schoolClassId)
+                .Where(x => !currentDisciplines.Any(d => d.Id == x.Id))
+                .ToList();
+
+            var updatedCurriculum = GenerateCurriculum(currentSchoolClassCurricullum);
+
             _db.SaveChanges();
         }
 

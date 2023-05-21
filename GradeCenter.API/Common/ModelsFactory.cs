@@ -57,6 +57,12 @@ namespace GradeCenter.API.Common
                 IsActive = true
             };
 
+            if (dto.NewDay.HasValue)
+                discipline.OccuranceDay = dto.NewDay.Value;
+
+            if (dto.NewTime.HasValue)
+                discipline.OccuranceTime = dto.NewTime.Value;
+
             return discipline;
         }
 
