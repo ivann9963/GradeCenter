@@ -1,5 +1,6 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GradeCenter.Services
 {
@@ -40,12 +41,17 @@ namespace GradeCenter.Services
         /// Marks provided disciplines as inactive in the database.
         /// </summary>
         /// <param name="disciplines"></param>
-        public void Delete(List<Discipline> disciplines)
+        public async void Delete(List<Discipline> disciplines)
         {
-            disciplines.ForEach(d => d.IsActive = false);
+            foreach (var discipline in disciplines)
+            {
+                var currentDiscipline = _db.Disciplines.FirstOrDefault(d => d.Name == discipline.Name
+                    && d.TeacherId == discipline.TeacherId && d.SchoolClassId == discipline.SchoolClassId);
 
-            _db.Disciplines.UpdateRange(disciplines);
-            _db.SaveChanges();
+                currentDiscipline.IsActive = false;
+
+                _db.SaveChanges();
+            }
         }
 
         /// <summary>
