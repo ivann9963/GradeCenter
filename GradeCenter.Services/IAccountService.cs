@@ -10,5 +10,6 @@ namespace GradeCenter.Services
         Task<string> Login(string email, string password);
         Task Register(string userName, string email, string password);
         void UpdateUser(AspNetUser loggedUser, string newPassword, string newPhoneNumber);
+        IEnumerable<AspNetUser> GetAllUsers();
     }
 }

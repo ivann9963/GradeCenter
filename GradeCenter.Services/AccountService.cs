@@ -145,5 +145,10 @@ namespace GradeCenter.Services
 
             _db.SaveChanges();
         }
+
+        public IEnumerable<AspNetUser> GetAllUsers()
+        {
+            return _db.AspNetUsers.Where(u => u.IsActive == true).ToList();
+        }
     }
 }
