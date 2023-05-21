@@ -109,5 +109,16 @@ namespace GradeCenter.API.Controllers
 
             return user;
         }
+
+
+        /// <summary>
+        /// Get All users
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            return Ok(_accountService.GetAllUsers());
+        }
     }
 }
