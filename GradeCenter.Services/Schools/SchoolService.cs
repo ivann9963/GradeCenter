@@ -7,9 +7,12 @@ namespace GradeCenter.Services.Schools
     public class SchoolService : ISchoolService
     {
         private readonly GradeCenterContext _db;
-        public SchoolService(GradeCenterContext gradeCenterContext)
+        private readonly IAccountService _accountService;
+
+        public SchoolService(GradeCenterContext gradeCenterContext, IAccountService accountService)
         {
             _db = gradeCenterContext;
+            this._accountService = accountService;
         }
 
         /// <summary>
@@ -43,7 +46,13 @@ namespace GradeCenter.Services.Schools
 
             return school;
         }
+        public SchoolClass? GetSchoolClassById(string id)
+        {
+            var schoolClass = _db?.SchoolClasses
+                 .FirstOrDefault(schoolClass => schoolClass.Id == Guid.Parse(id));
 
+            return schoolClass;
+        }
         /// <summary>
         /// Gets all existing school entries in the database.
         /// </summary>
@@ -89,19 +98,67 @@ namespace GradeCenter.Services.Schools
         /// <returns></returns>
         public async Task Update(School? updatedSchool)
         {
-            var school = GetSchoolById(updatedSchool.Id);
+            var currentSchool = GetSchoolById(updatedSchool.Id);
 
-            if (school == null)
+            if (currentSchool == null)
                 return;
 
-            school.Name = updatedSchool.Name;
-            school.Address = updatedSchool.Address;
+            currentSchool.Name = updatedSchool.Name;
+            currentSchool.Address = updatedSchool.Address;
 
-            if (updatedSchool.People.Any(user => user.UserRole.Equals(UserRoles.Principle)))
-                return;
+            await AddPrincipleToSchool(updatedSchool);
+            await AddTeachersToSchool(updatedSchool);
+            await AddStudentsToSchool(updatedSchool);
 
             if (updatedSchool.People.Any())
-                school.People.Union(updatedSchool.People);
+                currentSchool.People.Union(updatedSchool.People);
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task AddPrincipleToSchool(School? updatedSchool)
+        {
+            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Principle))
+                return;
+
+            var newPrinciple = updatedSchool.People.FirstOrDefault(x => x.UserRole == UserRoles.Principle);
+            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+
+            var currentPrincipleExist = _db.AspNetUsers.Any(u => u.School.Id == updatedSchool.Id && u.UserRole == UserRoles.Principle);
+
+            if (currentPrincipleExist)
+            {
+                var currentPrinciple = _db.AspNetUsers.FirstOrDefault(x => x.School.Id == updatedSchool.Id && x.UserRole == UserRoles.Principle);
+                currentPrinciple.IsActive = false;
+                currentSchool.People.Remove(currentPrinciple);
+            }
+            currentSchool.People.Add(newPrinciple);
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task AddTeachersToSchool(School? updatedSchool)
+        {
+            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Teacher))
+                return;
+
+            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+            var newTeachers = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Teacher && x.IsActive.HasValue && x.IsActive.Value).ToList();
+            newTeachers.ForEach(t => currentSchool.People.Add(t));
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task AddStudentsToSchool(School? updatedSchool)
+        {
+            if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Student))
+                return;
+
+            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+
+            var newStudents = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Student && x.IsActive.HasValue && x.IsActive.Value).ToList();
+
+            newStudents.ForEach(s => currentSchool.People.Add(s));
 
             await _db.SaveChangesAsync();
         }
@@ -122,6 +179,93 @@ namespace GradeCenter.Services.Schools
             school.IsActive = false;
 
             await _db.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Creates a new SchoolClass entity instance
+        /// in the database.
+        /// </summary>
+        /// <param name="newSchoolClass"></param>
+        /// <returns></returns>
+        public async Task CreateClass(SchoolClass newSchoolClass)
+        {
+            var teacher = _accountService.GetUserById(newSchoolClass.HeadTeacher.Id.ToString());
+            var school = GetSchoolById(newSchoolClass.School.Id);
+
+            if (teacher == null)
+                return;
+
+            if (school == null)
+                return;
+
+            newSchoolClass.HeadTeacher = teacher;
+            newSchoolClass.School = school;
+
+            await _db.SchoolClasses.AddAsync(newSchoolClass);
+            await _db.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Enrolls a new Student entity in the School Classes collection.
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="studentId"></param>
+        /// <returns></returns>
+        public async Task EnrollForClass(string classId, string studentId)
+        {
+            var student = _accountService.GetUserById(studentId);
+            var schoolClass = GetSchoolClassById(classId);
+
+            if (student == null)
+                return;
+
+            if (schoolClass == null)
+                return;
+
+            if (IsStudentInClass(schoolClass, student))
+                return;
+
+            schoolClass.Students.Add(student);
+
+            await this._db.SaveChangesAsync();
+        }
+        /// <summary>
+        /// Withdraws an existing Student entity in the School Classes collection.
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="studentId"></param>
+        /// <returns></returns>
+        public async Task WithdrawFromClass(string classId, string studentId)
+        {
+            var student = _accountService.GetUserById(studentId);
+            var schoolClass = GetSchoolClassById(classId);
+
+            if (student == null)
+                return;
+
+            if (schoolClass == null)
+                return;
+
+            if (IsStudentInClass(schoolClass, student))
+                return;
+
+            schoolClass.Students.Remove(student);
+
+            await this._db.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Asserts whether there is already an existing Student 
+        /// within a School Class.
+        /// </summary>
+        /// <param name="schoolClass"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        private bool IsStudentInClass(SchoolClass schoolClass, AspNetUser user)
+        {
+            var inClass = schoolClass.Students.Any(student => student.Id == user.Id);
+
+            return inClass;
         }
     }
 }

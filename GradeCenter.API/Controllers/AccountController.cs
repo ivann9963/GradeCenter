@@ -18,7 +18,7 @@ namespace GradeCenter.API.Controllers
         {
             _accountService = accountService;
             _userManager = userManager;
-            _requestValidator = new RequestValidator(_userManager, User);
+            _requestValidator = new RequestValidator(_userManager);
         }
 
         /// <summary>
@@ -54,14 +54,14 @@ namespace GradeCenter.API.Controllers
         }
 
         [HttpPut("AddChild")]
-        public async Task<IActionResult> AddChild(Guid childId)
+        public async Task<IActionResult> AddChild(Guid parentId, Guid childId)
         {
-            AspNetUser parent = await _requestValidator.GetLoggedUser();
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
-            if (parent == null)
-                return Unauthorized(new { message = "User must be authorized to perform this operation." });
+            if (checkedRequest != null)
+                return checkedRequest;
 
-            _accountService.AddChild(parent, childId);
+            _accountService.AddChild(parentId, childId);
 
             return Ok();
         }
@@ -75,7 +75,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(string newPassword, string newPhoneNumber)
         {
-            AspNetUser loggedUser = await _requestValidator.GetLoggedUser();
+            AspNetUser loggedUser = await _requestValidator.GetLoggedUser(User);
 
             if (loggedUser == null)
                 return Unauthorized(new { message = "User must be authorized to perform this operation." });
@@ -92,7 +92,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetLoggedUser")]
         public async Task<AspNetUser> GetLoggedUser()
         {
-            AspNetUser loggedUser = await _requestValidator.GetLoggedUser();
+            AspNetUser loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
 
             return loggedUser;
         }
@@ -108,6 +108,17 @@ namespace GradeCenter.API.Controllers
             var user = _accountService.GetUserById(userId);
 
             return user;
+        }
+
+
+        /// <summary>
+        /// Get All users
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            return Ok(_accountService.GetAllUsers());
         }
     }
 }

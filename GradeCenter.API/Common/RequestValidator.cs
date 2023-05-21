@@ -7,17 +7,16 @@ using System.Security.Claims;
 public class RequestValidator
 {
     private readonly UserManager<AspNetUser> _userManager;
-    private readonly ClaimsPrincipal _user;
+    private ClaimsPrincipal _user;
 
-    public RequestValidator(UserManager<AspNetUser> userManager, ClaimsPrincipal user)
+    public RequestValidator(UserManager<AspNetUser> userManager)
     {
         _userManager = userManager;
-        _user = user;
     }
 
-    public async Task<IActionResult?> ValidateRequest(ModelStateDictionary modelState)
+    public async Task<IActionResult?> ValidateRequest(ModelStateDictionary modelState, ClaimsPrincipal user)
     {
-        var loggedUser = await GetLoggedUser();
+        var loggedUser = await GetLoggedUser(user);
 
         if (loggedUser == null || !IsAdmin(loggedUser))
             return new UnauthorizedResult();
@@ -28,9 +27,9 @@ public class RequestValidator
         return null;
     }
 
-    public async Task<AspNetUser> GetLoggedUser()
+    public async Task<AspNetUser> GetLoggedUser(ClaimsPrincipal user)
     {
-        return await _userManager.FindByNameAsync(_user.Identity.Name);
+        return await _userManager.FindByNameAsync(user.Identity.Name);
     }
 
     public bool IsAdmin(AspNetUser user)

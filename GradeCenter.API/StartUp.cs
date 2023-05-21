@@ -36,7 +36,8 @@ namespace GradeCenter.API
             services.AddRazorPages();   // TODO: Check if needed
 
             services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<ISchoolService, SchoolService>();
+            services.AddScoped<ISchoolService, SchoolService>();
+            services.AddTransient<ICurriculumService, CurriculumService>();
 
             services.AddCors(options =>
             {

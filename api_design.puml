@@ -106,4 +106,5 @@ AccountService --> GradeCenterContext
 SchoolService --> GradeCenterContext
 CurricullumService --> GradeCenterContext
 
+IAccountService <.. SchoolService : uses
 @enduml

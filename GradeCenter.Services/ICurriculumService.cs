@@ -9,5 +9,6 @@ namespace GradeCenter.Services
         void Delete(List<Discipline> disciplines);
         List<Discipline> GetClassesForDay(Guid schoolClassId, DayOfWeek day);
         List<Discipline> GetLoggedUserClasses(Guid userId);
+        List<Discipline> GetCurricullumForSchoolClass(Guid schoolClassId);
     }
 }
