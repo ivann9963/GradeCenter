@@ -124,8 +124,6 @@ namespace GradeCenter.Tests
             // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
             _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Once);
         }
-<<<<<<< HEAD
-=======
 
         [Fact]
         public async Task AddPrincipleToSchool_ShouldUpdateSchool()
@@ -247,7 +245,6 @@ namespace GradeCenter.Tests
             // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
             _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Once);
         }
->>>>>>> 64f137b (GRAD-37: Add Unit Tests and Controller methods)
 
         [Fact]
         public async Task DeleteSchool_ShouldUpdateIsActive()
