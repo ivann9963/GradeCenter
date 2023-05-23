@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import requests from "../../requests";
 import { School } from "../../models/school";
+import PeopleGrid from "./people-grid";
 
 export default function SchoolDetails() {
   let { schoolId } = useParams();
@@ -38,13 +39,17 @@ export default function SchoolDetails() {
             {tabValue === 0 && (
               <Box p={3}>
                 {/* Render People data here */}
-                <Typography>People data goes here...</Typography>
+                <Typography>
+                    <PeopleGrid allSchools={[]} allUsers={[]}/>
+                </Typography>
               </Box>
             )}
             {tabValue === 1 && (
               <Box p={3}>
                 {/* Render School Classes data here */}
-                <Typography>School Classes data goes here...</Typography>
+                <Typography>
+                    <PeopleGrid allSchools={[]} allUsers={[]}/>
+                </Typography>
               </Box>
             )}
           </Paper>
