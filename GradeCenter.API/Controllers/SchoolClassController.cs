@@ -1,0 +1,86 @@
+﻿using GradeCenter.API.Common;
+using GradeCenter.API.Models.Request.SchoolRequests;
+using GradeCenter.Data.Models;
+using GradeCenter.Data.Models.Account;
+using GradeCenter.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+namespace GradeCenter.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SchoolClassController : ControllerBase
+    {
+        private readonly UserManager<AspNetUser> _userManager;
+        private readonly ISchoolClassService _schoolClassService;
+        private readonly RequestValidator _requestValidator;
+        private readonly ModelsFactory _modelsFactory;
+
+        public SchoolClassController(UserManager<AspNetUser> userManager, ISchoolClassService schoolClassService)
+        {
+            _userManager = userManager;
+            _schoolClassService = schoolClassService;
+            _requestValidator = new RequestValidator(_userManager);
+            _modelsFactory = new ModelsFactory();
+        }
+
+        /// <summary>
+        /// Creates an object of type SchoolClass in the database.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("CreateClass")]
+        public async Task<IActionResult> CreateClass(SchoolClassCreateRequest request)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            SchoolClass mappedSchoolClassModel = _modelsFactory.ExtractSchoolClass(request);
+
+            await _schoolClassService.CreateClass(mappedSchoolClassModel);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Updates an object of type SchoolClass in order to enroll
+        /// a new student.
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
+        [HttpPut("EnrollForClass")]
+        public async Task<IActionResult> EnrollForClass(EnrollWithdrawRequestModel requestModel)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _schoolClassService.EnrollForClass(requestModel.SchoolClassId, requestModel.StudentId);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Updates an object of type SchoolClass in order to withdraw
+        /// an existing student.
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
+        [HttpPut("WithdrawFromClass")]
+        public async Task<IActionResult> WithdrawFromClass(EnrollWithdrawRequestModel requestModel)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _schoolClassService.WithdrawFromClass(requestModel.SchoolClassId, requestModel.StudentId);
+
+            return Ok();
+        }
+    }
+}
