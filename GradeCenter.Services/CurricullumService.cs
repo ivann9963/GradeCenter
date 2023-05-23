@@ -70,8 +70,9 @@ namespace GradeCenter.Services
 
                 currentDiscipline.IsActive = false;
 
-                _db.SaveChanges();
             }
+
+            _db.SaveChanges();
         }
 
         /// <summary>
@@ -113,8 +114,8 @@ namespace GradeCenter.Services
 
             disciplines.ForEach((discipline) =>
             {
-                discipline.Teacher = _db?.AspNetUsers?.FirstOrDefault(x => x.Id == discipline.TeacherId);
-                discipline.SchoolClass = _db?.SchoolClasses?.FirstOrDefault(x => x.Id == discipline.SchoolClassId);
+                discipline.Teacher ??= _db?.AspNetUsers?.FirstOrDefault(x => x.Id == discipline.TeacherId);
+                discipline.SchoolClass ??= _db?.SchoolClasses?.FirstOrDefault(x => x.Id == discipline.SchoolClassId);
             });
 
             if (!IsValid(disciplines))
