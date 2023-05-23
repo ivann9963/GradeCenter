@@ -35,6 +35,19 @@ namespace GradeCenter.API.Controllers
             return Ok(_schoolService.GetAllSchools());
         }
 
+        [HttpGet("GetSchoolById")]
+        public async Task<IActionResult> GetSchoolById(string schoolId)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            var school = _schoolService.GetSchoolById(schoolId);
+
+            return Ok(school);
+        }
+
         /// <summary>
         /// Creates an object of type School and stores it in the database.
         /// </summary>
@@ -78,13 +91,11 @@ namespace GradeCenter.API.Controllers
 
         [HttpPut("AddPrincipal")]
         public async Task<IActionResult> AddPrincipal(SchoolUpdateRequest requestModel)
-        { 
-            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
-            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
-
-            //if (checkedRequest != null)
-            //return checkedRequest;
+            if (checkedRequest != null)
+                return checkedRequest;
 
             School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
 
@@ -96,12 +107,10 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddTeachers")]
         public async Task<IActionResult> AddTeachers(SchoolUpdateRequest requestModel)
         {
-            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
-            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
-
-            //if (checkedRequest != null)
-            //return checkedRequest;
+            if (checkedRequest != null)
+                return checkedRequest;
 
             School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
 
@@ -113,12 +122,10 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddStudents")]
         public async Task<IActionResult> AddStudents(SchoolUpdateRequest requestModel)
         {
-            var loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
-            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState);
-
-            //if (checkedRequest != null)
-            //return checkedRequest;
+            if (checkedRequest != null)
+                return checkedRequest;
 
             School mappedSchoolModel = _modelsFactory.ExtractSchool(requestModel);
 

@@ -137,10 +137,6 @@ export default function Schools() {
       .catch((error) => console.error(error));
   };
 
-  const goToSchoolDetails = (schoolId: any) => {
-    navigation("/school-details/${schoolId}");
-  };
-
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [newSchool, setNewSchool] = useState({ name: "", address: "" });
 
