@@ -148,7 +148,10 @@ namespace GradeCenter.Services
 
         public IEnumerable<AspNetUser> GetAllUsers()
         {
-            return _db.AspNetUsers.Where(u => u.IsActive == true).ToList();
+            return _db.AspNetUsers
+                .Include(s => s.School)
+                .Include(sc => sc.SchoolClass)
+                .Where(u => u.IsActive == true).ToList();
         }
     }
 }

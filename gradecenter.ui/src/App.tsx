@@ -9,6 +9,7 @@ import Home from "./components/home/home"; // Import the Home component
 import Schools from "./components/school/schools-list";
 import Users from "./components/account/usersPage";
 import SchoolDetails from "./components/school/school-details";
+import AdminPanel from "./components/admin-panel/admin-panel";
 
 export default function App() {
   const getComponent = (component: JSX.Element) => {
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/schools" element={getComponent(<Schools />)} />
         <Route path="/users" element={getComponent(<Users />)} />
         <Route path="/school-details/:schoolId" element={getComponent(<SchoolDetails />)} />
+        <Route path="/admin-panel" element={getComponent(<AdminPanel />)} />
       </Routes>
     </BrowserRouter>
   );
