@@ -40,7 +40,7 @@ export default function SchoolDetails() {
               <Box p={3}>
                 {/* Render People data here */}
                 <Typography>
-                    <PeopleGrid allSchools={[]} allUsers={[]}/>
+                    <PeopleGrid allSchools={[]} allUsers={[]} allClassess={[]}/>
                 </Typography>
               </Box>
             )}
@@ -48,7 +48,7 @@ export default function SchoolDetails() {
               <Box p={3}>
                 {/* Render School Classes data here */}
                 <Typography>
-                    <PeopleGrid allSchools={[]} allUsers={[]}/>
+                    <PeopleGrid allSchools={[]} allUsers={[]} allClassess={[]}/>
                 </Typography>
               </Box>
             )}

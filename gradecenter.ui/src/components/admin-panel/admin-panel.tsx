@@ -4,13 +4,25 @@ import { useEffect, useState } from "react";
 import { School } from "../../models/school";
 import requests from "../../requests";
 import { AspNetUser } from "../../models/aspNetUser";
+import { SchoolClass } from "../../models/schoolClass";
 
 export default function AdminPanel() {
   const [schools, setSchool] = useState<School[] | null>(null);
   const [allUsers, setAllusers] = useState<AspNetUser[] | null>(null);
+  const [schoolClasses, setSchoolClasses] = useState<SchoolClass[] | null>(null);
+
   const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
+    requests
+      .getAllUsers()
+      .then((response) => {
+        setAllusers(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     requests
       .getAllSchools()
       .then((response) => {
@@ -20,10 +32,11 @@ export default function AdminPanel() {
         console.log(error);
       });
 
-    requests
-      .getAllUsers()
+      requests
+      .getAllSchoolsClassess()
       .then((response) => {
-        setAllusers(response.data);
+        setSchoolClasses(response.data);
+        console.log(schoolClasses);
       })
       .catch((error) => {
         console.log(error);
@@ -36,7 +49,7 @@ export default function AdminPanel() {
 
   return (
     <Container style={{ padding: "4em 6em", marginLeft: 270 }}>
-      {schools || allUsers ? (
+      {schools || allUsers || schoolClasses ? (
         <Box>
           <Typography variant="h4">{"Admin Panel"}</Typography>
           <br />
@@ -44,19 +57,27 @@ export default function AdminPanel() {
             <Tabs value={tabValue} onChange={handleTabChange}>
               <Tab label="All Users" />
               <Tab label="All Schools" />
+              <Tab label="All Classess" />
             </Tabs>
             {tabValue === 0 && (
               <Box p={3}>
                 {/* Render People data here */}
                 <Typography>
-                  <PeopleGrid allUsers={allUsers} allSchools={null} />
+                  <PeopleGrid allUsers={allUsers} allSchools={[]} allClassess={[]} />
                 </Typography>
               </Box>
             )}
             {tabValue === 1 && (
               <Box p={3}>
                 <Typography>
-                  <PeopleGrid allSchools={schools} allUsers={null} />
+                  <PeopleGrid allSchools={schools} allUsers={[]} allClassess={[]}/>
+                </Typography>
+              </Box>
+            )}
+              {tabValue === 2 && (
+              <Box p={3}>
+                <Typography>
+                  <PeopleGrid allClassess={schoolClasses} allUsers={[]} allSchools={[]}/>
                 </Typography>
               </Box>
             )}
