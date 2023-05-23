@@ -46,12 +46,27 @@ const getAllUsers = () => {
     });
 }
 
+const getAllSchoolsClassess = () => {
+  const url = `https://localhost:7273/api/SchoolClass/GetAllClassess`;
+  const token = sessionStorage["jwt"];
+
+  return axios({
+    method: "get",
+    url: url,
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 // Add more requests here...
 
 const requests = {
     getSchoolById,
     getAllSchools,
-    getAllUsers
+    getAllUsers,
+    getAllSchoolsClassess
 };
 
 export default requests;
