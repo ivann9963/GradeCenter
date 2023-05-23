@@ -16,8 +16,5 @@ namespace GradeCenter.Services.Schools
         Task AddTeachersToSchool(School? updatedSchool);
         Task AddStudentsToSchool(School? updatedSchool);
         Task Delete(string name);
-        Task CreateClass(SchoolClass newSchoolClass);
-        Task EnrollForClass(string classId, string studentId);
-        Task WithdrawFromClass(string classId, string studentId);
     }
 }
