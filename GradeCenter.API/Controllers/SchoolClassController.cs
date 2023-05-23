@@ -26,6 +26,23 @@ namespace GradeCenter.API.Controllers
         }
 
         /// <summary>
+        /// Returns all schoolClasses in database
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetAllClassess")]
+        public async Task<IActionResult> GetAllClassess()
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            var allClassess = _schoolClassService.GetAllClassess();
+
+            return Ok(allClassess);
+        }
+
+        /// <summary>
         /// Creates an object of type SchoolClass in the database.
         /// </summary>
         /// <param name="request"></param>
