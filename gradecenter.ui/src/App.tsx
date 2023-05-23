@@ -8,6 +8,7 @@ import Login from "./components/account/loginPage";
 import Home from "./components/home/home"; // Import the Home component
 import Schools from "./components/school/schools-list";
 import Users from "./components/account/usersPage";
+import SchoolDetails from "./components/school/school-details";
 
 export default function App() {
   const getComponent = (component: JSX.Element) => {
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/" element={getComponent(<Home />)} /> {/* Add the new route */}
         <Route path="/schools" element={getComponent(<Schools />)} />
         <Route path="/users" element={getComponent(<Users />)} />
+        <Route path="/school-details/:schoolId" element={getComponent(<SchoolDetails />)} />
       </Routes>
     </BrowserRouter>
   );
