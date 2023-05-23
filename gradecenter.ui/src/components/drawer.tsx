@@ -7,7 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import React, { useState, useEffect, useRef } from "react";
 import Nav from "./nav";
-import MyProfileMenu from "./myProfileMenu";
+import MyProfileMenu from "./account/myProfileMenu";
 
 const drawerWidth = 240;
 

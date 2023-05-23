@@ -6,7 +6,7 @@ import Drawer from "./components/drawer";
 import Register from "./components/account/registerPage";
 import Login from "./components/account/loginPage";
 import Home from "./components/home/home"; // Import the Home component
-import Schools from "./components/school/schoolPage";
+import Schools from "./components/school/schools-list";
 import Users from "./components/account/usersPage";
 
 export default function App() {

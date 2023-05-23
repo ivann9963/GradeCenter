@@ -1,6 +1,6 @@
 // Home.tsx
 import React from "react";
-import Schools from "../school/schoolPage";
+import Schools from "../school/schools-list";
 
 const Home = () => {
   return <Schools />;
