@@ -11,11 +11,11 @@ export default function Nav() {
     <div>
       <nav>
         <List>
-          {["Home", "Schools", "Class", "Users" ].map((text, index) => (
+          {["Home", "Class", "Users" ].map((text, index) => (
               <ListItem button key={text} component="a" href={'/' + text.toLowerCase()}>
                 <ListItemIcon>
                   {
-                    [<HomeIcon />, <School />, <HomeIcon />, <HomeIcon />][index]
+                    [<HomeIcon />, <HomeIcon />, <HomeIcon />][index]
                   }
                 </ListItemIcon>
                 <ListItemText primary={text} />
