@@ -7,8 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import React, { useState, useEffect, useRef } from "react";
 import Nav from "./nav";
-import IconButton from "@mui/material/IconButton";
-import { Margin } from "@mui/icons-material";
+import MyProfileMenu from "./myProfileMenu";
 
 const drawerWidth = 240;
 
@@ -101,10 +100,6 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("jwt");
-    window.location.reload();
-  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -115,9 +110,9 @@ export default function MiniDrawer() {
             Grade Center
           </Typography>
           {shouldRenderDrawer && (
-            <><Box sx={{ flexGrow: 1 }} /><IconButton color="inherit" onClick={handleLogout}>
-              Logout
-            </IconButton></>
+            <><Box sx={{ flexGrow: 1 }} />
+            <MyProfileMenu/>
+            </>
             )}
         </Toolbar>
       </AppBar>
