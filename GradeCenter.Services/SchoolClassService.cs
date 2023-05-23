@@ -2,6 +2,7 @@
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services.Schools;
+using Microsoft.EntityFrameworkCore;
 
 namespace GradeCenter.Services
 {
@@ -18,6 +19,14 @@ namespace GradeCenter.Services
             _schoolService = schoolService;
         }
 
+        public List<SchoolClass> GetAllClassess()
+        {
+            var allClassess = _db.SchoolClasses
+                .Include(s => s.School)
+                .ToList();
+
+            return allClassess;
+        }
 
         /// <summary>
         /// Creates a new SchoolClass entity instance
@@ -67,6 +76,7 @@ namespace GradeCenter.Services
 
             await this._db.SaveChangesAsync();
         }
+
         /// <summary>
         /// Withdraws an existing Student entity in the School Classes collection.
         /// </summary>
