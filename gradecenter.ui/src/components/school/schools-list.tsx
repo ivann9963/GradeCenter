@@ -15,6 +15,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const url = `https://localhost:7273/api/School/GetAllSchools`;
 var schools = [];
@@ -28,8 +32,37 @@ axios({
   schools = res.data;
 });
 
+const useStyles = makeStyles((theme) => ({
+  card: {
+    "&:hover": {
+      boxShadow: "0 0 11px rgba(0, 114, 255, 10)", // This will make the card "light up" when hovered over
+    },
+  },
+  link: {
+    textDecoration: "none",
+    color: "inherit",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
+  dialogPaper: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust this to your liking
+  },
+  components: {
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust this to your liking
+        },
+      },
+    },
+  }
+}));
+
 export default function Schools() {
   const [schools, setSchools] = useState([]);
+  const navigation = useNavigate();
+  const classes = useStyles();
 
   useEffect(() => {
     getAllSchools();
@@ -82,7 +115,8 @@ export default function Schools() {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (event: any) => {
+    event.stopPropagation();
     setOpen(false);
   };
 
@@ -98,9 +132,13 @@ export default function Schools() {
       })
       .then(() => {
         getAllSchools();
-        handleClose();
+        handleClose(null);
       })
       .catch((error) => console.error(error));
+  };
+
+  const goToSchoolDetails = (schoolId: any) => {
+    navigation("/school-details/${schoolId}");
   };
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -119,9 +157,9 @@ export default function Schools() {
 
     axios
       .post(`https://localhost:7273/api/School/Create`, newSchool, {
-        headers: { 
-            "Content-Type": "application/json", 
-            Authorization: `Bearer ${token}` 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
@@ -130,6 +168,15 @@ export default function Schools() {
       })
       .catch((error) => console.error(error));
   };
+
+  const handleCardClick = (schoolId: any) => {
+    navigation(`/school-details/${schoolId}`);
+  };
+
+  const stopPropagation = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
+  
 
   return (
     <Container style={{ padding: "4em 6em" }}>
@@ -173,21 +220,23 @@ export default function Schools() {
       <Grid container spacing={3} columns={{ xs: 12, sm: 8, md: 12 }} marginLeft={10} marginTop={1}>
         {schools.map((school, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card elevation={18}>
+            <Card elevation={18} className={classes.card} onClick={() => handleCardClick(school["id"])}>
               <Box p={1.5}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h5">
-                    <LocationCityIcon color="primary" />
-                    {school["name"]}
-                  </Typography>
+                  <Link to={`/school-details/${school["id"]}`} className={classes.link}>
+                    <Typography variant="h5">
+                      <LocationCityIcon color="primary" />
+                      {school["name"]}
+                    </Typography>
+                  </Link>
                   <Box>
-                    <IconButton color="default" onClick={() => onDelete(school["name"])}>
+                    <IconButton color="default" onClick={(event) => {onDelete(school["name"]); stopPropagation(event)}}>
                       <DeleteIcon />
                     </IconButton>
-                    <IconButton color="default" onClick={() => handleClickOpen(school)}>
+                    <IconButton color="default" onClick={(event) => {handleClickOpen(school); stopPropagation(event)}}>
                       <EditIcon />
                     </IconButton>
-                    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                    <Dialog open={open} onClose={(event) => handleClose(event)} aria-labelledby="form-dialog-title">
                       <DialogTitle id="form-dialog-title">Edit School</DialogTitle>
                       <DialogContent>
                         <TextField
@@ -206,7 +255,7 @@ export default function Schools() {
                           label="Address"
                           type="text"
                           fullWidth
-                          value={selectedSchool["address"]}
+                          value={selectedSchool.address}
                           onChange={(e) => setSelectedSchool({ ...selectedSchool, address: e.target.value })}
                         />
                       </DialogContent>
