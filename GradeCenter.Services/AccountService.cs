@@ -70,10 +70,18 @@ namespace GradeCenter.Services
         /// <param name="loggedUser"></param>
         /// <param name="newPassword"></param>
         /// <param name="newPhoneNumber"></param>
-        public void UpdateUser(AspNetUser loggedUser, string newPassword, string newPhoneNumber)
+        public void UpdateUser(string? userId, string? newPassword, UserRoles newRole, string? newPhoneNumber)
         {
-            loggedUser.PasswordHash = newPassword.GetHashCode().ToString(); // TODO: Check if okay
-            loggedUser.PhoneNumber = newPhoneNumber;
+            var user = _db?.AspNetUsers?.FirstOrDefault(u => u.Id == Guid.Parse(userId));
+
+            if(newPassword != null)
+                user.PasswordHash = newPassword.GetHashCode().ToString();
+
+            if(newRole != null)
+                user.UserRole = newRole;
+
+            if(newPhoneNumber != null)
+                user.PhoneNumber = newPhoneNumber;
 
             _db.SaveChanges();
         }

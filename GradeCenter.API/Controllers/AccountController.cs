@@ -73,14 +73,14 @@ namespace GradeCenter.API.Controllers
         /// <param name="newPhoneNumber"></param>
         /// <returns></returns>
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(string newPassword, string newPhoneNumber)
+        public async Task<IActionResult> Update(string? userId, string? newPassword, UserRoles newRole, string? newPhoneNumber)
         {
-            AspNetUser loggedUser = await _requestValidator.GetLoggedUser(User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
-            if (loggedUser == null)
-                return Unauthorized(new { message = "User must be authorized to perform this operation." });
+            if (checkedRequest != null)
+                return checkedRequest;
 
-            _accountService.UpdateUser(loggedUser, newPassword, newPhoneNumber);
+            _accountService.UpdateUser(userId,newPassword, newRole, newPhoneNumber);
 
             return Ok();
         }

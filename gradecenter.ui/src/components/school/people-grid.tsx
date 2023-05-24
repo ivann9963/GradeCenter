@@ -1,9 +1,11 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef } from "@mui/x-data-grid"; // Import DataGrid instead of DataGridPro
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid"; // Import DataGrid instead of DataGridPro
 import { School } from "../../models/school";
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
 import { SchoolClass } from "../../models/schoolClass";
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import requests from "../../requests";
 
 interface Collection {
   allSchools: School[] | null;
@@ -14,7 +16,20 @@ interface Collection {
 export default function PeopleGrid(collection: Collection | null) {
   let data: School[] | AspNetUser[] | SchoolClass[] | null = null;
   let columns: GridColDef[] | null = null;
+  const [userRoles, setUserRoles] = React.useState<Record<number, UserRoles>>({});
 
+  const handleUserRoleChange = (userId: string, event: SelectChangeEvent<UserRoles>) => {
+    const selectedRole = UserRoles[event.target.value as keyof typeof UserRoles];
+    setUserRoles({
+      ...userRoles,
+      [userId]: selectedRole,
+    });
+
+    requests.updateUser(userId, undefined, selectedRole, undefined);
+    
+
+    console.log(`Changed role of user ${userId} to ${event.target.value}`);
+  };
   if (collection!.allUsers!.length > 0) {
     data = collection!.allUsers!.map((user) => ({
       ...user,
@@ -30,7 +45,21 @@ export default function PeopleGrid(collection: Collection | null) {
         field: "userRole",
         headerName: "User Role",
         width: 130,
-        valueFormatter: ({ value }) => UserRoles[value as UserRoles],
+        renderCell: (params: GridRenderCellParams) => {
+          const userRoleKey = UserRoles[params.value as keyof typeof UserRoles];
+          return (
+            <Select
+              value={userRoles[params.id as number] || userRoleKey}
+              onChange={(event) => handleUserRoleChange(params.id as string, event)}
+            >
+              {Object.values(UserRoles).filter(value => typeof value === 'string').map((role) => (
+                <MenuItem key={role} value={role}>
+                  {role}
+                </MenuItem>
+              ))}
+            </Select>
+          );
+        },
       },
     ];
   }
@@ -48,7 +77,7 @@ export default function PeopleGrid(collection: Collection | null) {
     data = collection!.allClassess!.map((user) => ({
       ...user,
       schoolName: user.school?.name,
-    }));;
+    }));
 
     columns = [
       { field: "year", headerName: "Year", width: 100 },
