@@ -1,10 +1,12 @@
 import { Box, Container, Paper, Tab, Tabs, Typography } from "@mui/material";
-import PeopleGrid from "../school/people-grid";
+import AllClassessGrid from "./alllClassessGrid";
 import { useEffect, useState } from "react";
 import { School } from "../../models/school";
 import requests from "../../requests";
 import { AspNetUser } from "../../models/aspNetUser";
 import { SchoolClass } from "../../models/schoolClass";
+import AllUsersGrid from "./allUsersGrid";
+import AllSchoolsGrid from "./allSchoolsGrid";
 
 export default function AdminPanel() {
   const [schools, setSchool] = useState<School[] | null>(null);
@@ -63,21 +65,21 @@ export default function AdminPanel() {
               <Box p={3}>
                 {/* Render People data here */}
                 <Typography>
-                  <PeopleGrid allUsers={allUsers} allSchools={[]} allClassess={[]} />
+                  <AllUsersGrid allUsers={allUsers} />
                 </Typography>
               </Box>
             )}
             {tabValue === 1 && (
               <Box p={3}>
                 <Typography>
-                  <PeopleGrid allSchools={schools} allUsers={[]} allClassess={[]}/>
+                  <AllSchoolsGrid allSchools={schools} />
                 </Typography>
               </Box>
             )}
               {tabValue === 2 && (
               <Box p={3}>
                 <Typography>
-                  <PeopleGrid allClassess={schoolClasses} allUsers={[]} allSchools={[]}/>
+                  <AllClassessGrid allClassess={schoolClasses} />
                 </Typography>
               </Box>
             )}

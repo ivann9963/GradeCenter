@@ -7,17 +7,18 @@ import { SchoolClass } from "../../models/schoolClass";
 import { Button, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import requests from "../../requests";
 
-interface Collection {
-  allSchools: School[] | null;
-  allUsers: AspNetUser[] | null;
-  allClassess: SchoolClass[] | null;
+
+interface AllUsersGridParams {
+    allUsers: AspNetUser[] | null
 }
 
-export default function PeopleGrid(collection: Collection | null) {
+export default function AllUsersGrid(params: AllUsersGridParams) {
   let data: School[] | AspNetUser[] | SchoolClass[] | null = null;
   let columns: GridColDef[] | null = null;
   const [userRoles, setUserRoles] = React.useState<Record<number, UserRoles>>({});
-
+  const [open, setOpen] = React.useState(false);
+  const [currentParent, setCurrentParent] = React.useState<string | null>(null);
+  
   const handleUserRoleChange = (userId: string, event: SelectChangeEvent<UserRoles>) => {
     const selectedRole = UserRoles[event.target.value as keyof typeof UserRoles];
     setUserRoles({
@@ -28,8 +29,8 @@ export default function PeopleGrid(collection: Collection | null) {
     requests.updateUser(userId, undefined, selectedRole, undefined, undefined);
   };
 
-  if (collection && collection.allUsers && collection!.allUsers!.length > 0) {
-    data = collection!.allUsers!.map((user) => ({
+  if (params && params.allUsers && params!.allUsers!.length > 0) {
+    data = params!.allUsers!.map((user) => ({
       ...user,
       schoolName: user.school?.name,
     }));
@@ -46,13 +47,13 @@ export default function PeopleGrid(collection: Collection | null) {
           const toggleStatus = () => {
             const userId = params.id as string;
             const newStatus = !params.value;
-            
+
             requests.updateUser(userId, undefined, undefined, newStatus, undefined);
           };
 
           return (
-            <Button size="small" variant="contained" color={params.value ? "success" : "warning"} onClick={toggleStatus}>
-              <p>{params.value ? "Active" : "Inactive"}</p>
+            <Button size="small" variant="contained" sx={{ borderRadius: '12%', height: 40, fontSize: 12 }} color={params.value ? "success" : "error"} onClick={toggleStatus}>
+              <h4>{params.value ? "Active" : "Inactive"}</h4>
             </Button>
           );
         },
@@ -79,55 +80,28 @@ export default function PeopleGrid(collection: Collection | null) {
           );
         },
       },
-    ];
-  }
-
-  if (collection && collection.allSchools && collection!.allSchools!.length > 0) {
-    data = collection!.allSchools;
-    columns = [
-      { field: "name", headerName: "Name", width: 100 },
-      { field: "address", headerName: "Address", width: 150 },
-      { field: "isActive", headerName: "Active", width: 100 },
-    ];
-  }
-
-  if (collection && collection.allClassess && collection!.allClassess!.length > 0) {
-    data = collection!.allClassess!.map((user) => ({
-      ...user,
-      schoolName: user.school?.name,
-    }));
-
-    columns = [
-      { field: "year", headerName: "Year", width: 100 },
-      { field: "department", headerName: "Department", width: 150 },
       {
-        field: "headTeacher",
-        headerName: "Head Teacher",
-        width: 200,
-        valueGetter: (params) => `${params.row.headTeacher.firstName} ${params.row.headTeacher.lastName}`,
-      },
-      {
-        field: "schoolName",
-        headerName: "School",
-        width: 150,
-        valueGetter: (params) => params.row.schoolName,
-      },
-      {
-        field: "students",
-        headerName: "Number of Students",
-        width: 150,
-        valueGetter: (params) => params.row.students.length,
-      },
-      {
-        field: "curriculum",
-        headerName: "Number of Disciplines",
-        width: 200,
-        valueGetter: (params) => params.row.curriculum.length,
+        field: "",
+        headerName: "Actions",
+        renderCell: (params: GridRenderCellParams) => {
+          const userRoleKey = UserRoles[params.row.userRole as keyof typeof UserRoles];
+          console.log(userRoleKey);
+          if (userRoleKey.toLocaleString() !== 'Parent') {
+            return null;
+          }
+          return (
+            <Button size="small" variant="contained" sx={{ borderRadius: '10%', height: 40, fontSize: 13 }} color={"primary"} 
+            onClick={() => {
+              setOpen(true);
+              setCurrentParent(params.id as string);
+            }}>
+              <h5>Add child</h5>
+            </Button>
+          );
+        },
       },
     ];
   }
-
-  console.log(collection?.allClassess);
 
   return (
     <Box sx={{ height: 520, width: "100%" }}>
@@ -135,8 +109,8 @@ export default function PeopleGrid(collection: Collection | null) {
         columns={columns!}
         rows={data || []}
         loading={data!.length === 0}
-        rowHeight={38}
-        checkboxSelection // disableSelectionOnClick
+        rowHeight={48}
+        checkboxSelection={false}
       />
     </Box>
   );
