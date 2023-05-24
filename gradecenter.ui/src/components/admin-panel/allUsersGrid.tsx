@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid"; /
 import { School } from "../../models/school";
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
 import { SchoolClass } from "../../models/schoolClass";
-import { Button, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import requests from "../../requests";
 
 
@@ -17,7 +17,9 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
   let columns: GridColDef[] | null = null;
   const [userRoles, setUserRoles] = React.useState<Record<number, UserRoles>>({});
   const [open, setOpen] = React.useState(false);
-  const [currentParent, setCurrentParent] = React.useState<string | null>(null);
+  const [currentParentId, setCurrentParentId] = React.useState<string | null>(null);
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
   
   const handleUserRoleChange = (userId: string, event: SelectChangeEvent<UserRoles>) => {
     const selectedRole = UserRoles[event.target.value as keyof typeof UserRoles];
@@ -29,6 +31,42 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
     requests.updateUser(userId, undefined, selectedRole, undefined, undefined);
   };
 
+  const handleSubmit = async () => {
+    // Send your API request here using firstName and lastName
+    await requests.AddChild(currentParentId!, firstName, lastName);
+    // Clear the form fields and close the dialog
+    setFirstName('');
+    setLastName('');
+    setCurrentParentId(null);
+    setOpen(false);
+  };
+  
+  const ChildAddDialog = () => (
+    <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle>Add Child</DialogTitle>
+      <DialogContent>
+        <form>
+          <TextField
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            label="First Name"
+            fullWidth
+          />
+          <TextField
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            label="Last Name"
+            fullWidth
+          />
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpen(false)}>Cancel</Button>
+        <Button onClick={handleSubmit}>Save</Button>
+      </DialogActions>
+    </Dialog>
+  );
+  
   if (params && params.allUsers && params!.allUsers!.length > 0) {
     data = params!.allUsers!.map((user) => ({
       ...user,
@@ -93,7 +131,7 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
             <Button size="small" variant="contained" sx={{ borderRadius: '10%', height: 40, fontSize: 13 }} color={"primary"} 
             onClick={() => {
               setOpen(true);
-              setCurrentParent(params.id as string);
+              setCurrentParentId(params.id as string);
             }}>
               <h5>Add child</h5>
             </Button>
@@ -112,6 +150,7 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
         rowHeight={48}
         checkboxSelection={false}
       />
+     <ChildAddDialog />
     </Box>
   );
 }

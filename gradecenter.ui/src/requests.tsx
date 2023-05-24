@@ -82,6 +82,24 @@ const updateUser = (userId: string, newPassword: string | undefined, newRole: Us
   });
 }
 
+const AddChild = (parentId: string, firstName: string, lastName: string) => {
+  const url = `https://localhost:7273/api/Account/AddChild`;
+  const token = sessionStorage["jwt"];
+
+  return axios({
+    method: "put",
+    url: url,
+    params: {
+      parentId: parentId,
+      childFirstName: firstName,
+      childLastName: lastName
+    },
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 // Add more requests here...
 
 const requests = {
@@ -89,7 +107,8 @@ const requests = {
     getAllSchools,
     getAllUsers,
     getAllSchoolsClassess,
-    updateUser
+    updateUser,
+    AddChild
 };
 
 export default requests;
