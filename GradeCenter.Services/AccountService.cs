@@ -70,7 +70,7 @@ namespace GradeCenter.Services
         /// <param name="loggedUser"></param>
         /// <param name="newPassword"></param>
         /// <param name="newPhoneNumber"></param>
-        public void UpdateUser(string? userId, string? newPassword, UserRoles newRole, string? newPhoneNumber)
+        public void UpdateUser(string? userId, string? newPassword, UserRoles newRole, bool? isActive, string? newPhoneNumber)
         {
             var user = _db?.AspNetUsers?.FirstOrDefault(u => u.Id == Guid.Parse(userId));
 
@@ -82,6 +82,10 @@ namespace GradeCenter.Services
 
             if(newPhoneNumber != null)
                 user.PhoneNumber = newPhoneNumber;
+
+
+            if (isActive != null)
+                user.IsActive = isActive;
 
             _db.SaveChanges();
         }
@@ -159,7 +163,7 @@ namespace GradeCenter.Services
             return _db.AspNetUsers
                 .Include(s => s.School)
                 .Include(sc => sc.SchoolClass)
-                .Where(u => u.IsActive == true).ToList();
+                .ToList();
         }
     }
 }

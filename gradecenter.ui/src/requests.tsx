@@ -61,7 +61,7 @@ const getAllSchoolsClassess = () => {
   });
 }
 
-const updateUser = (userId: string, newPassword: string | undefined, newRole: UserRoles | undefined, newPhoneNumber: string | undefined) => {
+const updateUser = (userId: string, newPassword: string | undefined, newRole: UserRoles | undefined, isActive: boolean | undefined, newPhoneNumber: string | undefined) => {
   const url = `https://localhost:7273/api/Account/Update`;
   const token = sessionStorage["jwt"];
 
@@ -72,6 +72,7 @@ const updateUser = (userId: string, newPassword: string | undefined, newRole: Us
       userId: userId,
       newPassword: newPassword,
       newRole: newRole,
+      isActive: isActive,
       newPhoneNumber: newPhoneNumber 
     },
     headers: {
