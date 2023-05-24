@@ -142,14 +142,14 @@ namespace GradeCenter.Services
             return user;
         }
 
-        public void AddChild(Guid parentId, Guid childId)
+        public void AddChild(Guid parentId, string childFirstName, string childLastName)
         {
-            var child = _db?.Users?.FirstOrDefault(u => u.Id == childId);
+            var child = _db?.Users?.FirstOrDefault(u => u.FirstName == childFirstName && u.LastName == childLastName);
             var parent = _db?.Users?.FirstOrDefault(u => u.Id == parentId);
 
             UserRelation userRelation = new UserRelation();
             userRelation.Child = child;
-            userRelation.ChildId = childId;
+            userRelation.ChildId = child.Id;
             userRelation.Parent = parent;
             userRelation.ParentId = parent.Id;
 
