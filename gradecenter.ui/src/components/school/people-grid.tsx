@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid"; /
 import { School } from "../../models/school";
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
 import { SchoolClass } from "../../models/schoolClass";
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { Button, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import requests from "../../requests";
 
 interface Collection {
@@ -25,12 +25,10 @@ export default function PeopleGrid(collection: Collection | null) {
       [userId]: selectedRole,
     });
 
-    requests.updateUser(userId, undefined, selectedRole, undefined);
-    
-
-    console.log(`Changed role of user ${userId} to ${event.target.value}`);
+    requests.updateUser(userId, undefined, selectedRole, undefined, undefined);
   };
-  if (collection!.allUsers!.length > 0) {
+
+  if (collection && collection.allUsers && collection!.allUsers!.length > 0) {
     data = collection!.allUsers!.map((user) => ({
       ...user,
       schoolName: user.school?.name,
@@ -40,7 +38,25 @@ export default function PeopleGrid(collection: Collection | null) {
       { field: "firstName", headerName: "First name", width: 130 },
       { field: "lastName", headerName: "Last name", width: 130 },
       { field: "schoolName", headerName: "School", width: 90 },
-      { field: "isActive", headerName: "Active", width: 90 },
+      {
+        field: "isActive",
+        headerName: "Status",
+        width: 90,
+        renderCell: (params: GridRenderCellParams) => {
+          const toggleStatus = () => {
+            const userId = params.id as string;
+            const newStatus = !params.value;
+            
+            requests.updateUser(userId, undefined, undefined, newStatus, undefined);
+          };
+
+          return (
+            <Button size="small" variant="contained" color={params.value ? "success" : "warning"} onClick={toggleStatus}>
+              <p>{params.value ? "Active" : "Inactive"}</p>
+            </Button>
+          );
+        },
+      },
       {
         field: "userRole",
         headerName: "User Role",
@@ -52,11 +68,13 @@ export default function PeopleGrid(collection: Collection | null) {
               value={userRoles[params.id as number] || userRoleKey}
               onChange={(event) => handleUserRoleChange(params.id as string, event)}
             >
-              {Object.values(UserRoles).filter(value => typeof value === 'string').map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role}
-                </MenuItem>
-              ))}
+              {Object.values(UserRoles)
+                .filter((value) => typeof value === "string")
+                .map((role) => (
+                  <MenuItem key={role} value={role}>
+                    {role}
+                  </MenuItem>
+                ))}
             </Select>
           );
         },
@@ -64,7 +82,7 @@ export default function PeopleGrid(collection: Collection | null) {
     ];
   }
 
-  if (collection!.allSchools!.length > 0) {
+  if (collection && collection.allSchools && collection!.allSchools!.length > 0) {
     data = collection!.allSchools;
     columns = [
       { field: "name", headerName: "Name", width: 100 },
@@ -73,7 +91,7 @@ export default function PeopleGrid(collection: Collection | null) {
     ];
   }
 
-  if (collection!.allClassess!.length > 0) {
+  if (collection && collection.allClassess && collection!.allClassess!.length > 0) {
     data = collection!.allClassess!.map((user) => ({
       ...user,
       schoolName: user.school?.name,
