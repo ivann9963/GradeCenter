@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import requests from "../../requests";
 import { School } from "../../models/school";
-import PeopleGrid from "./people-grid";
+import AllClassessGrid from "../admin-panel/alllClassessGrid";
 
 export default function SchoolDetails() {
   let { schoolId } = useParams();
@@ -40,7 +40,7 @@ export default function SchoolDetails() {
               <Box p={3}>
                 {/* Render People data here */}
                 <Typography>
-                    <PeopleGrid allSchools={[]} allUsers={[]} allClassess={[]}/>
+                    {/* <AllClassessGrid allSchools={[]} allUsers={[]} allClassess={[]}/> */}
                 </Typography>
               </Box>
             )}
@@ -48,7 +48,7 @@ export default function SchoolDetails() {
               <Box p={3}>
                 {/* Render School Classes data here */}
                 <Typography>
-                    <PeopleGrid allSchools={[]} allUsers={[]} allClassess={[]}/>
+                    {/* <AllClassessGrid allSchools={[]} allUsers={[]} allClassess={[]}/> */}
                 </Typography>
               </Box>
             )}
