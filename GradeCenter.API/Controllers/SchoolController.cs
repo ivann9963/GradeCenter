@@ -73,7 +73,6 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <param name="requestModel"></param>
         /// <returns></returns>
-        [Authorize]
         [HttpPut("Update")]
         public async Task<IActionResult> Update(SchoolUpdateRequest requestModel)
         {

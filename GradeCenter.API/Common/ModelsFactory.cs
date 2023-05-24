@@ -16,12 +16,12 @@ namespace GradeCenter.API.Common
                 && updateRequest.Users != null && updateRequest.Users.Count >= 0)
             {
                 model = updateRequest;
-                users = updateRequest.Users.Select(x => new AspNetUser { Id = x.UserId }).ToList();
+                users = updateRequest.Users.Select(x => new AspNetUser { Id = (Guid)x.UserId, UserRole = x.Role }).ToList();
             }
 
             return new School
             {
-                Id = model is SchoolUpdateRequest updateModel ? updateModel.Id : null,
+                //Id = model is SchoolUpdateRequest updateModel ? updateModel.Id : null,
                 Name = model.Name,
                 Address = model.Address,
                 People = users
@@ -31,13 +31,16 @@ namespace GradeCenter.API.Common
         {
             var model = requestModel;
 
+            if (requestModel.Teacher == null && requestModel.Teacher.UserId == null)
+                return null;
+
             return new SchoolClass
             {
                 Id = Guid.Empty,
                 Department = model.Department,
                 HeadTeacher = new AspNetUser
                 {
-                    Id = requestModel.Teacher.UserId,
+                    Id = (Guid)requestModel.Teacher.UserId,
                 },
                 School = new School
                 {

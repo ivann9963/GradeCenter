@@ -1,9 +1,11 @@
-﻿namespace GradeCenter.API.Models.Request
+﻿using GradeCenter.Data.Models.Account;
+
+namespace GradeCenter.API.Models.Request
 {
     public class UserRequestModel
     {
-        public Guid UserId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public Guid? UserId { get; set; }
+
+        public UserRoles? Role { get; set; }
     }
 }
