@@ -82,7 +82,7 @@ const updateUser = (userId: string, newPassword: string | undefined, newRole: Us
   });
 }
 
-const AddChild = (parentId: string, firstName: string, lastName: string) => {
+const addChild = (parentId: string, firstName: string, lastName: string) => {
   const url = `https://localhost:7273/api/Account/AddChild`;
   const token = sessionStorage["jwt"];
 
@@ -100,7 +100,29 @@ const AddChild = (parentId: string, firstName: string, lastName: string) => {
     },
   });
 }
-// Add more requests here...
+
+const changeSchool = (newSchool: string, userId: string) => {
+  const url = `https://localhost:7273/api/School/Update`;
+  const token = sessionStorage["jwt"];
+
+  return axios({
+    method: "put",
+    url: url,
+    data: {
+        name: newSchool,
+        users: [
+          {
+            userId: userId,
+            role: 4
+          }
+        ]
+      },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 
 const requests = {
     getSchoolById,
@@ -108,7 +130,8 @@ const requests = {
     getAllUsers,
     getAllSchoolsClassess,
     updateUser,
-    AddChild
+    addChild,
+    changeSchool
 };
 
 export default requests;

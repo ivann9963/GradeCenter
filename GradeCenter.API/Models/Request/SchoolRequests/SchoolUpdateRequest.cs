@@ -4,8 +4,7 @@ namespace GradeCenter.API.Models.Request.SchoolRequests
 {
     public class SchoolUpdateRequest : SchoolCreateRequest
     {
-        [Required]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         public ICollection<UserRequestModel>? Users { get; set; }
     }

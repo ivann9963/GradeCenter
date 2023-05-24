@@ -98,20 +98,17 @@ namespace GradeCenter.Services.Schools
         /// <returns></returns>
         public async Task Update(School? updatedSchool)
         {
-            var currentSchool = GetSchoolById(updatedSchool.Id);
+            var currentSchool = GetSchoolByName(updatedSchool.Name);
 
             if (currentSchool == null)
                 return;
 
-            currentSchool.Name = updatedSchool.Name;
-            currentSchool.Address = updatedSchool.Address;
+            if (updatedSchool.Address != null)
+                currentSchool.Address = updatedSchool.Address;
 
             await AddPrincipleToSchool(updatedSchool);
             await AddTeachersToSchool(updatedSchool);
             await AddStudentsToSchool(updatedSchool);
-
-            if (updatedSchool.People.Any())
-                currentSchool.People.Union(updatedSchool.People);
 
             await _db.SaveChangesAsync();
         }
@@ -154,13 +151,18 @@ namespace GradeCenter.Services.Schools
             if (!updatedSchool.People.Any(x => x.UserRole == UserRoles.Student))
                 return;
 
-            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+            var currentSchool = _db.Schools.FirstOrDefault(x => x.Name == updatedSchool.Name);
 
-            var newStudents = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Student && x.IsActive.HasValue && x.IsActive.Value).ToList();
+            var newStudents = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Student).ToList();
 
-            newStudents.ForEach(s => currentSchool.People.Add(s));
+            foreach (var student in newStudents)
+            {
+                var currentSudents = _db.Users.FirstOrDefault(u => u.Id == student.Id);
+                currentSudents.SchoolId = currentSchool.Id;
+                currentSudents.School = currentSchool;
 
-            await _db.SaveChangesAsync();
+                _db.SaveChanges();
+            }
         }
 
         /// <summary>

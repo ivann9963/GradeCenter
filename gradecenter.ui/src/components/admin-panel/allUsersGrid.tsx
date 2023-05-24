@@ -4,23 +4,34 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid"; /
 import { School } from "../../models/school";
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
 import { SchoolClass } from "../../models/schoolClass";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
 import requests from "../../requests";
 
-
 interface AllUsersGridParams {
-    allUsers: AspNetUser[] | null
+  allUsers: AspNetUser[] | null;
 }
 
 export default function AllUsersGrid(params: AllUsersGridParams) {
   let data: School[] | AspNetUser[] | SchoolClass[] | null = null;
   let columns: GridColDef[] | null = null;
   const [userRoles, setUserRoles] = React.useState<Record<number, UserRoles>>({});
-  const [open, setOpen] = React.useState(false);
+  const [childOpen, setChildOpen] = React.useState(false);
   const [currentParentId, setCurrentParentId] = React.useState<string | null>(null);
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [newSchool, setNewSchool] = React.useState("");
+  const [schoolOpen, setSchoolOpen] = React.useState(false);
+
   const handleUserRoleChange = (userId: string, event: SelectChangeEvent<UserRoles>) => {
     const selectedRole = UserRoles[event.target.value as keyof typeof UserRoles];
     setUserRoles({
@@ -31,42 +42,59 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
     requests.updateUser(userId, undefined, selectedRole, undefined, undefined);
   };
 
-  const handleSubmit = async () => {
+  const SubmitAddChild = async () => {
     // Send your API request here using firstName and lastName
-    await requests.AddChild(currentParentId!, firstName, lastName);
+    await requests.addChild(currentParentId!, firstName, lastName);
     // Clear the form fields and close the dialog
-    setFirstName('');
-    setLastName('');
+    setFirstName("");
+    setLastName("");
     setCurrentParentId(null);
-    setOpen(false);
+    setChildOpen(false);
   };
-  
+
+
   const ChildAddDialog = () => (
-    <Dialog open={open} onClose={() => setOpen(false)}>
+    <Dialog open={childOpen} onClose={() => setChildOpen(false)}>
       <DialogTitle>Add Child</DialogTitle>
       <DialogContent>
         <form>
-          <TextField
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            label="First Name"
-            fullWidth
-          />
-          <TextField
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            label="Last Name"
-            fullWidth
-          />
+          <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} label="First Name" fullWidth />
+          <br />
+          <br />
+          <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} label="Last Name" fullWidth />
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpen(false)}>Cancel</Button>
-        <Button onClick={handleSubmit}>Save</Button>
+        <Button onClick={() => setChildOpen(false)}>Cancel</Button>
+        <Button onClick={SubmitAddChild}>Save</Button>
       </DialogActions>
     </Dialog>
   );
-  
+
+  const SubmitChangeSchool = async () => {
+    // Send your API request here using firstName and lastName
+    await requests.changeSchool(newSchool, currentParentId!);
+    // Clear the form fields and close the dialog
+    setNewSchool("");
+    setCurrentParentId(null);
+    setSchoolOpen(false);
+  };
+
+  const ChangeSchoolDialog = () => (
+    <Dialog open={schoolOpen} onClose={() => setSchoolOpen(false)}>
+      <DialogTitle>Change School</DialogTitle>
+      <DialogContent>
+        <form>
+          <TextField value={newSchool} onChange={(e) => setNewSchool(e.target.value)} label="New School.." fullWidth />
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setSchoolOpen(false)}>Cancel</Button>
+        <Button onClick={SubmitChangeSchool}>Save</Button>
+      </DialogActions>
+    </Dialog>
+  );
+
   if (params && params.allUsers && params!.allUsers!.length > 0) {
     data = params!.allUsers!.map((user) => ({
       ...user,
@@ -76,7 +104,28 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
     columns = [
       { field: "firstName", headerName: "First name", width: 130 },
       { field: "lastName", headerName: "Last name", width: 130 },
-      { field: "schoolName", headerName: "School", width: 90 },
+      {
+        field: "schoolName",
+        headerName: "School",
+        width: 90,
+        renderCell: (params: GridRenderCellParams) => {
+          return (
+            <Button
+              size="small"
+              variant="contained"
+              sx={{ borderRadius: "10%", height: 40, fontSize: 13 }}
+              color={"primary"}
+              onClick={() => {
+                setSchoolOpen(true);
+                console.log(params, { depth: null});
+                setCurrentParentId(params.row.id as string);
+              }}
+            >
+              <h5>{params.row.schoolName}</h5>
+            </Button>
+          );
+        },
+      },
       {
         field: "isActive",
         headerName: "Status",
@@ -90,7 +139,13 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
           };
 
           return (
-            <Button size="small" variant="contained" sx={{ borderRadius: '12%', height: 40, fontSize: 12 }} color={params.value ? "success" : "error"} onClick={toggleStatus}>
+            <Button
+              size="small"
+              variant="contained"
+              sx={{ borderRadius: "12%", height: 40, fontSize: 12 }}
+              color={params.value ? "success" : "error"}
+              onClick={toggleStatus}
+            >
               <h4>{params.value ? "Active" : "Inactive"}</h4>
             </Button>
           );
@@ -123,16 +178,22 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
         headerName: "Actions",
         renderCell: (params: GridRenderCellParams) => {
           const userRoleKey = UserRoles[params.row.userRole as keyof typeof UserRoles];
-          console.log(userRoleKey);
-          if (userRoleKey.toLocaleString() !== 'Parent') {
+
+          if (userRoleKey.toLocaleString() !== "Parent") {
             return null;
           }
+
           return (
-            <Button size="small" variant="contained" sx={{ borderRadius: '10%', height: 40, fontSize: 13 }} color={"primary"} 
-            onClick={() => {
-              setOpen(true);
-              setCurrentParentId(params.id as string);
-            }}>
+            <Button
+              size="small"
+              variant="contained"
+              sx={{ borderRadius: "10%", height: 40, fontSize: 13 }}
+              color={"primary"}
+              onClick={() => {
+                setChildOpen(true);
+                setCurrentParentId(params.id as string);
+              }}
+            >
               <h5>Add child</h5>
             </Button>
           );
@@ -150,7 +211,8 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
         rowHeight={48}
         checkboxSelection={false}
       />
-     <ChildAddDialog />
+      <ChildAddDialog />
+      <ChangeSchoolDialog />
     </Box>
   );
 }
