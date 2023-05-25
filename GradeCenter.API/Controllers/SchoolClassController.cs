@@ -76,7 +76,7 @@ namespace GradeCenter.API.Controllers
             if (checkedRequest != null)
                 return checkedRequest;
 
-            await _schoolClassService.EnrollForClass(requestModel.SchoolClassId, requestModel.StudentId);
+            await _schoolClassService.EnrollForClass(requestModel.SchoolClassName, requestModel.StudentId);
 
             return Ok();
         }
@@ -88,14 +88,14 @@ namespace GradeCenter.API.Controllers
         /// <param name="requestModel"></param>
         /// <returns></returns>
         [HttpPut("WithdrawFromClass")]
-        public async Task<IActionResult> WithdrawFromClass(EnrollWithdrawRequestModel requestModel)
+        public async Task<IActionResult> WithdrawFromClass(string studentId)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
 
-            await _schoolClassService.WithdrawFromClass(requestModel.SchoolClassId, requestModel.StudentId);
+            await _schoolClassService.WithdrawFromClass(studentId);
 
             return Ok();
         }

@@ -124,6 +124,41 @@ const changeSchool = (newSchool: string, userId: string) => {
   });
 }
 
+const enroll = (userId: string, schoolClassName: string) => {
+  const url = `https://localhost:7273/api/SchoolClass/EnrollForClass`;
+  const token = sessionStorage["jwt"];
+
+  return axios({
+    method: "put",
+    url: url,
+    data: {
+      studentId: userId,
+      SchoolClassName: schoolClassName,
+      },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+const withdraw = (userId: string) => {
+  const url = `https://localhost:7273/api/SchoolClass/WithdrawFromClass/?studentId=${userId}`;
+  const token = sessionStorage["jwt"];
+
+  return axios({
+    method: "put",
+    url: url,
+    data: {
+      studentId: userId,
+      },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 const requests = {
     getSchoolById,
     getAllSchools,
@@ -131,7 +166,9 @@ const requests = {
     getAllSchoolsClassess,
     updateUser,
     addChild,
-    changeSchool
+    changeSchool,
+    enroll,
+    withdraw,
 };
 
 export default requests;

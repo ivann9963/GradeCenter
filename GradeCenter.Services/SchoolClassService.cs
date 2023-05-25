@@ -55,51 +55,55 @@ namespace GradeCenter.Services
         /// <summary>
         /// Enrolls a new Student entity in the School Classes collection.
         /// </summary>
-        /// <param name="classId"></param>
+        /// <param name="className"></param>
         /// <param name="studentId"></param>
         /// <returns></returns>
-        public async Task EnrollForClass(string classId, string studentId)
+        public async Task EnrollForClass(string className, string studentId)
         {
             var student = _accountService.GetUserById(studentId);
-            var schoolClass = _schoolService.GetSchoolClassById(classId);
+            var schoolClass = GetSchoolClassByName(className);
 
-            if (student == null)
-                return;
-
-            if (schoolClass == null)
+            if (student == null || schoolClass == null)
                 return;
 
             if (IsStudentInClass(schoolClass, student))
                 return;
 
-            schoolClass.Students.Add(student);
+            student.SchoolClass = schoolClass;
 
-            await this._db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
         /// <summary>
         /// Withdraws an existing Student entity in the School Classes collection.
         /// </summary>
-        /// <param name="classId"></param>
+        /// <param name="className"></param>
         /// <param name="studentId"></param>
         /// <returns></returns>
-        public async Task WithdrawFromClass(string classId, string studentId)
+        public async Task WithdrawFromClass(string studentId)
         {
             var student = _accountService.GetUserById(studentId);
-            var schoolClass = _schoolService.GetSchoolClassById(classId);
+            var schoolClass = student.SchoolClass;
 
-            if (student == null)
+            if (student == null || schoolClass == null)
                 return;
 
-            if (schoolClass == null)
+            if (!IsStudentInClass(schoolClass, student))
                 return;
 
-            if (IsStudentInClass(schoolClass, student))
-                return;
+            student.SchoolClass = null;
 
-            schoolClass.Students.Remove(student);
+            await _db.SaveChangesAsync();
+        }
 
-            await this._db.SaveChangesAsync();
+        public SchoolClass GetSchoolClassByName(string schoolClassName)
+        {
+            int year = schoolClassName[0] - '0';
+            string department = schoolClassName.Remove(0, 1);
+
+            var schoolClass = _db.SchoolClasses.FirstOrDefault(sc => sc.Year == year && sc.Department == department);
+
+            return schoolClass;
         }
 
         /// <summary>
