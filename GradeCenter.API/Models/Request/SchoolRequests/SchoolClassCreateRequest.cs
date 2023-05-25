@@ -6,7 +6,7 @@ namespace GradeCenter.API.Models.Request.SchoolRequests
     {
         public int Year { get; set; }
         public string Department { get; set; }
-        public string SchoolId { get; set; }
-        public UserRequestModel Teacher { get; set; }
+        public string SchoolName { get; set; }
+        public string TeacherNames { get; set; }
     }
 }

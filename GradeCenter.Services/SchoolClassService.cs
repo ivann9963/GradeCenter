@@ -23,6 +23,7 @@ namespace GradeCenter.Services
         {
             var allClassess = _db.SchoolClasses
                 .Include(s => s.School)
+                .Include(t => t.HeadTeacher)
                 .ToList();
 
             return allClassess;
@@ -36,13 +37,13 @@ namespace GradeCenter.Services
         /// <returns></returns>
         public async Task CreateClass(SchoolClass newSchoolClass)
         {
-            var teacher = _accountService.GetUserById(newSchoolClass.HeadTeacher.Id.ToString());
-            var school = _schoolService.GetSchoolById(newSchoolClass.School.Id);
+            var firstLastNames = $"{newSchoolClass.HeadTeacher.FirstName} {newSchoolClass.HeadTeacher.LastName}";
 
-            if (teacher == null)
-                return;
+            var teacher = _accountService.GetUserByNames(firstLastNames); // TODO: make it take 2 argumants instead
 
-            if (school == null)
+            var school = _schoolService.GetSchoolByName(newSchoolClass.School.Name);
+
+            if (teacher == null || school == null)
                 return;
 
             newSchoolClass.HeadTeacher = teacher;
