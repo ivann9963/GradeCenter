@@ -2,7 +2,7 @@
 {
     public class EnrollWithdrawRequestModel
     {
-        public string SchoolClassId { get; set; }
+        public string SchoolClassName { get; set; }
         public string StudentId { get; set; }
     }
 }

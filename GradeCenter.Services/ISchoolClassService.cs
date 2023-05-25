@@ -7,6 +7,6 @@ namespace GradeCenter.Services
         Task CreateClass(SchoolClass newSchoolClass);
         Task EnrollForClass(string classId, string studentId);
         List<SchoolClass> GetAllClassess();
-        Task WithdrawFromClass(string classId, string studentId);
+        Task WithdrawFromClass(string studentId);
     }
 }
