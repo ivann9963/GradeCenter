@@ -166,5 +166,15 @@ namespace GradeCenter.Services
                 .Include(sc => sc.SchoolClass)
                 .ToList();
         }
+
+        public AspNetUser GetUserByNames(string firstLastName)
+        {
+            var firstName = firstLastName.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+            var lastName = firstLastName.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1];
+
+            var user = _db.Users.FirstOrDefault(u => u.FirstName == firstName && u.LastName == lastName);
+
+            return user;
+        }
     }
 }

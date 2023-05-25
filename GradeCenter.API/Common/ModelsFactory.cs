@@ -31,7 +31,7 @@ namespace GradeCenter.API.Common
         {
             var model = requestModel;
 
-            if (requestModel.Teacher == null && requestModel.Teacher.UserId == null)
+            if (requestModel.TeacherNames == null)
                 return null;
 
             return new SchoolClass
@@ -40,11 +40,12 @@ namespace GradeCenter.API.Common
                 Department = model.Department,
                 HeadTeacher = new AspNetUser
                 {
-                    Id = (Guid)requestModel.Teacher.UserId,
+                    FirstName = requestModel.TeacherNames.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0],
+                    LastName = requestModel.TeacherNames.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1],
                 },
                 School = new School
                 {
-                    Id = requestModel.SchoolId
+                    Name = requestModel.SchoolName,
                 },
                 Year = model.Year
             };

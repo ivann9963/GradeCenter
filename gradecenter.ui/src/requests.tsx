@@ -159,6 +159,26 @@ const withdraw = (userId: string) => {
   });
 }
 
+const createSchoolClass = (year: number, department: string, schoolName: string, teacherNames: string) => {
+  const url = `https://localhost:7273/api/SchoolClass/CreateClass`;
+  const token = sessionStorage["jwt"];
+
+  return axios({
+    method: "post",
+    url: url,
+    data: {
+       year: year,
+       department: department,
+       schoolName: schoolName,
+       teacherNames: teacherNames,
+      },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 const requests = {
     getSchoolById,
     getAllSchools,
@@ -169,6 +189,7 @@ const requests = {
     changeSchool,
     enroll,
     withdraw,
+    createSchoolClass
 };
 
 export default requests;
