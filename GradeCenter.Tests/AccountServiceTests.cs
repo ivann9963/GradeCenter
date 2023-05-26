@@ -116,7 +116,7 @@ namespace GradeCenter.Tests
             string newPhoneNumber = "0987654321";
 
             // Act
-            _accountService.UpdateUser(loggedUser, newPassword, newPhoneNumber);
+            _accountService.UpdateUser(loggedUser.Id.ToString(), newPassword, (UserRoles)loggedUser.UserRole, true ,newPhoneNumber);
 
             // Assert
             Assert.Equal(newPassword.GetHashCode().ToString(), loggedUser.PasswordHash);
