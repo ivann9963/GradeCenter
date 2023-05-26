@@ -2,21 +2,12 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid"; // Import DataGrid instead of DataGridPro
 import { School } from "../../models/school";
-import { AspNetUser, UserRoles } from "../../models/aspNetUser";
+import { AspNetUser } from "../../models/aspNetUser";
 import { SchoolClass } from "../../models/schoolClass";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import requests from "../../requests";
+import TransferList from "./curricullumTransferList";
+import Discipline from "../../models/discipline";
 
 interface AllClassessGridParams {
   allClassess: SchoolClass[] | null;
@@ -29,29 +20,100 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
   const [newClass, setNewClass] = React.useState("");
   const [schoolName, setSchoolName] = React.useState("");
   const [teacherNames, setTeacherNames] = React.useState("");
+  const [openTransferList, setOpenTransferList] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] = React.useState(null);
+  const [selectedItems, setSelectedItems] = React.useState<readonly string[]>([]);
+  const [left, setLeft] = React.useState<readonly string[]>([
+    "Math",
+    "Science",
+    "English",
+    "History",
+    "Music",
+    "Art",
+    "Physical Education",
+    "Computer Science",
+  ]);
+  const [right, setRight] = React.useState<readonly string[]>([]);
+
+  const TransferListDialog = () => {
+    const handleCloseTransferList = () => {
+      setOpenTransferList(false);
+    };
+
+    const SubmitCurricullum = () => {
+      setOpenTransferList(false);
+
+      const disciplines: Discipline[] = [];
+
+      const schoolClassId = (selectedRowData as any).id;
+      const headTeacherId = (selectedRowData as any).headTeacher.id;
+      
+      selectedItems.forEach((i) => {
+        const discipline: Discipline = new Discipline(i, schoolClassId, headTeacherId);
+
+        disciplines.push(discipline);
+      });
+
+      requests.createCurricullum(disciplines);
+    };
+
+    return (
+      <Dialog open={openTransferList} onClose={handleCloseTransferList}>
+        <DialogTitle>Transfer List</DialogTitle>
+        <DialogContent>
+          {selectedRowData && (
+            <TransferList
+              rowData={selectedRowData}
+              onClose={handleCloseTransferList}
+              setSelectedItems={setSelectedItems}
+              left={left}
+              setLeft={setLeft}
+              right={right}
+              setRight={setRight}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseTransferList}>Cancel</Button>
+          <Button onClick={SubmitCurricullum}>Save</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   const CreateSchoolClassButton = () => (
-    <Button variant="outlined" sx={{ marginBottom: 2, marginTop: -2, marginLeft: 1}}  onClick={() => setCreateSchoolClassOpen(true)}>+ New</Button>
+    <Button
+      variant="outlined"
+      sx={{ marginBottom: 2, marginTop: -2, marginLeft: 1 }}
+      onClick={() => setCreateSchoolClassOpen(true)}
+    >
+      + New
+    </Button>
   );
 
   const submitCreateNewClass = () => {
     var year = newClass[0] as unknown as number;
     var department = newClass[1];
 
-    requests.createSchoolClass(year, department, schoolName, teacherNames)
-  }
+    requests.createSchoolClass(year, department, schoolName, teacherNames);
+  };
 
   const CreateSchoolClassDialog = () => (
     <Dialog open={createSchoolClassOpen} onClose={() => setCreateSchoolClassOpen(false)}>
       <DialogTitle>Create School Class</DialogTitle>
       <DialogContent>
-          <TextField value={newClass} onChange={(e) => setNewClass(e.target.value)} label="Ex: '8A'.." fullWidth />
-          <br />
-          <br />
-          <TextField value={schoolName} onChange={(e) => setSchoolName(e.target.value)} label="School Name.." fullWidth />
-          <br />
-          <br />
-          <TextField value={teacherNames} onChange={(e) => setTeacherNames(e.target.value)} label="Taecher First and Last names.." fullWidth />
+        <TextField value={newClass} onChange={(e) => setNewClass(e.target.value)} label="Ex: '8A'.." fullWidth />
+        <br />
+        <br />
+        <TextField value={schoolName} onChange={(e) => setSchoolName(e.target.value)} label="School Name.." fullWidth />
+        <br />
+        <br />
+        <TextField
+          value={teacherNames}
+          onChange={(e) => setTeacherNames(e.target.value)}
+          label="Taecher First and Last names.."
+          fullWidth
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setCreateSchoolClassOpen(false)}>Cancel</Button>
@@ -67,8 +129,12 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
     }));
 
     columns = [
-      { field: "year", headerName: "Year", width: 100 },
-      { field: "department", headerName: "Department", width: 150 },
+      {
+        field: "year",
+        headerName: "Year",
+        width: 100,
+        valueGetter: (params) => `${params.row.year} ${params.row.department}`,
+      },
       {
         field: "headTeacher",
         headerName: "Head Teacher",
@@ -93,10 +159,31 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
         width: 200,
         valueGetter: (params) => params.row.curriculum.length,
       },
+      {
+        field: "-",
+        headerName: "Curricullum",
+        width: 90,
+        renderCell: (params: GridRenderCellParams) => {
+          const handleOpenTransferList = () => {
+            setSelectedRowData(params.row);
+            setOpenTransferList(true);
+          };
+
+          return (
+            <Button
+              size="small"
+              variant="contained"
+              sx={{ borderRadius: "12%", height: 40, fontSize: 12 }}
+              color={"info"}
+              onClick={handleOpenTransferList}
+            >
+              <h4>Change</h4>
+            </Button>
+          );
+        },
+      },
     ];
   }
-
-  console.log(params?.allClassess);
 
   return (
     <Box sx={{ height: 520, width: "100%" }}>
@@ -110,6 +197,7 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
         checkboxSelection={false}
       />
       <CreateSchoolClassDialog />
+      <TransferListDialog />
     </Box>
   );
 }

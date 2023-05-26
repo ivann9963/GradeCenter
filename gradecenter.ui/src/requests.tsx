@@ -1,5 +1,6 @@
 import axios from "axios";
 import { UserRoles } from "./models/aspNetUser";
+import Discipline from "./models/discipline";
 
 const api = axios.create({
   baseURL: 'https://localhost:7273/api',
@@ -22,7 +23,6 @@ api.interceptors.request.use(
   }
 );
 
-// Define your requests
 const getSchoolById = (schoolId: string) => api.get(`/School/GetSchoolById?schoolId=${schoolId}`);
 
 const getAllSchools = () => api.get(`/School/GetAllSchools`);
@@ -63,6 +63,10 @@ const createSchoolClass = (year: number, department: string, schoolName: string,
     teacherNames: teacherNames,
   });
 
+  const createCurricullum = (disciplines: Discipline[]) => 
+  api.post(`/Curriculum/Create`, disciplines);
+
+
 const requests = {
     getSchoolById,
     getAllSchools,
@@ -73,7 +77,8 @@ const requests = {
     changeSchool,
     enroll,
     withdraw,
-    createSchoolClass
+    createSchoolClass,
+    createCurricullum
 };
 
 export default requests;

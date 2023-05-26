@@ -23,6 +23,7 @@ namespace GradeCenter.Services
         {
             var allClassess = _db.SchoolClasses
                 .Include(s => s.School)
+                .Include(st => st.Students)
                 .Include(t => t.HeadTeacher)
                 .ToList();
 
