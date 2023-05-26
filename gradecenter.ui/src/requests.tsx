@@ -1,183 +1,67 @@
-// requests.tsx
 import axios from "axios";
 import { UserRoles } from "./models/aspNetUser";
 
-const getSchoolById = (schoolId: string) => {
-    const url = `https://localhost:7273/api/School/GetSchoolById`;
-    const token = sessionStorage["jwt"];
+const api = axios.create({
+  baseURL: 'https://localhost:7273/api',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${sessionStorage['jwt']}`,
+  },
+});
 
-    return axios({
-      method: "get",
-      url: url,
-      params: {
-        schoolId: schoolId,
-      },
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-};
+api.interceptors.request.use(
+  (config) => {
+    if (!sessionStorage['jwt']) {
+      window.location.href = '/login';
+    }
 
-const getAllSchools = () => {
-    const url = `https://localhost:7273/api/School/GetAllSchools`;
-    const token = sessionStorage["jwt"];
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-    return axios({
-      method: "get",
-      url: url,
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-};
+// Define your requests
+const getSchoolById = (schoolId: string) => api.get(`/School/GetSchoolById?schoolId=${schoolId}`);
 
-const getAllUsers = () => {
-  const url = `https://localhost:7273/api/Account/GetAllUsers`;
-    const token = sessionStorage["jwt"];
+const getAllSchools = () => api.get(`/School/GetAllSchools`);
 
-    return axios({
-      method: "get",
-      url: url,
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-}
+const getAllUsers = () => api.get(`/Account/GetAllUsers`);
 
-const getAllSchoolsClassess = () => {
-  const url = `https://localhost:7273/api/SchoolClass/GetAllClassess`;
-  const token = sessionStorage["jwt"];
+const getAllSchoolsClassess = () => api.get(`/SchoolClass/GetAllClassess`);
 
-  return axios({
-    method: "get",
-    url: url,
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
+const updateUser = (userId: string, newPassword: string | undefined, newRole: UserRoles | undefined, isActive: boolean | undefined, newPhoneNumber: string | undefined) =>
+  api.put(`/Account/Update?userId=${userId}&newPassword=${newPassword}&newRole=${newRole}&isActive=${isActive}&newPhoneNumber=${newPhoneNumber}`);
 
-const updateUser = (userId: string, newPassword: string | undefined, newRole: UserRoles | undefined, isActive: boolean | undefined, newPhoneNumber: string | undefined) => {
-  const url = `https://localhost:7273/api/Account/Update`;
-  const token = sessionStorage["jwt"];
+const addChild = (parentId: string, firstName: string, lastName: string) =>
+  api.put(`/Account/AddChild?parentId=${parentId}&childFirstName=${firstName}&childLastName=${lastName}`);
 
-  return axios({
-    method: "put",
-    url: url,
-    params: {
+const changeSchool = (newSchool: string, userId: string) =>
+  api.put(`/School/Update`, {
+    name: newSchool,
+    users: [{
       userId: userId,
-      newPassword: newPassword,
-      newRole: newRole,
-      isActive: isActive,
-      newPhoneNumber: newPhoneNumber 
-    },
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8",
-      Authorization: `Bearer ${token}`,
-    },
+      role: 4
+    }]
   });
-}
 
-const addChild = (parentId: string, firstName: string, lastName: string) => {
-  const url = `https://localhost:7273/api/Account/AddChild`;
-  const token = sessionStorage["jwt"];
-
-  return axios({
-    method: "put",
-    url: url,
-    params: {
-      parentId: parentId,
-      childFirstName: firstName,
-      childLastName: lastName
-    },
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8",
-      Authorization: `Bearer ${token}`,
-    },
+const enroll = (userId: string, schoolClassName: string) =>
+  api.put(`/SchoolClass/EnrollForClass`, {
+    studentId: userId,
+    SchoolClassName: schoolClassName,
   });
-}
 
-const changeSchool = (newSchool: string, userId: string) => {
-  const url = `https://localhost:7273/api/School/Update`;
-  const token = sessionStorage["jwt"];
+const withdraw = (userId: string) =>
+  api.put(`/SchoolClass/WithdrawFromClass?studentId=${userId}`);
 
-  return axios({
-    method: "put",
-    url: url,
-    data: {
-        name: newSchool,
-        users: [
-          {
-            userId: userId,
-            role: 4
-          }
-        ]
-      },
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+const createSchoolClass = (year: number, department: string, schoolName: string, teacherNames: string) =>
+  api.post(`/SchoolClass/CreateClass`, {
+    year: year,
+    department: department,
+    schoolName: schoolName,
+    teacherNames: teacherNames,
   });
-}
-
-const enroll = (userId: string, schoolClassName: string) => {
-  const url = `https://localhost:7273/api/SchoolClass/EnrollForClass`;
-  const token = sessionStorage["jwt"];
-
-  return axios({
-    method: "put",
-    url: url,
-    data: {
-      studentId: userId,
-      SchoolClassName: schoolClassName,
-      },
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
-
-const withdraw = (userId: string) => {
-  const url = `https://localhost:7273/api/SchoolClass/WithdrawFromClass/?studentId=${userId}`;
-  const token = sessionStorage["jwt"];
-
-  return axios({
-    method: "put",
-    url: url,
-    data: {
-      studentId: userId,
-      },
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
-
-const createSchoolClass = (year: number, department: string, schoolName: string, teacherNames: string) => {
-  const url = `https://localhost:7273/api/SchoolClass/CreateClass`;
-  const token = sessionStorage["jwt"];
-
-  return axios({
-    method: "post",
-    url: url,
-    data: {
-       year: year,
-       department: department,
-       schoolName: schoolName,
-       teacherNames: teacherNames,
-      },
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
 
 const requests = {
     getSchoolById,
