@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Drawer from "./components/drawer";
 import Register from "./components/account/registerPage";
 import Login from "./components/account/loginPage";
-import Home from "./components/home/home"; // Import the Home component
+import Home from "./components/home/home"; 
 import Schools from "./components/school/schools-list";
-import Users from "./components/account/usersPage";
 import SchoolDetails from "./components/school/school-details";
 import AdminPanel from "./components/admin-panel/admin-panel";
 
@@ -26,12 +25,11 @@ export default function App() {
     <BrowserRouter>
       <Drawer />
       <Routes>
+        <Route path="/" element={getComponent(<Home />)} />
+        <Route path="/home" element={getComponent(<Home />)} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={getComponent(<Home />)} /> {/* Add the new route */}
-        <Route path="/" element={getComponent(<Home />)} /> {/* Add the new route */}
         <Route path="/schools" element={getComponent(<Schools />)} />
-        <Route path="/users" element={getComponent(<Users />)} />
         <Route path="/school-details/:schoolId" element={getComponent(<SchoolDetails />)} />
         <Route path="/admin-panel" element={getComponent(<AdminPanel />)} />
       </Routes>
