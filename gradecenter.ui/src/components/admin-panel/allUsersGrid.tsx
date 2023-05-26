@@ -237,9 +237,10 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
               sx={{ borderRadius: "10%", height: 40, fontSize: 10 }}
               color={params.row.schoolClass ? "warning" : "secondary"}
               onClick={() => {
-                if (params.row.schoolName) {
+                if (params.row.schoolClass) {
                   SubmitWithdrawFromClass(params.row.id as string);
                 } else {
+                  setCurrentParentId(params.row.id as string);
                   setEnrollOpen(true);
                 }
               }}
