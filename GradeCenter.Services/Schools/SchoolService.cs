@@ -1,6 +1,7 @@
 ﻿using GradeCenter.Data.Models;
 using GradeCenter.Data;
 using GradeCenter.Data.Models.Account;
+using Microsoft.EntityFrameworkCore;
 
 namespace GradeCenter.Services.Schools
 {
@@ -41,11 +42,32 @@ namespace GradeCenter.Services.Schools
         public School? GetSchoolById(string id)
         {
             var school = _db?.Schools
+                .Include(p => p.People)
+                .Include(sc => sc.SchoolClasses)
+                .ThenInclude(ht => ht.HeadTeacher)
                 .Where(school => school.IsActive)
                 .FirstOrDefault(school => school.Id == id);
 
             return school;
         }
+
+        /// <summary>
+        /// Gets all people in the selected school.
+        /// </summary>
+        /// <param name="schoolId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public List<AspNetUser> GetPeopleInSchool(string schoolId)
+        {
+            var people = _db.AspNetUsers
+                .Include(s => s.School)
+                .Include(c => c.SchoolClass)
+                .Where(s => s.School.Id == schoolId)
+                .ToList();
+
+            return people;
+        }
+
         public SchoolClass? GetSchoolClassById(string id)
         {
             var schoolClass = _db?.SchoolClasses

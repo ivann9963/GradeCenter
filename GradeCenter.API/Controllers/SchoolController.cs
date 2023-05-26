@@ -48,6 +48,19 @@ namespace GradeCenter.API.Controllers
             return Ok(school);
         }
 
+        [HttpGet("GetPeopleInSchool")]
+        public async Task<IActionResult> GetPeopleInSchool(string schoolId)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            List<AspNetUser> people = _schoolService.GetPeopleInSchool(schoolId);
+
+            return Ok(people);
+        }
+
         /// <summary>
         /// Creates an object of type School and stores it in the database.
         /// </summary>

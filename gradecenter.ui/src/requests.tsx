@@ -66,6 +66,10 @@ const createSchoolClass = (year: number, department: string, schoolName: string,
   const createCurricullum = (disciplines: Discipline[]) => 
   api.post(`/Curriculum/Create`, disciplines);
 
+  const getClassessInSchool = (schoolId: string) => api.get(`/SchoolClass/GetClassessInSchool?schoolId=${schoolId}`);
+
+  const getPeopleInSchool = (schoolId: string) => api.get(`/School/GetPeopleInSchool?schoolId=${schoolId}`);
+
 
 const requests = {
     getSchoolById,
@@ -78,7 +82,9 @@ const requests = {
     enroll,
     withdraw,
     createSchoolClass,
-    createCurricullum
+    createCurricullum,
+    getClassessInSchool,
+    getPeopleInSchool
 };
 
 export default requests;

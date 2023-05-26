@@ -30,6 +30,29 @@ namespace GradeCenter.Services
             return allClassess;
         }
 
+        public SchoolClass GetSchoolClassByName(string schoolClassName)
+        {
+            int year = schoolClassName[0] - '0';
+            string department = schoolClassName.Remove(0, 1);
+
+            var schoolClass = _db.SchoolClasses.FirstOrDefault(sc => sc.Year == year && sc.Department == department);
+
+            return schoolClass;
+        }
+
+        public List<SchoolClass> GetClassessInSchool(string schoolId)
+        {
+            var classessInSchool = _db.SchoolClasses
+                .Include(s => s.School)
+                .Include(ht => ht.HeadTeacher)
+                .Include(st => st.Students)
+                .Include(d => d.Curriculum)
+                .Where(s => s.School.Id == schoolId)
+                .ToList();
+
+            return classessInSchool;
+        }
+
         /// <summary>
         /// Creates a new SchoolClass entity instance
         /// in the database.
@@ -96,16 +119,6 @@ namespace GradeCenter.Services
             student.SchoolClass = null;
 
             await _db.SaveChangesAsync();
-        }
-
-        public SchoolClass GetSchoolClassByName(string schoolClassName)
-        {
-            int year = schoolClassName[0] - '0';
-            string department = schoolClassName.Remove(0, 1);
-
-            var schoolClass = _db.SchoolClasses.FirstOrDefault(sc => sc.Year == year && sc.Department == department);
-
-            return schoolClass;
         }
 
         /// <summary>
