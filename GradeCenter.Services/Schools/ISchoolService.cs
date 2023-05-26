@@ -16,5 +16,6 @@ namespace GradeCenter.Services.Schools
         Task AddTeachersToSchool(School? updatedSchool);
         Task AddStudentsToSchool(School? updatedSchool);
         Task Delete(string name);
+        List<AspNetUser> GetPeopleInSchool(string schoolId);
     }
 }
