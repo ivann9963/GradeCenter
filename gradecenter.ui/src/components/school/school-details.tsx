@@ -54,6 +54,7 @@ export default function SchoolDetails() {
         <Box>
           <Typography variant="h4">{school.name}</Typography>
           <Typography variant="h6">{school.address}</Typography>
+          <br />
           <Paper elevation={10}>
             <Tabs value={tabValue} onChange={handleTabChange}>
               <Tab label="People" />
