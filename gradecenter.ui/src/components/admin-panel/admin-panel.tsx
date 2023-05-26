@@ -38,7 +38,6 @@ export default function AdminPanel() {
       .getAllSchoolsClassess()
       .then((response) => {
         setSchoolClasses(response.data);
-        console.log(schoolClasses);
       })
       .catch((error) => {
         console.log(error);
