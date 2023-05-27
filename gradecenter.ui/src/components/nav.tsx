@@ -13,7 +13,7 @@ export default function Nav() {
       <nav>
         <List>
           {["Home", "My Class", "My schedulle" ].map((text, index) => (
-              <ListItem button key={text} component="a" href={'/' + text.toLowerCase()}>
+              <ListItem button key={text} component="a" href={'/' + text.replace(' ', '-').toLowerCase()}>
                 <ListItemIcon>
                   {
                     [<HomeIcon />, <PeopleIcon />, <CalendarMonthIcon />][index]

@@ -136,9 +136,22 @@ namespace GradeCenter.API.Controllers
             if (checkedRequest != null)
                 return null;
 
-            var loggedUserClasses = _curriculumService.GetCurricullumForSchoolClass(schoolClassId);
+            var schoolClassCurricullum = _curriculumService.GetCurricullumForSchoolClass(schoolClassId);
 
-            return loggedUserClasses;
+            return schoolClassCurricullum;
+        }
+
+        [HttpGet("GetLoggedUserCurricullum")]
+        public async Task<List<Discipline>?> GetLoggedUserCurricullum()
+        {
+            var loggedUser = await _requestValidator.GetLoggedUser(User);
+
+            if (loggedUser == null)
+                return null;
+
+            var loggedUserCurricullum = _curriculumService.GetLoggedUserClasses(loggedUser.Id);
+
+            return loggedUserCurricullum;
         }
     }
 }

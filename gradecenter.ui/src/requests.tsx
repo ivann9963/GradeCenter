@@ -3,22 +3,23 @@ import { UserRoles } from "./models/aspNetUser";
 import Discipline from "./models/discipline";
 
 const api = axios.create({
-  baseURL: 'https://localhost:7273/api',
+  baseURL: "https://localhost:7273/api",
   headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${sessionStorage['jwt']}`,
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${sessionStorage["jwt"]}`,
   },
 });
 
 api.interceptors.request.use(
   (config) => {
-    if (!sessionStorage['jwt']) {
-      window.location.href = '/login';
+    if (!sessionStorage["jwt"]) {
+      window.location.href = "/login";
     }
 
     return config;
   },
   (error) => {
+    window.location.href = "/login";
     return Promise.reject(error);
   }
 );
@@ -31,8 +32,16 @@ const getAllUsers = () => api.get(`/Account/GetAllUsers`);
 
 const getAllSchoolsClassess = () => api.get(`/SchoolClass/GetAllClassess`);
 
-const updateUser = (userId: string, newPassword: string | undefined, newRole: UserRoles | undefined, isActive: boolean | undefined, newPhoneNumber: string | undefined) =>
-  api.put(`/Account/Update?userId=${userId}&newPassword=${newPassword}&newRole=${newRole}&isActive=${isActive}&newPhoneNumber=${newPhoneNumber}`);
+const updateUser = (
+  userId: string,
+  newPassword: string | undefined,
+  newRole: UserRoles | undefined,
+  isActive: boolean | undefined,
+  newPhoneNumber: string | undefined
+) =>
+  api.put(
+    `/Account/Update?userId=${userId}&newPassword=${newPassword}&newRole=${newRole}&isActive=${isActive}&newPhoneNumber=${newPhoneNumber}`
+  );
 
 const addChild = (parentId: string, firstName: string, lastName: string) =>
   api.put(`/Account/AddChild?parentId=${parentId}&childFirstName=${firstName}&childLastName=${lastName}`);
@@ -40,10 +49,12 @@ const addChild = (parentId: string, firstName: string, lastName: string) =>
 const changeSchool = (newSchool: string, userId: string) =>
   api.put(`/School/Update`, {
     name: newSchool,
-    users: [{
-      userId: userId,
-      role: 4
-    }]
+    users: [
+      {
+        userId: userId,
+        role: 4,
+      },
+    ],
   });
 
 const enroll = (userId: string, schoolClassName: string) =>
@@ -52,8 +63,7 @@ const enroll = (userId: string, schoolClassName: string) =>
     SchoolClassName: schoolClassName,
   });
 
-const withdraw = (userId: string) =>
-  api.put(`/SchoolClass/WithdrawFromClass?studentId=${userId}`);
+const withdraw = (userId: string) => api.put(`/SchoolClass/WithdrawFromClass?studentId=${userId}`);
 
 const createSchoolClass = (year: number, department: string, schoolName: string, teacherNames: string) =>
   api.post(`/SchoolClass/CreateClass`, {
@@ -63,28 +73,29 @@ const createSchoolClass = (year: number, department: string, schoolName: string,
     teacherNames: teacherNames,
   });
 
-  const createCurricullum = (disciplines: Discipline[]) => 
-  api.post(`/Curriculum/Create`, disciplines);
+const createCurricullum = (disciplines: Discipline[]) => api.post(`/Curriculum/Create`, disciplines);
 
-  const getClassessInSchool = (schoolId: string) => api.get(`/SchoolClass/GetClassessInSchool?schoolId=${schoolId}`);
+const getClassessInSchool = (schoolId: string) => api.get(`/SchoolClass/GetClassessInSchool?schoolId=${schoolId}`);
 
-  const getPeopleInSchool = (schoolId: string) => api.get(`/School/GetPeopleInSchool?schoolId=${schoolId}`);
+const getPeopleInSchool = (schoolId: string) => api.get(`/School/GetPeopleInSchool?schoolId=${schoolId}`);
 
+const getLoggedUserCurricullum = () => api.get(`/Curriculum/GetLoggedUserCurricullum`);
 
 const requests = {
-    getSchoolById,
-    getAllSchools,
-    getAllUsers,
-    getAllSchoolsClassess,
-    updateUser,
-    addChild,
-    changeSchool,
-    enroll,
-    withdraw,
-    createSchoolClass,
-    createCurricullum,
-    getClassessInSchool,
-    getPeopleInSchool
+  getSchoolById,
+  getAllSchools,
+  getAllUsers,
+  getAllSchoolsClassess,
+  updateUser,
+  addChild,
+  changeSchool,
+  enroll,
+  withdraw,
+  createSchoolClass,
+  createCurricullum,
+  getClassessInSchool,
+  getPeopleInSchool,
+  getLoggedUserCurricullum
 };
 
 export default requests;

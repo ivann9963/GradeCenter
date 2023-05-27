@@ -1,16 +1,23 @@
 class Discipline {
-    Name: string;
-    SchoolClassId: string;
-    TeacherId: string;
+    name: string;
+    schoolClassId: string;
+    teacherId: string;
+    occuranceTime?: string | undefined;
+    occuranceDay?: number | undefined;
 
     constructor(
         name: string,
         schoolClassId: string,
         teacherId: string,
+        occuranceTime?: string | undefined,
+        occuranceDay?: number | undefined
     ) {
-        this.Name = name;
-        this.SchoolClassId = schoolClassId;
-        this.TeacherId = teacherId;
+        this.name = name;
+        this.schoolClassId = schoolClassId;
+        this.teacherId = teacherId;
+        this.occuranceTime = occuranceTime;
+        this.occuranceDay = occuranceDay;
+
     }
 }
 
