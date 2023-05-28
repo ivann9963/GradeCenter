@@ -20,17 +20,6 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const url = `https://localhost:7273/api/School/GetAllSchools`;
-var schools = [];
-axios({
-  method: "get",
-  url: url,
-  headers: {
-    "Content-Type": "text/plain;charset=utf-8",
-  },
-}).then((res) => {
-  schools = res.data;
-});
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -85,8 +74,6 @@ export default function Schools() {
   const onDelete = (schoolName: string): void => {
     const url = `https://localhost:7273/api/School/Delete`;
     const token = sessionStorage["jwt"];
-
-    console.log(token);
 
     axios({
       method: "delete",
