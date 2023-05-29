@@ -133,7 +133,7 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
         field: "year",
         headerName: "Year",
         width: 100,
-        valueGetter: (params) => `${params.row.year} ${params.row.department}`,
+        valueGetter: (params) => `${params.row.year}${params.row.department}`,
       },
       {
         field: "headTeacher",

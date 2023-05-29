@@ -139,7 +139,7 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
         field: "schoolClass.year",
         headerName: "Class",
         width: 90,
-        valueGetter: (params) => params.row.schoolClass?.year,
+        valueGetter: (params) => params.row.schoolClass?.year + params.row.schoolClass?.department ?? '-',
       },
       {
         field: "isActive",

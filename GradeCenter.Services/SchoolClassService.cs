@@ -32,8 +32,8 @@ namespace GradeCenter.Services
 
         public SchoolClass GetSchoolClassByName(string schoolClassName)
         {
-            int year = schoolClassName[0] - '0';
-            string department = schoolClassName.Remove(0, 1);
+            int year = schoolClassName.Length == 2 ? schoolClassName[0] - '0' : int.Parse($"{schoolClassName[0]}{schoolClassName[1]}");
+            string department = schoolClassName.Length == 2 ? schoolClassName.Remove(0, 1) : schoolClassName.Remove(0, 2);
 
             var schoolClass = _db.SchoolClasses.FirstOrDefault(sc => sc.Year == year && sc.Department == department);
 
