@@ -49,7 +49,7 @@ const updateUser = (
     url += `&newRole=${newRole}`;
   }
   
-  if(isActive) {
+  if(isActive !== null && isActive !== undefined) {
     url += `&isActive=${isActive}`;
   }
 
