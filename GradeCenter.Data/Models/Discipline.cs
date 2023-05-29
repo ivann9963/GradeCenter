@@ -19,5 +19,6 @@ namespace GradeCenter.Data.Models
         public AspNetUser Teacher { get; set; }
 
         public bool IsActive { get; set; }
+        public List<Grade> Grades { get; set; }
     }
 }
