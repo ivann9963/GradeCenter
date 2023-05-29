@@ -146,12 +146,20 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
         headerName: "Status",
         width: 90,
         renderCell: (params: GridRenderCellParams) => {
+          const toggleStatus = () => {
+            const userId = params.id as string;
+            const newStatus = !params.value;
+
+            requests.updateUser(userId, null, null, newStatus, null);
+          };
+
           return (
             <Button
               size="small"
               variant="contained"
               sx={{ borderRadius: "12%", height: 40, fontSize: 12 }}
               color={params.value ? "success" : "error"}
+              onClick={toggleStatus}
             >
               <h4>{params.value ? "Active" : "Inactive"}</h4>
             </Button>

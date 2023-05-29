@@ -73,7 +73,7 @@ namespace GradeCenter.API.Controllers
         /// <param name="newPhoneNumber"></param>
         /// <returns></returns>
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(string? userId, string? newPassword, UserRoles newRole, bool? isActive ,string? newPhoneNumber)
+        public async Task<IActionResult> Update(string? userId, string? newPassword, UserRoles? newRole, bool? isActive, string? newPhoneNumber)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 

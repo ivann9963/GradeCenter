@@ -34,14 +34,31 @@ const getAllSchoolsClassess = () => api.get(`/SchoolClass/GetAllClassess`);
 
 const updateUser = (
   userId: string,
-  newPassword: string | undefined,
-  newRole: UserRoles | undefined,
-  isActive: boolean | undefined,
-  newPhoneNumber: string | undefined
-) =>
-  api.put(
-    `/Account/Update?userId=${userId}&newPassword=${newPassword}&newRole=${newRole}&isActive=${isActive}&newPhoneNumber=${newPhoneNumber}`
-  );
+  newPassword?: string | null,
+  newRole?: UserRoles | null,
+  isActive?: boolean | null,
+  newPhoneNumber?: string | null
+) => {
+  var url = `/Account/Update?userId=${userId}`;
+
+  if(newPassword) {
+    url += `&newPassword=${newPassword}`;
+  }
+
+  if(newRole) {
+    url += `&newRole=${newRole}`;
+  }
+  
+  if(isActive) {
+    url += `&isActive=${isActive}`;
+  }
+
+  if(newPhoneNumber) {
+    url += `&newPhoneNumber=${newPhoneNumber}`;
+  }
+
+  api.put(url);
+};
 
 const addChild = (parentId: string, firstName: string, lastName: string) =>
   api.put(`/Account/AddChild?parentId=${parentId}&childFirstName=${firstName}&childLastName=${lastName}`);
@@ -95,7 +112,7 @@ const requests = {
   createCurricullum,
   getClassessInSchool,
   getPeopleInSchool,
-  getLoggedUserCurricullum
+  getLoggedUserCurricullum,
 };
 
 export default requests;
