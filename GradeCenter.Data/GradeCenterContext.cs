@@ -19,6 +19,7 @@ namespace GradeCenter.Data
         public virtual DbSet<School>? Schools { get; set; }
         public virtual DbSet<SchoolClass> SchoolClasses { get; set; }
         public virtual DbSet<Discipline> Disciplines { get; set; }
+        public virtual DbSet<Grade> Grades { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,13 @@ namespace GradeCenter.Data
                 .HasOne(l => l.School)
                 .WithMany(l => l.People)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure a one-to-many relationship
+            // between Grades and Users.
+            modelBuilder.Entity<AspNetUser>()
+                .HasMany(l => l.Grades)
+                .WithOne(l => l.Student)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserRelation>()
                 .HasKey(ur => new { ur.ParentId, ur.ChildId });
@@ -66,6 +74,15 @@ namespace GradeCenter.Data
                 .HasMany(s => s.SchoolClasses)
                 .WithOne(s => s.School)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure a one-to-many relationship
+            // between Grades and Disciplines
+            modelBuilder.Entity<Grade>()
+                .HasOne(g => g.Discipline)
+                .WithMany(g => g.Grades)
+                .OnDelete(DeleteBehavior.Restrict);
+
+          
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
