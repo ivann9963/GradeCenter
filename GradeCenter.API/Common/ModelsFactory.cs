@@ -1,4 +1,5 @@
 ﻿using GradeCenter.API.Models.Request.CurricullumRequests;
+using GradeCenter.API.Models.Request.GradeRequests;
 using GradeCenter.API.Models.Request.SchoolRequests;
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
@@ -68,6 +69,26 @@ namespace GradeCenter.API.Common
                 discipline.OccuranceTime = dto.NewTime.Value;
 
             return discipline;
+        }
+
+        public Grade ExtractGrade(GradeRequestModel requestModel)
+        {
+            if (requestModel.Number == null)
+                return null;
+
+            return new Grade
+            {
+                Id = requestModel.Id != null ? Guid.Parse(requestModel.Id) : Guid.Empty,
+                Number = requestModel.Number,
+                Discipline = new Discipline
+                {
+                    Name = requestModel.DisciplineName
+                },
+                Student = new AspNetUser
+                {
+                    UserName = requestModel.StudentUsername
+                }
+            };
         }
 
         public List<Discipline> ExtractCurricullum(List<DisciplineDto> dtos)
