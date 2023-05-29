@@ -92,8 +92,8 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
   );
 
   const submitCreateNewClass = () => {
-    var year = newClass[0] as unknown as number;
-    var department = newClass[1];
+    var year = newClass.length == 2 ? newClass[0] as unknown as number :  `${newClass[0]}${newClass[1]}` as unknown as number;
+    var department =  newClass.length == 2 ? newClass[1] : newClass[2];
 
     requests.createSchoolClass(year, department, schoolName, teacherNames);
   };
