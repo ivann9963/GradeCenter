@@ -1,6 +1,7 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services;
+using GradeCenter.Services.Grades;
 using GradeCenter.Services.Schools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +40,7 @@ namespace GradeCenter.API
             services.AddScoped<ISchoolService, SchoolService>();
             services.AddTransient<ICurriculumService, CurriculumService>();
             services.AddTransient<ISchoolClassService, SchoolClassService>();
+            services.AddTransient<IGradeService, GradeService>();
 
             services.AddCors(options =>
             {
