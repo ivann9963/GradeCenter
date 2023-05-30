@@ -50,6 +50,8 @@ namespace GradeCenter.Services.Grades
                 return;
 
             grade.Number = updateGrade.Number;
+
+            await _db.SaveChangesAsync();
         }
 
         /// <summary>

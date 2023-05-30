@@ -1,24 +1,23 @@
-﻿using GradeCenter.Data.Models.Account;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Security.Claims;
+using GradeCenter.Data.Models.Account;
 
 public class RequestValidator
 {
     private readonly UserManager<AspNetUser> _userManager;
-    private ClaimsPrincipal _user;
 
     public RequestValidator(UserManager<AspNetUser> userManager)
     {
         _userManager = userManager;
     }
 
-    public async Task<IActionResult?> ValidateRequest(ModelStateDictionary modelState, ClaimsPrincipal user)
+    public async Task<IActionResult?> ValidateRequest(ModelStateDictionary modelState, ClaimsPrincipal user, UserRoles role)
     {
         var loggedUser = await GetLoggedUser(user);
 
-        if (loggedUser == null || !IsAdmin(loggedUser))
+        if (loggedUser == null || !IsInRole(loggedUser, role))
             return new UnauthorizedResult();
 
         if (!modelState.IsValid)
@@ -32,8 +31,8 @@ public class RequestValidator
         return await _userManager.FindByNameAsync(user.Identity.Name);
     }
 
-    public bool IsAdmin(AspNetUser user)
+    public bool IsInRole(AspNetUser user, UserRoles role)
     {
-        return user.UserRole.Equals(UserRoles.Admin);
+        return user.UserRole.Equals(role);
     }
 }

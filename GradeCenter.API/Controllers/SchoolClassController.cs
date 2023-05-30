@@ -32,7 +32,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetAllClassess")]
         public async Task<IActionResult> GetAllClassess()
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -45,7 +45,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetClassessInSchool")]
         public async Task<IActionResult> GetClassessInSchool(string schoolId)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -63,7 +63,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("CreateClass")]
         public async Task<IActionResult> CreateClass(SchoolClassCreateRequest request)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -84,7 +84,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("EnrollForClass")]
         public async Task<IActionResult> EnrollForClass(EnrollWithdrawRequestModel requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -103,7 +103,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("WithdrawFromClass")]
         public async Task<IActionResult> WithdrawFromClass(string studentId)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;

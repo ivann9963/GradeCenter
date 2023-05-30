@@ -30,7 +30,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetAllGrades")]
         public async Task<IActionResult> GetAllGradesAsync()
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Principle);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -47,7 +47,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(GradeRequestModel requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Teacher);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -66,7 +66,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(GradeRequestModel requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Teacher);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -85,7 +85,7 @@ namespace GradeCenter.API.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string id)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Teacher);
 
             if (checkedRequest != null)
                 return checkedRequest;
