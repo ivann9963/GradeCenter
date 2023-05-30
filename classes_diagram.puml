@@ -33,16 +33,17 @@ class SchoolClass {
     Curriculum : List<Subject>
 }
 
-class Subject {
+class Discipline {
     Name : string
     Occurance : string
     SchoolClass : SchoolClass
     Teacher : User
+    Grades: List<Grade>
 }
 
 class Grade {
     Rate : number
-    Subject : Subject
+    Discipline : Discipline
     Student : User
 }
 
@@ -70,12 +71,12 @@ class SchoolReview {
 UserRoles <- User
 School --> User
 School --> SchoolClass
-SchoolClass --> Subject
-Subject <-- Grade
-Subject <-- Attendance
+SchoolClass --> Discipline
+Discipline <-- Grade
+Discipline <-- Attendance
 User <-- Grade
 User <-- Attendance
-Subject <-- PerformanceStatistic
+Discipline <-- PerformanceStatistic
 User <-- TeacherStatistic
 School <-- SchoolReview
 
