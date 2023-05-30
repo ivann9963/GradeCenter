@@ -56,7 +56,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddChild")]
         public async Task<IActionResult> AddChild(Guid parentId, string childFirstName, string childLastName)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -75,7 +75,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(string? userId, string? newPassword, UserRoles? newRole, bool? isActive, string? newPhoneNumber)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;

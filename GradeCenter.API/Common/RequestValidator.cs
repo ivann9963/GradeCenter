@@ -13,7 +13,7 @@ public class RequestValidator
         _userManager = userManager;
     }
 
-    public async Task<IActionResult?> ValidateRequest(ModelStateDictionary modelState, ClaimsPrincipal user, UserRoles role)
+    public async Task<IActionResult?> ValidateRequest(ModelStateDictionary modelState, ClaimsPrincipal user, UserRoles role = UserRoles.Admin)
     {
         var loggedUser = await GetLoggedUser(user);
 

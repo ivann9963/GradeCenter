@@ -34,7 +34,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(List<DisciplineDto> disciplines)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -55,7 +55,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Update")]
         public async Task<IActionResult> Update(List<DisciplineDto> disciplines)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -74,7 +74,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete(List<DisciplineDto> disciplines)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -112,7 +112,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetClassesForDay")]
         public async Task<List<Discipline>?> GetClassesForDay(Guid schoolClassId, DayOfWeek day)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return null;
@@ -131,7 +131,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetCurricullumForSchoolClass")]
         public async Task<List<Discipline>?> GetCurricullumForSchoolClass(Guid schoolClassId)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
             if (checkedRequest != null)
                 return null;
