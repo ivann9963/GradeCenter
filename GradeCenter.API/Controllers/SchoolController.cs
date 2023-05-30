@@ -38,7 +38,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetSchoolById")]
         public async Task<IActionResult> GetSchoolById(string schoolId)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -51,7 +51,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetPeopleInSchool")]
         public async Task<IActionResult> GetPeopleInSchool(string schoolId)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -69,7 +69,7 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SchoolCreateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -89,7 +89,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update(SchoolUpdateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -104,7 +104,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddPrincipal")]
         public async Task<IActionResult> AddPrincipal(SchoolUpdateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -119,7 +119,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddTeachers")]
         public async Task<IActionResult> AddTeachers(SchoolUpdateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -134,7 +134,7 @@ namespace GradeCenter.API.Controllers
         [HttpPut("AddStudents")]
         public async Task<IActionResult> AddStudents(SchoolUpdateRequest requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -154,7 +154,7 @@ namespace GradeCenter.API.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string name)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, UserRoles.Admin);
 
             if (checkedRequest != null)
                 return checkedRequest;
