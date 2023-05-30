@@ -1,4 +1,5 @@
 ﻿using GradeCenter.Data.Models.Account;
+using System.Diagnostics;
 
 namespace GradeCenter.Data.Models
 {
@@ -19,5 +20,6 @@ namespace GradeCenter.Data.Models
         public AspNetUser Teacher { get; set; }
 
         public bool IsActive { get; set; }
+        public List<Attendance> Attendances { get; set; }
     }
 }

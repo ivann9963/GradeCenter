@@ -21,6 +21,7 @@ namespace GradeCenter.Data.Models.Account
 
         public virtual ICollection<UserRelation> ChildrenRelations { get; set; } = new HashSet<UserRelation>();
         public virtual ICollection<UserRelation> ParentRelations { get; set; } = new HashSet<UserRelation>();
+        public virtual ICollection<Attendance> Attendances { get; set; } = new HashSet<Attendance>();
     }
 
     public enum UserRoles
