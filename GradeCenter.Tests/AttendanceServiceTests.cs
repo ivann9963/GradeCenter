@@ -117,7 +117,7 @@ namespace GradeCenter.Tests
         }
 
         [Fact]
-        public async Task Read_Attendances_ReturnsEntries()
+        public async Task GetAllAttendances_ReturnsCorrectData()
         {
             // Act
             var result = _attendanceService.GetAllAttendances();
