@@ -116,7 +116,7 @@ namespace GradeCenter.Tests
         }
 
         [Fact]
-        public async Task Read_Grades_ReturnsEntries()
+        public async Task GetAllGrades_ReturnsCorrectData()
         {
             // Act
             var result = _gradeService.GetAllGrades();
