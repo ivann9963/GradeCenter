@@ -98,7 +98,7 @@ namespace GradeCenter.Tests
             {
                 Id = Guid.Parse("5b4d2c62-44e9-44d0-a208-e4192a92c34d"),
                 IsActive = true,
-                Number = 6,
+                Rate = 6,
                 Discipline = _dbMock.Object.Disciplines.ToList().FirstOrDefault(),
                 Student = _dbMock.Object.AspNetUsers.ToList().FirstOrDefault()
             };
@@ -136,7 +136,7 @@ namespace GradeCenter.Tests
             {
                 Discipline = discipline,
                 Student = student,
-                Number = 5,
+                Rate = 5,
             };
 
             await _gradeService.Create(grade);
@@ -154,7 +154,7 @@ namespace GradeCenter.Tests
             {
                 Id = Guid.Parse("5b4d2c62-44e9-44d0-a208-e4192a92c34d"),
                 IsActive = true,
-                Number = 5,
+                Rate = 5,
                 Discipline = _dbMock.Object.Disciplines.ToList().FirstOrDefault(),
                 Student = _dbMock.Object.AspNetUsers.ToList().FirstOrDefault()
             };
@@ -165,7 +165,7 @@ namespace GradeCenter.Tests
 
             // Assert
             // that the Grade Number is updated accordingly.
-            Assert.Equal(grade.Number, updateGrade.Number);
+            Assert.Equal(grade.Rate, updateGrade.Rate);
 
             // Verify that the SaveChangesAsync method on the GradeService mock was called exactly once with the expected parameters.
             _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Once);

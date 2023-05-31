@@ -90,7 +90,7 @@ namespace GradeCenter.Data
             base.OnConfiguring(builder);
 
             builder.UseSqlServer(
-                @"Server=.\SQLEXPRESS;Database=GradeCenter;Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;Integrated Security=True");
+                @"Server=.;Database=GradeCenter;Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;Integrated Security=True");
         }
     }
 }

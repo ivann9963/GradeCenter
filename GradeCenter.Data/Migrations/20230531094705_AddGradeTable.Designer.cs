@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GradeCenter.Data.Migrations
 {
     [DbContext(typeof(GradeCenterContext))]
-    [Migration("20230529184731_AddGradeTable")]
+    [Migration("20230531094705_AddGradeTable")]
     partial class AddGradeTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,7 +175,7 @@ namespace GradeCenter.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Number")
+                    b.Property<int>("Rate")
                         .HasColumnType("int");
 
                     b.Property<Guid>("StudentId")

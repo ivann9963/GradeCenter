@@ -8,7 +8,7 @@ namespace GradeCenter.Data.Models
         [Key]
         public Guid Id { get; set; }
         [Range(2, 6)]
-        public int Number { get; set; }
+        public int Rate { get; set; }
 
         public bool IsActive { get; set; } = true;
 

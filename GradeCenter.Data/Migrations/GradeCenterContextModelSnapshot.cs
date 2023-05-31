@@ -173,7 +173,7 @@ namespace GradeCenter.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Number")
+                    b.Property<int>("Rate")
                         .HasColumnType("int");
 
                     b.Property<Guid>("StudentId")
