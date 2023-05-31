@@ -24,23 +24,6 @@ namespace GradeCenter.API.Controllers
         }
 
         /// <summary>
-        /// Returns all attendances from the database
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("GetAllAttendances")]
-        public async Task<IActionResult> GetAllAttendancesAsync()
-        {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
-
-            if (checkedRequest != null)
-                return checkedRequest;
-
-            var allGrades = _attendanceService.GetAllAttendances();
-
-            return Ok(allGrades);
-        }
-
-        /// <summary>
         /// Creates Attendance Object in the database
         /// </summary>
         /// <param name="requestModel"></param>
@@ -56,6 +39,59 @@ namespace GradeCenter.API.Controllers
             var mappedAttendanceModel = _modelsFactory.ExtractAttendance(requestModel);
 
             await _attendanceService.Create(mappedAttendanceModel);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Returns all Attendances from the database
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetAllAttendances")]
+        public async Task<IActionResult> GetAllAttendancesAsync()
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            var allAttendances = _attendanceService.GetAllAttendances();
+
+            return Ok(allAttendances);
+        }
+
+        /// <summary>
+        /// Updates an object of type Attendance in the database.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update(AttendanceRequestModel requestModel)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            var mappedAttendanceModel = _modelsFactory.ExtractAttendance(requestModel);
+
+            await _attendanceService.Update(mappedAttendanceModel);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete an object of type Attendance in the database.
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _attendanceService.Delete(id);
 
             return Ok();
         }
