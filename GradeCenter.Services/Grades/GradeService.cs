@@ -28,7 +28,7 @@ namespace GradeCenter.Services.Grades
         {
             var grade = new Grade
             {
-                Number = newGrade.Number,
+                Rate = newGrade.Rate,
                 Discipline = _db.Disciplines.FirstOrDefault(discipline => discipline.Name == newGrade.Discipline.Name),
                 Student = _db.AspNetUsers.FirstOrDefault(student => student.UserName == newGrade.Student.UserName)
             };
@@ -49,7 +49,7 @@ namespace GradeCenter.Services.Grades
             if (grade == null)
                 return;
 
-            grade.Number = updateGrade.Number;
+            grade.Rate = updateGrade.Rate;
 
             await _db.SaveChangesAsync();
         }

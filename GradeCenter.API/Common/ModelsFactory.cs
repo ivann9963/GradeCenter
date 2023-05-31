@@ -79,7 +79,7 @@ namespace GradeCenter.API.Common
             return new Grade
             {
                 Id = requestModel.Id != null ? Guid.Parse(requestModel.Id) : Guid.Empty,
-                Number = requestModel.Number,
+                Rate = requestModel.Number,
                 Discipline = new Discipline
                 {
                     Name = requestModel.DisciplineName
