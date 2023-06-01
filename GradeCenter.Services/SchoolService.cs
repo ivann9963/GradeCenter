@@ -2,8 +2,9 @@
 using GradeCenter.Data;
 using GradeCenter.Data.Models.Account;
 using Microsoft.EntityFrameworkCore;
+using GradeCenter.Services.interfaces;
 
-namespace GradeCenter.Services.Schools
+namespace GradeCenter.Services
 {
     public class SchoolService : ISchoolService
     {
@@ -13,7 +14,7 @@ namespace GradeCenter.Services.Schools
         public SchoolService(GradeCenterContext gradeCenterContext, IAccountService accountService)
         {
             _db = gradeCenterContext;
-            this._accountService = accountService;
+            _accountService = accountService;
         }
 
         /// <summary>

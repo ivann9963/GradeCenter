@@ -1,7 +1,7 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
-using GradeCenter.Services.Schools;
+using GradeCenter.Services.interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace GradeCenter.Services

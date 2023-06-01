@@ -1,5 +1,6 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Data.Models;
+using GradeCenter.Services.interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace GradeCenter.Services

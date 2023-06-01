@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using GradeCenter.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
+using GradeCenter.Services.interfaces;
 
 namespace GradeCenter.Tests
 {

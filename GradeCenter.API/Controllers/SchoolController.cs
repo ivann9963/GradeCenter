@@ -2,7 +2,7 @@
 using GradeCenter.API.Models.Request.SchoolRequests;
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
-using GradeCenter.Services.Schools;
+using GradeCenter.Services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

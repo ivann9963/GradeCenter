@@ -1,6 +1,6 @@
 ﻿using GradeCenter.Data.Models;
 
-namespace GradeCenter.Services
+namespace GradeCenter.Services.interfaces
 {
     public interface ICurriculumService
     {
