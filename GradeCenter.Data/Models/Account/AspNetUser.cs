@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,6 +22,7 @@ namespace GradeCenter.Data.Models.Account
         public virtual ICollection<UserRelation> ChildrenRelations { get; set; } = new HashSet<UserRelation>();
         public virtual ICollection<UserRelation> ParentRelations { get; set; } = new HashSet<UserRelation>();
         public virtual ICollection<Attendance> Attendances { get; set; } = new HashSet<Attendance>();
+        public virtual ICollection<Grade> Grades { get; set; } = new HashSet<Grade>();
     }
 
     public enum UserRoles

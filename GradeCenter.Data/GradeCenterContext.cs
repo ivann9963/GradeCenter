@@ -1,4 +1,4 @@
-﻿using GradeCenter.Data.Models;
+using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -20,6 +20,7 @@ namespace GradeCenter.Data
         public virtual DbSet<SchoolClass> SchoolClasses { get; set; }
         public virtual DbSet<Discipline> Disciplines { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<Grade> Grades { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,6 +49,12 @@ namespace GradeCenter.Data
             modelBuilder.Entity<Attendance>()
                 .HasOne(a => a.Discipline)
                 .WithMany(a => a.Attendances)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // between Grades and Users.
+            modelBuilder.Entity<AspNetUser>()
+                .HasMany(l => l.Grades)
+                .WithOne(l => l.Student)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserRelation>()
@@ -81,6 +88,15 @@ namespace GradeCenter.Data
                 .HasMany(s => s.SchoolClasses)
                 .WithOne(s => s.School)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure a one-to-many relationship
+            // between Grades and Disciplines
+            modelBuilder.Entity<Grade>()
+                .HasOne(g => g.Discipline)
+                .WithMany(g => g.Grades)
+                .OnDelete(DeleteBehavior.Restrict);
+
+          
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)

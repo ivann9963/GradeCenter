@@ -56,6 +56,51 @@ class CurricullumController {
     + GetLoggedUserClasses()
 }
 
+class SchoolClassController {
+    + GetAllClasses()
+    + GetClassessInSchool(schoolId: string)
+    + CreateClass(requestModel: SchoolClassCreateRequest) : SchoolClass
+    + EnrollForClass(requestModel: EnrollWithdrawRequestModel) : SchoolClass
+    + WithdrawFromClass(studentId: string): SchoolClass
+}
+
+class SchoolClassService {
+    + CreateClass(newSchoolClass: SchoolClass): SchoolClass
+    + EnrollForClass(classId: string, studentId: string): SchoolClass
+    + WithdrawFromClass(studentId: string): SchoolClass
+    + GetAllClasses(): List<SchoolClass>
+    + GetClassessInSchool(): List<SchoolClass>
+}
+
+interface ISchoolClassService{
+    + CreateClass(newSchoolClass: SchoolClass)
+    + EnrollForClass(classId: string, studentId: string)
+    + WithdrawFromClass(studentId: string)
+    + GetAllClasses()
+    + GetClassessInSchool()
+}
+
+class GradeController {
+    + GetAllGradesAsync()
+    + Create(requestModel: GradeRequestModel): Grade
+    + Update(requestModel: GradeRequestModel): Grade
+    + Delete(id: string): Grade
+}
+
+class GradeService {
+   + GetAllGrades(): IEnumerable<Grade>
+   + Create(newGrade: Grade): Grade
+   + Update(updatedGrade: Grade?): Grade
+   + Delete(id: string): Grade
+}
+
+interface IGradeService{
+   + GetAllGrades()
+   + Create(newGrade: Grade)
+   + Update(updatedGrade: Grade?)
+   + Delete(id: string)
+}
+
 class CurricullumService {
     + Create(newCurriculum: Curricullum): Curricullum
     + Update(updatedCurriculum: Curricullum): Curricullum
@@ -91,20 +136,30 @@ class RequestValidator {
 
 AccountController ...> IAccountService : uses
 SchoolController ...> ISchoolService : uses
+SchoolClassController ...> ISchoolClassService: uses
+GradeController ...> IGradeService: uses
 CurricullumController ...> ICurricullumService : uses
 CurricullumController ...> ISchoolService : uses
 
 AccountController .> RequestValidator : uses
 SchoolController ..> RequestValidator : uses
+GradeController ..> RequestValidator: uses
+SchoolClassController ..> RequestValidator: uses
 CurricullumController ..> RequestValidator : uses
 
 IAccountService <|.. AccountService : implements
 ISchoolService <|.. SchoolService : implements
 ICurricullumService <|.. CurricullumService : implements
+ISchoolClassService <|.. SchoolClassService: implements
+IGradeService <|.. GradeService: implements
+
 
 AccountService --> GradeCenterContext
 SchoolService --> GradeCenterContext
 CurricullumService --> GradeCenterContext
+SchoolClassService --> GradeCenterContext
+GradeService --> GradeCenterContext
 
 IAccountService <.. SchoolService : uses
+IAccountService <.. SchoolClassService : uses
 @enduml

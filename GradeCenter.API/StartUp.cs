@@ -1,7 +1,8 @@
-﻿using GradeCenter.Data;
+using GradeCenter.Data;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services;
 using GradeCenter.Services.Attendances;
+using GradeCenter.Services.Grades;
 using GradeCenter.Services.Schools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
@@ -41,6 +42,7 @@ namespace GradeCenter.API
             services.AddTransient<ICurriculumService, CurriculumService>();
             services.AddTransient<ISchoolClassService, SchoolClassService>();
             services.AddTransient<IAttendanceService, AttendanceService>();
+            services.AddTransient<IGradeService, GradeService>();
 
             services.AddCors(options =>
             {
@@ -90,12 +92,12 @@ namespace GradeCenter.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GradeCenter v1"));
             }
 
-            using (var serviceScope = app.ApplicationServices.CreateScope())
-            {
-                var dbContext = serviceScope.ServiceProvider.GetRequiredService<GradeCenterContext>();
-                dbContext.Database.Migrate();
+            //using (var serviceScope = app.ApplicationServices.CreateScope())
+            //{
+            //    var dbContext = serviceScope.ServiceProvider.GetRequiredService<GradeCenterContext>();
+            //    dbContext.Database.Migrate();
 
-            }
+            //}
 
             app.UseHttpsRedirection();
 
