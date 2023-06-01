@@ -1,8 +1,11 @@
-﻿using GradeCenter.API.Models.Request.CurricullumRequests;
+using GradeCenter.API.Models.Request.AttendanceRequests;
+using GradeCenter.API.Models.Request.CurricullumRequests;
+using GradeCenter.API.Models.Request.CurricullumRequests;
 using GradeCenter.API.Models.Request.GradeRequests;
 using GradeCenter.API.Models.Request.SchoolRequests;
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
+using System.Diagnostics;
 
 namespace GradeCenter.API.Common
 {
@@ -102,6 +105,27 @@ namespace GradeCenter.API.Common
             }
 
             return disciplines;
+        }
+
+        public Attendance ExtractAttendance(AttendanceRequestModel requestModel)
+        {
+            if (requestModel.HasAttended.HasValue)
+                return null;
+
+            return new Attendance
+            {
+                Id = requestModel.Id != null ? Guid.Parse(requestModel.Id) : Guid.Empty,
+                HasAttended = requestModel.HasAttended,
+                Date = requestModel.Date,
+                Discipline = new Discipline
+                {
+                    Name = requestModel.DisciplineName
+                },
+                Student = new AspNetUser
+                {
+                    UserName = requestModel.StudentUsername
+                }
+            };
         }
     }
 }
