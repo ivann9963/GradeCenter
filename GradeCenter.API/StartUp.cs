@@ -3,7 +3,7 @@ using GradeCenter.Data.Models.Account;
 using GradeCenter.Services;
 using GradeCenter.Services.Attendances;
 using GradeCenter.Services.Grades;
-using GradeCenter.Services.Schools;
+using GradeCenter.Services.interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;

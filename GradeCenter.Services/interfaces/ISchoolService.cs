@@ -1,7 +1,7 @@
 ﻿using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 
-namespace GradeCenter.Services.Schools
+namespace GradeCenter.Services.interfaces
 {
     public interface ISchoolService
     {

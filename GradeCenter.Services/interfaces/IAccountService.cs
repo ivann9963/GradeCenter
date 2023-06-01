@@ -1,6 +1,6 @@
 ﻿using GradeCenter.Data.Models.Account;
 
-namespace GradeCenter.Services
+namespace GradeCenter.Services.interfaces
 {
     public interface IAccountService
     {

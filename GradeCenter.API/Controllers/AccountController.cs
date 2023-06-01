@@ -1,5 +1,5 @@
 ﻿using GradeCenter.Data.Models.Account;
-using GradeCenter.Services;
+using GradeCenter.Services.interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
