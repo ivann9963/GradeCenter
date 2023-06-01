@@ -2,7 +2,6 @@
 using Moq;
 using Xunit;
 using GradeCenter.Data.Models;
-using GradeCenter.Services.Schools;
 using Microsoft.EntityFrameworkCore;
 using GradeCenter.Data.Models.Account;
 using System.Collections.Generic;

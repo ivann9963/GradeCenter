@@ -17,5 +17,7 @@ namespace GradeCenter.Data.Models
         public List<AspNetUser> Students { get; set; } = new List<AspNetUser>();
 
         public List<Discipline> Curriculum { get; set; } = new List<Discipline>();
+
+        public ICollection<Statistic> Statistics { get; set; } = new List<Statistic>();
     }
 }

@@ -22,6 +22,8 @@ namespace GradeCenter.Data
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Grade> Grades { get; set; }
 
+        public virtual DbSet<Statistic> Statistics { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -97,6 +99,26 @@ namespace GradeCenter.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
           
+
+            modelBuilder.Entity<Statistic>()
+                .HasOne(s => s.School)
+                .WithMany(st => st.Statistics)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Statistic>()
+                .HasOne(sc => sc.SchoolClass)
+                .WithMany(st => st.Statistics)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Statistic>()
+               .HasOne(t => t.Teacher)
+               .WithMany(st => st.Statistics)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Statistic>()
+               .HasOne(t => t.Discipline)
+               .WithMany(st => st.Statistics)
+               .OnDelete(DeleteBehavior.Cascade);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
