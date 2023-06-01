@@ -25,5 +25,7 @@ namespace GradeCenter.Data.Models
 
         public List<Grade> Grades { get; set; }
 
+
+        public ICollection<Statistic> Statistics { get; set; } = new List<Statistic>();
     }
 }

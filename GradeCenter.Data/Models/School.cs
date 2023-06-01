@@ -15,5 +15,7 @@ namespace GradeCenter.Data.Models
         public bool IsActive { get; set; } = true;
         public ICollection<AspNetUser> People { get; set; } = new HashSet<AspNetUser>();
         public ICollection<SchoolClass> SchoolClasses { get; set; } = new List<SchoolClass>();
+
+        public ICollection<Statistic> Statistics { get; set; } = new List<Statistic>();
     }
 }
