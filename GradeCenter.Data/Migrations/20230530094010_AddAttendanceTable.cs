@@ -17,7 +17,8 @@ namespace GradeCenter.Data.Migrations
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DisciplineId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HasAttended = table.Column<bool>(type: "bit", nullable: false)
+                    HasAttended = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
