@@ -3,6 +3,7 @@ import { Container, Box, Typography, Paper, Tabs, Tab } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Personal from "../profile-panel/personal-page";
+import Grades from "../profile-panel/grades-page";
 
 export default function(){
      const [user, setUser] = useState<AspNetUser | null>(null);
@@ -51,12 +52,16 @@ export default function(){
             
             {tabValue === 0 && (
               <Box p={3}>
-                <Typography><Personal profile={user} /></Typography>
+                <Typography>
+                    <Personal profile={user} />
+                </Typography>
               </Box>
             )}
-            {tabValue === 1 && (
+            {tabValue === 3 && (
               <Box p={3}>
-                <Typography></Typography>
+                <Typography>
+                    <Grades profile={user} />
+                </Typography>
               </Box>
             )}
           </Paper>

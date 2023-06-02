@@ -30,7 +30,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetAllGrades")]
         public async Task<IActionResult> GetAllGradesAsync()
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles> { UserRoles.Admin, UserRoles.Principle });
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles> { UserRoles.Admin, UserRoles.Principle, UserRoles.Student });
 
             if (checkedRequest != null)
                 return checkedRequest;
