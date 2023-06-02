@@ -82,7 +82,6 @@ export default function MyProfileMenu() {
         className={classes.menu}
       >
         <MenuItem onClick={handleProfileClick} className={classes.menuItem}>Profile</MenuItem>
-        <MenuItem onClick={handleAccountClick} className={classes.menuItem}>My account</MenuItem>
         <MenuItem onClick={handleSettingsClick} className={classes.menuItem}>Personal settings</MenuItem>
         <MenuItem onClick={handleAdminPanelClick} className={classes.menuItem}>Admin panel</MenuItem>
         <MenuItem onClick={handleLogout} className={classes.menuItem}>Logout</MenuItem>

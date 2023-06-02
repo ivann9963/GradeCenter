@@ -10,6 +10,7 @@ import Schools from "./components/school/schools-list";
 import SchoolDetails from "./components/school/school-details";
 import AdminPanel from "./components/admin-panel/admin-panel";
 import MySchedulle from "./components/my-schedulle/mySchedulle";
+import MyProfilePage from "./components/account/myProfilePage";
 
 export default function App() {
   const getComponent = (component: JSX.Element) => {
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/school-details/:schoolId" element={getComponent(<SchoolDetails />)} />
         <Route path="/admin-panel" element={getComponent(<AdminPanel />)} />
         <Route path="/my-schedulle" element={getComponent(<MySchedulle />)} />
+        <Route path="/profile" element={getComponent(<MyProfilePage />)} />
       </Routes>
     </BrowserRouter>
   );
