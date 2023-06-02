@@ -16,6 +16,9 @@ namespace GradeCenter.Services.Grades
         {
             return _db.Grades
                 .Include(discipline => discipline.Discipline)
+                .Include(discipline => discipline.Discipline.Teacher)
+                .Include(discipline => discipline.Discipline.SchoolClass)
+                .Include(discipline => discipline.Discipline.SchoolClass.School)
                 .Include(discipline => discipline.Student)
                 .ToList();
         }

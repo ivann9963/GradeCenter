@@ -1,6 +1,5 @@
 import { Box, Container, TextField } from "@mui/material";
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Typography from "@material-ui/core/Typography/Typography";
 
 interface Profile {
@@ -11,7 +10,7 @@ export default function Personal(params: Profile){
     const {firstName, lastName, userRole} = params.profile as AspNetUser;
 
     // TODO: Add More Details
-    
+
     return(
         <Container>
         <Typography variant="h4" align="center" style={{marginBottom:70}}>Credentials</Typography>
