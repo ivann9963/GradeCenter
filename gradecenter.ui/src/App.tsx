@@ -11,6 +11,7 @@ import SchoolDetails from "./components/school/school-details";
 import AdminPanel from "./components/admin-panel/admin-panel";
 import MySchedulle from "./components/my-schedulle/mySchedulle";
 import Statistics from "./components/statistics/statistics";
+import MyProfilePage from "./components/account/myProfilePage";
 
 export default function App() {
   const getComponent = (component: JSX.Element) => {
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/admin-panel" element={getComponent(<AdminPanel />)} />
         <Route path="/my-schedulle" element={getComponent(<MySchedulle />)} />
         <Route path="/statistics" element={getComponent(<Statistics />)} />
+        <Route path="/profile" element={getComponent(<MyProfilePage />)} />
       </Routes>
     </BrowserRouter>
   );
