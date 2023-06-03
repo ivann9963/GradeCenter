@@ -30,6 +30,12 @@ const getAllSchools = () => api.get(`/School/GetAllSchools`);
 
 const getAllUsers = () => api.get(`/Account/GetAllUsers`);
 
+const getAllGrades = () => api.get(`/Grades/GetAllGrades`);
+
+const getUserById = (userId: any) => api.get(`/Account/GetUserById/?userId=${userId}`)
+
+const getLoggedUser = () => api.get("/Account/GetLoggedUser");
+
 const getAllSchoolsClassess = () => api.get(`/SchoolClass/GetAllClassess`);
 
 const updateUser = (
@@ -90,6 +96,14 @@ const createSchoolClass = (year: number, department: string, schoolName: string,
     teacherNames: teacherNames,
   });
 
+const createGrade = (studentUsername: string, rate: string, discipline: string) => {
+  api.post("/Grades/Create",{
+    studentUsername: studentUsername,
+    number: rate,
+    disciplineName: discipline
+  })
+}
+
 const createCurricullum = (disciplines: Discipline[]) => api.post(`/Curriculum/Create`, disciplines);
 
 const getClassessInSchool = (schoolId: string) => api.get(`/SchoolClass/GetClassessInSchool?schoolId=${schoolId}`);
@@ -108,8 +122,12 @@ const requests = {
   getSchoolById,
   getAllSchools,
   getAllUsers,
+  getAllGrades,
+  getUserById,
   getAllSchoolsClassess,
   updateUser,
+  getLoggedUser,
+  createGrade,
   addChild,
   changeSchool,
   enroll,
