@@ -2,7 +2,6 @@ import { AspNetUser } from "./aspNetUser";
 import Discipline from "./discipline";
 
 export class Grade {
-    // IdentityUser<Guid> properties here
     rate: number | null;
     student: AspNetUser | null;
     discipline: Discipline | null;

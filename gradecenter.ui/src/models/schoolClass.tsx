@@ -8,6 +8,7 @@ interface Discipline {
 export class SchoolClass {
   id: string;
   year: number;
+  teacherId: number;
   department: string;
   headTeacher: AspNetUser;
   school: School;
@@ -19,6 +20,7 @@ export class SchoolClass {
     id: string = "",
     year: number = 0,
     department: string = "",
+    teacherId: number = 0,
     headTeacher: AspNetUser = new AspNetUser(),
     school: School,
     schoolName: string,
@@ -27,6 +29,7 @@ export class SchoolClass {
   ) {
     this.id = id;
     this.year = year;
+    this.teacherId = teacherId;
     this.department = department;
     this.headTeacher = headTeacher;
     this.school = school;

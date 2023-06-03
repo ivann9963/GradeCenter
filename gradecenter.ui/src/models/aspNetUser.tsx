@@ -18,11 +18,13 @@ export enum UserRoles {
 
 export class AspNetUser {
   // IdentityUser<Guid> properties here
+  id: string | null;
   firstName: string | null;
   lastName: string | null;
   schoolId: string | null;
   school: any | null;
   isActive: boolean | null;
+  schoolClassId: string | null;
   userRole: UserRoles | null;
   schoolClass: SchoolClass | null;
   childrenRelations: UserRelation[];
@@ -30,9 +32,11 @@ export class AspNetUser {
   schoolName: string | null;
 
   constructor(
+    id: string | null = null,
     firstName: string | null = null,
     lastName: string | null = null,
     schoolId: string | null = null,
+    schoolClassId: string | null = null,
     school: School | null = null,
     schoolName: string | null = null,
     isActive: boolean | null = null,
@@ -41,12 +45,14 @@ export class AspNetUser {
     childrenRelations: UserRelation[] = [],
     parentRelations: UserRelation[] = []
   ) {
+    this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.schoolId = schoolId;
     this.school = school;
     this.schoolName = schoolName;
     this.isActive = isActive;
+    this.schoolClassId = schoolClassId;
     this.userRole = userRole;
     this.schoolClass = schoolClass;
     this.childrenRelations = childrenRelations;
