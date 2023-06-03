@@ -12,6 +12,7 @@ import AdminPanel from "./components/admin-panel/admin-panel";
 import MySchedulle from "./components/my-schedulle/mySchedulle";
 import Statistics from "./components/statistics/statistics";
 import MyProfilePage from "./components/account/myProfilePage";
+import MyClass from "./components/school/my-class-page";
 
 export default function App() {
   const getComponent = (component: JSX.Element) => {
@@ -32,12 +33,15 @@ export default function App() {
         <Route path="/home" element={getComponent(<Home />)} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/my-class" element={getComponent(<MyClass />)} />
         <Route path="/schools" element={getComponent(<Schools />)} />
         <Route path="/school-details/:schoolId" element={getComponent(<SchoolDetails />)} />
         <Route path="/admin-panel" element={getComponent(<AdminPanel />)} />
         <Route path="/my-schedulle" element={getComponent(<MySchedulle />)} />
         <Route path="/statistics" element={getComponent(<Statistics />)} />
         <Route path="/profile" element={getComponent(<MyProfilePage />)} />
+        <Route path="/myProfile/" Component={props => <MyProfilePage {...props} />} element={getComponent(<MyProfilePage />) } />
+        <Route path="/profile/:profileId"  element={getComponent(<MyProfilePage />)} />
       </Routes>
     </BrowserRouter>
   );

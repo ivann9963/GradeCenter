@@ -1,29 +1,32 @@
 import { AspNetUser } from "../../models/aspNetUser";
+import { useParams } from "react-router-dom";
 import { Container, Box, Typography, Paper, Tabs, Tab } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Personal from "../profile-panel/personal-page";
 import Grades from "../profile-panel/grades-page";
+import requests from "../../requests";
 
 export default function(){
+     let { profileId } = useParams();
      const [user, setUser] = useState<AspNetUser | null>(null);
      const [tabValue, setTabValue] = useState(0);
-     const token = sessionStorage["jwt"];
      
      useEffect(() => {
-        getLoggedUser();
-      }, [])
+        profileId != undefined? getUserById(profileId) : getLoggedUser();
+     }, [])
+
+     const getUserById = (profileId: any) => {
+        requests.getUserById(profileId)
+        .then((res) => {
+           const user = res.data;
+           setUser(user);
+           console.log(user);
+        });
+     }
 
      const getLoggedUser = () => {
-         const url = `https://localhost:7273/api/Account/GetLoggedUser`;
-         axios({
-           method: "get",
-           url: url,
-           headers: {
-             "Content-Type": "application/json",
-             Authorization: `Bearer ${token}`,
-           },
-         }).then((res) => {
+         requests.getLoggedUser().then((res) => {
             const user = res.data;
             setUser(user);
             console.log(user);
@@ -31,7 +34,6 @@ export default function(){
     };
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        console.log(newValue);
         setTabValue(newValue);
     };
 

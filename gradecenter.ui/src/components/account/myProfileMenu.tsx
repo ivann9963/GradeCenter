@@ -35,7 +35,7 @@ export default function MyProfileMenu() {
   };
 
   const handleProfileClick = () => {
-    navigate('/profile');
+    navigate('/myProfile');
     handleClose();
   };
 
