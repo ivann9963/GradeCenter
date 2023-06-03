@@ -45,7 +45,7 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(GradeRequestModel requestModel)
+        public async Task<IActionResult> Create([FromBody]GradeRequestModel requestModel)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles> { UserRoles.Admin, UserRoles.Teacher });
 
