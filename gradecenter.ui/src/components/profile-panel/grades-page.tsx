@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { Grade } from "../../models/grade";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import requests from "../../requests";
 
 interface Profile {
     profile: AspNetUser | null;
@@ -20,15 +21,7 @@ export default function Grades (params: Profile){
 
     const [grades, setGrades] = useState<Grade[] | null>(null);
     const getAllGrades = () => {
-        const url = `https://localhost:7273/api/Grades/GetAllGrades`;
-        axios({
-          method: "get",
-          url: url,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }).then((res) => {
+        requests.getAllGrades().then((res) => {
            let grades = res.data;
            grades = grades.filter(function(grade: Grade){
                return grade.student?.firstName === params.profile?.firstName 
