@@ -57,13 +57,85 @@ namespace GradeCenter.Services
         public void CreateAttendanceStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName)
         {
             Statistic statistic = ExtractAverageRate(schoolId, schoolClassId, teacherId, disciplineName);
+            statistic.ComparedToLastWeek = ExtractComparedToLastWeek(statistic);
+            statistic.ComparedToLastMonth = ExtractComparedToLastMonth(statistic);
+            statistic.ComparedToLastYear = ExtractComparedToLastYear(statistic);
 
-            
             statistic.CreatedOn = DateTime.UtcNow;
             statistic.StatisticType = StatisticTypes.Attendance;
 
             _db.Statistics.Add(statistic);
             _db.SaveChanges();
+        }
+
+        private double ExtractComparedToLastYear(Statistic statistic)
+        {
+            var (startOfThisYear, endOfThisYear) = GetYearBoundaries(DateTime.Today);
+            double currentYearStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfThisYear && x.CreatedOn <= endOfThisYear && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+
+            var (startOfLastYear, endOfLastYear) = GetYearBoundaries(DateTime.Today.AddYears(-1));
+            double lastYearStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfLastYear && x.CreatedOn <= endOfLastYear && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+
+            double difference = currentYearStatistics - lastYearStatistics;
+            double percentageDifference = (difference / lastYearStatistics) * 100;
+
+            return percentageDifference;
+        }
+
+        public static (DateTime StartOfYear, DateTime EndOfYear) GetYearBoundaries(DateTime date)
+        {
+            DateTime startOfYear = new DateTime(date.Year, 1, 1);
+            DateTime endOfYear = new DateTime(date.Year, 12, 31);
+
+            return (startOfYear, endOfYear);
+        }
+
+        private double ExtractComparedToLastMonth(Statistic statistic)
+        {
+            var (startOfThisMonth, endOfThisMonth) = GetMonthBoundaries(DateTime.Today);
+            double currentMonthStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfThisMonth && x.CreatedOn <= endOfThisMonth && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+
+            var (startOfLastMonth, endOfLastMonth) = GetMonthBoundaries(DateTime.Today.AddMonths(-1));
+            double lastMonthStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfLastMonth && x.CreatedOn <= endOfLastMonth && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+
+            double difference = currentMonthStatistics - lastMonthStatistics;
+            double percentageDifference = (difference / lastMonthStatistics) * 100;
+
+            return percentageDifference;
+        }
+
+        public static (DateTime StartOfMonth, DateTime EndOfMonth) GetMonthBoundaries(DateTime date)
+        {
+            DateTime startOfMonth = new DateTime(date.Year, date.Month, 1);
+            DateTime endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            return (startOfMonth, endOfMonth);
+        }
+
+
+        private double ExtractComparedToLastWeek(Statistic statistic)
+        {
+            var (startOfLastWeek, endOfLastWeek) = GetWeekBoundaries(DateTime.Today.AddDays(-7));
+            double lastWeekStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfLastWeek && x.CreatedOn <= endOfLastWeek && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+
+            var (startOfWeek, endOfWeek) = GetWeekBoundaries(DateTime.Today);
+            double currentWeekStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfWeek && x.CreatedOn <= endOfWeek && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+
+            double difference = currentWeekStatistics - lastWeekStatistics;
+            double percentageDifference = (difference / lastWeekStatistics) * 100;
+
+            return percentageDifference;
+        }
+
+        public static (DateTime StartOfWeek, DateTime EndOfWeek) GetWeekBoundaries(DateTime date)
+        {
+            int diffStart = (7 + (date.DayOfWeek - DayOfWeek.Monday)) % 7;
+            DateTime startOfWeek = date.AddDays(-diffStart);
+
+            int diffEnd = (7 + (DayOfWeek.Friday - date.DayOfWeek)) % 7;
+            DateTime endOfWeek = date.AddDays(diffEnd);
+
+            return (startOfWeek, endOfWeek);
         }
 
         private Statistic ExtractAverageRate(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName)
