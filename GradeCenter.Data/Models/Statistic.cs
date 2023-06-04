@@ -6,7 +6,19 @@ namespace GradeCenter.Data.Models
     {
         public Guid Id { get; set; }
 
-        public double Rate { get; set; }
+        public double AverageRate { get; set; }     // Average Grade or Attendance
+
+        public double AverageSchoolRate { get; set; } // Average Grade or Attendance for the whole School
+
+        public double AverageSchoolClassRate { get; set; } // Average Grade or Attendance for the SchoolClass
+
+        public double AverageTeacherRate { get; set; } // Average Grade or Attendance for the Teacher's students
+
+        public double ComparedToLastWeek { get; set; }  // Compares this weeks AverageRage to the last weeks's in % change
+
+        public double ComparedToLastMonth { get; set; }  // Compares this weeks AverageRage to the last weeks's in % change
+
+        public double ComparedToLastYear { get; set; }  // Compares this weeks AverageRage to the last weeks's in % change
 
         public SchoolClass? SchoolClass { get; set; }
 
@@ -14,7 +26,7 @@ namespace GradeCenter.Data.Models
 
         public AspNetUser? Teacher { get; set; }
 
-        public Discipline? Discipline { get; set; } 
+        public string? DisciplineName { get; set; } 
 
         public DateTime CreatedOn { get; set; }
 

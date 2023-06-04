@@ -10,6 +10,6 @@ namespace GradeCenter.Services.interfaces
         List<Statistic> GetWeekly();
 
         List<Statistic> GetYearly();
-        void CreateStatistic(School? school, SchoolClassService? schoolClass, AspNetUser? teacher, Discipline? discipline);
+        void CreateGradesStatistic(string? schoolId, string? schoolClass, string? teacherId, string? discipline);
     }
 }

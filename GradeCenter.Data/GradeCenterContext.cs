@@ -114,11 +114,6 @@ namespace GradeCenter.Data
                .HasOne(t => t.Teacher)
                .WithMany(st => st.Statistics)
                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Statistic>()
-               .HasOne(t => t.Discipline)
-               .WithMany(st => st.Statistics)
-               .OnDelete(DeleteBehavior.Cascade);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
