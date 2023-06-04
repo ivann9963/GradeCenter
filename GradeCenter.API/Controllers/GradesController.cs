@@ -30,7 +30,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetAllGrades")]
         public async Task<IActionResult> GetAllGradesAsync()
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles> { UserRoles.Admin, UserRoles.Principle, UserRoles.Student });
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles> { UserRoles.Admin, UserRoles.Principle, UserRoles.Student, UserRoles.Teacher });
 
             if (checkedRequest != null)
                 return checkedRequest;
@@ -64,7 +64,7 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(GradeRequestModel requestModel)
+        public async Task<IActionResult> Update([FromBody]GradeRequestModel requestModel)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles> { UserRoles.Admin, UserRoles.Teacher });
 

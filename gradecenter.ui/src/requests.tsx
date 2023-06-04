@@ -26,7 +26,7 @@ api.interceptors.request.use(
 
 const getSchoolById = (schoolId: string) => api.get(`/School/GetSchoolById?schoolId=${schoolId}`);
 
-const getDiscplineByTeacherId = (teacherId: string ) => api.get(`/Curriculum/GetDisciplineByTeacherId?teacherId=${teacherId}`);
+const getDisciplineByTeacherId = (teacherId: string ) => api.get(`/Curriculum/GetDisciplineByTeacherId?teacherId=${teacherId}`);
 
 const getAllSchools = () => api.get(`/School/GetAllSchools`);
 
@@ -106,6 +106,15 @@ const createGrade = (studentUsername: string, rate: string, discipline: string |
   })
 }
 
+const updateGrade = (id: string, studentUsername: string, rate: string, discipline: string | undefined) => {
+  api.put("/Grades/Update",{
+    id: id,
+    studentUsername: studentUsername,
+    number: rate,
+    disciplineName: discipline
+  })
+}
+
 const createCurricullum = (disciplines: Discipline[]) => api.post(`/Curriculum/Create`, disciplines);
 
 const getClassessInSchool = (schoolId: string) => api.get(`/SchoolClass/GetClassessInSchool?schoolId=${schoolId}`);
@@ -124,13 +133,14 @@ const requests = {
   getSchoolById,
   getAllSchools,
   getAllUsers,
-  getDiscplineByTeacherId,
+  getDisciplineByTeacherId,
   getAllGrades,
   getUserById,
   getAllSchoolsClassess,
   updateUser,
   getLoggedUser,
   createGrade,
+  updateGrade,
   addChild,
   changeSchool,
   enroll,

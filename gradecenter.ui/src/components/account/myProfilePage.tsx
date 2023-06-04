@@ -21,7 +21,6 @@ export default function(){
         .then((res) => {
            const user = res.data;
            setUser(user);
-           console.log(user);
         });
      }
 

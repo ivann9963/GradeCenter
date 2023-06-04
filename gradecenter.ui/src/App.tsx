@@ -41,7 +41,7 @@ export default function App() {
         <Route path="/statistics" element={getComponent(<Statistics />)} />
         <Route path="/profile" element={getComponent(<MyProfilePage />)} />
         <Route path="/myProfile/" Component={props => <MyProfilePage {...props} />} element={getComponent(<MyProfilePage />) } />
-        <Route path="/profile/:profileId"  element={getComponent(<MyProfilePage />)} />
+        <Route path="/profile/:profileId" Component={props => <MyProfilePage {...props} />}  element={getComponent(<MyProfilePage />)} />
       </Routes>
     </BrowserRouter>
   );

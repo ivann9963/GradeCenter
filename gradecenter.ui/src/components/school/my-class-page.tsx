@@ -52,7 +52,7 @@ export default function MyClass() {
 
         if (UserRoles[user?.userRole as number] == "Teacher") {
             setIsTeacher(true);
-            requests.getDiscplineByTeacherId(user?.id)
+            requests.getDisciplineByTeacherId(user?.id)
             .then((res) => {
                var discipline = res.data;
                setDiscipline(discipline);
