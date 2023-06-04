@@ -5,82 +5,59 @@ using GradeCenter.Services.interfaces;
 
 namespace GradeCenter.Services
 {
-    public class AttendanceStatisticsService : IAttendanceStatisticsService
+    public class StatisticsService : IStatisticsService
     {
         private readonly GradeCenterContext _db;
 
-        public AttendanceStatisticsService(GradeCenterContext db)
+        public StatisticsService(GradeCenterContext db)
         {
             _db = db;
         }
 
-        /// <summary>
-        /// Get statistics since 1st, till the last day of current month.
-        /// </summary>
-        /// <returns></returns>
-        public List<Statistic> GetMonthly()
+        public List<Statistic> GetMonthly(StatisticTypes statisticType)
         {
             var monthly = _db.Statistics
-                .Where(s => s.CreatedOn.Month == DateTime.UtcNow.Month 
-                    && s.StatisticType == StatisticTypes.Attendance)
-                .ToList();
+               .Where(s => s.CreatedOn.Month == DateTime.UtcNow.Month
+                   && s.StatisticType == statisticType)
+               .ToList();
 
             return monthly;
         }
 
-        /// <summary>
-        /// Get statistics since Monday to Sunday
-        /// </summary>
-        /// <returns></returns>
-        public List<Statistic> GetWeekly()
+        public List<Statistic> GetWeekly(StatisticTypes statisticType)
         {
             var (startOfWeek, endOfWeek) = GetWeekBoundaries(DateTime.UtcNow);
 
             var weekly = _db.Statistics
              .Where(s => s.CreatedOn >= startOfWeek && s.CreatedOn <= endOfWeek
-                && s.StatisticType == StatisticTypes.Attendance)
+                && s.StatisticType == statisticType)
              .ToList();
 
             return weekly;
         }
 
-        /// <summary>
-        /// Get statistic since JAN 1 till last day of the current year.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public List<Statistic> GetYearly()
+        public List<Statistic> GetYearly(StatisticTypes statisticTypes)
         {
             var yearly = _db.Statistics
-               .Where(s => s.CreatedOn.Year == DateTime.UtcNow.Year 
-                    && s.StatisticType == StatisticTypes.Attendance)
-               .ToList();
+             .Where(s => s.CreatedOn.Year == DateTime.UtcNow.Year
+                  && s.StatisticType == statisticTypes)
+             .ToList();
 
             return yearly;
         }
 
-        /// <summary>
-        /// Creates a statistic based on the provided parameters.
-        /// The Statistic can only be for only one of the options at a time - School, School Class or a Teacher.
-        /// AverageRate is the average of the grades for the selected option.
-        /// ComparedToLastWeek compares the AverageRate of last week to the current week. (Same for LastMonth and Year)
-        /// </summary>
-        /// <param name="school"></param>
-        /// <param name="schoolClass"></param>
-        /// <param name="teacher"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        public void CreateAttendanceStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName)
+        public void CreateStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName, StatisticTypes statisticType)
         {
             Statistic statistic = new();
-            statistic.AverageRate = ExtractAverageRate(schoolId, schoolClassId, teacherId, disciplineName) ?? 0;
-            statistic.ComparedToLastWeek = ExtractComparedToLastWeek();
-            statistic.ComparedToLastMonth = ExtractComparedToLastMonth();
-            statistic.ComparedToLastYear = ExtractComparedToLastYear();
+            statistic.AverageRate = ExtractAverageRate(schoolId, schoolClassId, teacherId, disciplineName, statisticType);
+            statistic.ComparedToLastWeek = ExtractComparedToLastWeek(statisticType);
+            statistic.ComparedToLastMonth = ExtractComparedToLastMonth(statisticType);
+            statistic.ComparedToLastYear = ExtractComparedToLastYear(statisticType);
 
             statistic = SetSelectOption(schoolId, schoolClassId, teacherId);
 
             statistic.CreatedOn = DateTime.UtcNow;
-            statistic.StatisticType = StatisticTypes.Attendance;
+            statistic.StatisticType = statisticType;
 
             _db.Statistics.Add(statistic);
             _db.SaveChanges();
@@ -108,26 +85,30 @@ namespace GradeCenter.Services
             return statistic;
         }
 
-        /// <summary>
-        /// Checks which is the selected option. (School, SchoolClass or Teacher)
-        /// Calculates the average rate of the attendances.
-        /// Only 1 option will be set and the others will always be null.
-        /// </summary>
-        /// <param name="schoolId"></param>
-        /// <param name="schoolClassId"></param>
-        /// <param name="teacherId"></param>
-        /// <param name="disciplineName"></param>
-        /// <returns></returns>
-        private double? ExtractAverageRate(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName)
+        private double ExtractAverageRate(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName, StatisticTypes statisticType)
         {
-            double? averageRate = 0;
+            double averageRate = 0;
 
-            if (schoolId != null)
-                averageRate = SchoolAvgDisciplineAttendance(schoolId, disciplineName);
-            else if (schoolClassId != null)
-                averageRate = ClassAvgDiscplineAttendance(schoolClassId, disciplineName);
-            else if (teacherId != null)
-                averageRate = TeacherAvgAttendances(teacherId);
+            switch (statisticType)
+            {
+                case StatisticTypes.Grades:
+                    if (schoolId != null)
+                        averageRate = AvgSchoolGrade(schoolId, disciplineName);
+                    else if (schoolClassId != null)
+                        averageRate = AvgClassGrade(schoolClassId, disciplineName);
+                    else if (teacherId != null)
+                        averageRate = AvgTeacherGrade(teacherId);
+                    break;
+
+                case StatisticTypes.Attendance:
+                    if (schoolId != null)
+                        averageRate = SchoolAvgDisciplineAttendance(schoolId, disciplineName) ?? 0;
+                    else if (schoolClassId != null)
+                        averageRate = ClassAvgDiscplineAttendance(schoolClassId, disciplineName) ?? 0;
+                    else if (teacherId != null)
+                        averageRate = TeacherAvgAttendances(teacherId) ?? 0;
+                    break;
+            }
 
             return averageRate;
         }
@@ -215,17 +196,66 @@ namespace GradeCenter.Services
         }
 
         /// <summary>
+        /// Gets all grades of disciplines where 
+        /// the owner is the given teacher and
+        /// returns their average rate.
+        /// </summary>
+        /// <param name="teacherId"></param>
+        /// <returns></returns>
+        private double AvgTeacherGrade(string teacherId)
+        {
+            var teacher = _db.AspNetUsers.FirstOrDefault(u => u.Id == Guid.Parse(teacherId));
+
+            var avgGrade = _db.Disciplines.Where(d => d.TeacherId == Guid.Parse(teacherId)).Average(x => x.Grades.Average(r => r.Rate));
+
+            return avgGrade;
+        }
+
+        /// <summary>
+        /// Gets all grades associated with the SchoolClass's Curricullum
+        /// and returns their average.
+        /// </summary>
+        /// <param name="schoolClassId"></param>
+        /// <param name="disciplineName"></param>
+        /// <returns></returns>
+        private double AvgClassGrade(string schoolClassId, string? disciplineName)
+        {
+            var schoolClass = _db.SchoolClasses.FirstOrDefault(c => c.Id == Guid.Parse(schoolClassId));
+
+            var avgGrade = schoolClass.Curriculum.SelectMany(g => g.Grades).ToList().Average(s => s.Rate);
+
+            return avgGrade;
+        }
+
+        /// <summary>
+        /// Gets all grades associated with the given school
+        /// and calculates their average.
+        /// </summary>
+        /// <param name="schoolId"></param>
+        /// <param name="disciplineName"></param>
+        /// <returns></returns>
+        private double AvgSchoolGrade(string? schoolId, string? disciplineName)
+        {
+            var school = _db.Schools.FirstOrDefault(s => s.Id == schoolId);
+
+            var avgGrade = school.SchoolClasses.SelectMany(g => g.Curriculum.Where(d => d.Name == disciplineName).SelectMany(g => g.Grades))
+                .ToList().Average(x => x.Rate);
+
+            return avgGrade;
+        }
+
+        /// <summary>
         /// Compares this year's Average of all AverageRates for Attendances
         /// to the last years.
         /// </summary>
         /// <returns></returns>
-        private double ExtractComparedToLastYear()
+        private double ExtractComparedToLastYear(StatisticTypes statisticTypes)
         {
             var (startOfThisYear, endOfThisYear) = GetYearBoundaries(DateTime.Today);
-            double currentYearStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfThisYear && x.CreatedOn <= endOfThisYear && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+            double currentYearStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfThisYear && x.CreatedOn <= endOfThisYear && x.StatisticType == statisticTypes).Average(x => x.AverageRate);
 
             var (startOfLastYear, endOfLastYear) = GetYearBoundaries(DateTime.Today.AddYears(-1));
-            double lastYearStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfLastYear && x.CreatedOn <= endOfLastYear && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+            double lastYearStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfLastYear && x.CreatedOn <= endOfLastYear && x.StatisticType == statisticTypes).Average(x => x.AverageRate);
 
             double difference = currentYearStatistics - lastYearStatistics;
             double percentageDifference = Math.Round((difference / lastYearStatistics) * 100, 2);
@@ -252,13 +282,13 @@ namespace GradeCenter.Services
         /// to the last months
         /// </summary>
         /// <returns></returns>
-        private double ExtractComparedToLastMonth()
+        private double ExtractComparedToLastMonth(StatisticTypes statisticType)
         {
             var (startOfThisMonth, endOfThisMonth) = GetMonthBoundaries(DateTime.Today);
-            double currentMonthStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfThisMonth && x.CreatedOn <= endOfThisMonth && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+            double currentMonthStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfThisMonth && x.CreatedOn <= endOfThisMonth && x.StatisticType == statisticType).Average(x => x.AverageRate);
 
             var (startOfLastMonth, endOfLastMonth) = GetMonthBoundaries(DateTime.Today.AddMonths(-1));
-            double lastMonthStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfLastMonth && x.CreatedOn <= endOfLastMonth && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+            double lastMonthStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfLastMonth && x.CreatedOn <= endOfLastMonth && x.StatisticType == statisticType).Average(x => x.AverageRate);
 
             double difference = currentMonthStatistics - lastMonthStatistics;
             double percentageDifference = Math.Round((difference / lastMonthStatistics) * 100, 2);
@@ -285,13 +315,13 @@ namespace GradeCenter.Services
         /// to the last months
         /// </summary>
         /// <returns></returns>
-        private double ExtractComparedToLastWeek()
+        private double ExtractComparedToLastWeek(StatisticTypes statisticType)
         {
             var (startOfLastWeek, endOfLastWeek) = GetWeekBoundaries(DateTime.Today.AddDays(-7));
-            double lastWeekStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfLastWeek && x.CreatedOn <= endOfLastWeek && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+            double lastWeekStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfLastWeek && x.CreatedOn <= endOfLastWeek && x.StatisticType == statisticType).Average(x => x.AverageRate);
 
             var (startOfWeek, endOfWeek) = GetWeekBoundaries(DateTime.Today);
-            double currentWeekStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfWeek && x.CreatedOn <= endOfWeek && x.StatisticType == StatisticTypes.Attendance).Average(x => x.AverageRate);
+            double currentWeekStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfWeek && x.CreatedOn <= endOfWeek && x.StatisticType == statisticType).Average(x => x.AverageRate);
 
             double difference = currentWeekStatistics - lastWeekStatistics;
             double percentageDifference = Math.Round((difference / lastWeekStatistics) * 100, 2);
