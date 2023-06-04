@@ -1,15 +1,14 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Data.Models;
 using GradeCenter.Services.interfaces;
-using System.Collections.Generic;
 
 namespace GradeCenter.Services
 {
-    public class StatisticsService : IStatisticsService
+    public class GradesStatisticsService : IGradesStatisticsService
     {
         private readonly GradeCenterContext _db;
 
-        public StatisticsService(GradeCenterContext db)
+        public GradesStatisticsService(GradeCenterContext db)
         {
             _db = db;
         }
@@ -54,7 +53,6 @@ namespace GradeCenter.Services
             return yearly;
         }
 
-
         /// <summary>
         /// Creates a statistic based on the provided parameters.
         /// </summary>
@@ -64,9 +62,7 @@ namespace GradeCenter.Services
         /// <exception cref="NotImplementedException"></exception>
         public void CreateGradesStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName)
         {
-            Statistic statistic = new Statistic();
-
-            statistic = ExtractAverageRate(schoolId, schoolClassId, teacherId, disciplineName);
+            Statistic statistic = ExtractAverageRate(schoolId, schoolClassId, teacherId, disciplineName);
             statistic.ComparedToLastWeek = ExtractComparedToLastWeek(statistic);
             statistic.ComparedToLastMonth = ExtractComparedToLastMonth(statistic);
             statistic.ComparedToLastYear = ExtractComparedToLastYear(statistic);
