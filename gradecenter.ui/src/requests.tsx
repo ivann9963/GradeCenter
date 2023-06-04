@@ -115,6 +115,8 @@ const updateGrade = (id: string, studentUsername: string, rate: string, discipli
   })
 }
 
+const deleteGrade = (id: string | undefined) => api.delete(`/Grades/Delete/?id=${id}`);
+
 const createCurricullum = (disciplines: Discipline[]) => api.post(`/Curriculum/Create`, disciplines);
 
 const getClassessInSchool = (schoolId: string) => api.get(`/SchoolClass/GetClassessInSchool?schoolId=${schoolId}`);
@@ -141,6 +143,7 @@ const requests = {
   getLoggedUser,
   createGrade,
   updateGrade,
+  deleteGrade,
   addChild,
   changeSchool,
   enroll,

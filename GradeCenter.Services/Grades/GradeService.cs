@@ -20,6 +20,7 @@ namespace GradeCenter.Services.Grades
                 .Include(discipline => discipline.Discipline.SchoolClass)
                 .Include(discipline => discipline.Discipline.SchoolClass.School)
                 .Include(discipline => discipline.Student)
+                .Where(grade => grade.IsActive)
                 .ToList();
         }
         /// <summary>

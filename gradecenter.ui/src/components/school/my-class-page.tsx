@@ -110,7 +110,7 @@ export default function MyClass() {
           };
           return (
             <Button
-            variant="outlined"
+            variant="contained"
             onClick={handleOpen}
             sx={{ marginBottom: 2, marginTop: 2, marginLeft: 1 }}>
             + Add Grade

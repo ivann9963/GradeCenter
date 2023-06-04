@@ -1,9 +1,10 @@
-import axios from "axios";
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
 import { useEffect, useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { Grade } from "../../models/grade";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import requests from "../../requests";
 import Discipline from "../../models/discipline";
 
@@ -78,9 +79,9 @@ export default function Grades (params: Profile){
 
     if(UserRoles[loggedUser?.userRole as number] === "Teacher"){
         columns.push({
-            field: "-",
+            field: "update",
             headerName: "",
-            width: 350,
+            width: 200,
             renderCell: (params: GridRenderCellParams) => {
               const handleOpen = () => {
                 setSelectedRowData(params.row);
@@ -90,17 +91,19 @@ export default function Grades (params: Profile){
                     setDiscipline(discipline);
                     if (params.row.discipline.name != discipline.name) {
                         setIsOpened(false);
-                        document.getElementById("updateBtn")?.replaceWith("Teacher does not have permission for update");
+                        document.getElementsByClassName("updateBtn")[0]?.replaceWith("Teacher does not have permission for update");
                     }
                     else{
                       setIsOpened(true);
                     }
                   })
               };
+              
               return (
                 <Button
-                variant="outlined"
-                id="updateBtn"
+                variant="contained"
+                className="updateBtn"
+                startIcon={<EditIcon/>}
                 onClick={handleOpen}
                 sx={{ marginBottom: 2, marginTop: 2, marginLeft: 1 }}>
                   Update Grade
@@ -108,6 +111,39 @@ export default function Grades (params: Profile){
               );
             }
         })
+
+        columns.push({
+          field: "delete",
+          headerName: "",
+          width: 200,
+          renderCell: (params: GridRenderCellParams) => {
+            const handleDelete = () => {
+              requests.getDisciplineByTeacherId(loggedUser?.id as string)
+                .then((res) => {
+                  var discipline = res.data;
+                  setDiscipline(discipline);
+                  if (params.row.discipline.name != discipline.name) {
+                      setIsOpened(false);
+                      document.getElementsByClassName("deleteBtn")[0]?.replaceWith("Teacher does not have permission for delete");
+                  }
+                  else{
+                      requests.deleteGrade(params.row?.id);
+                  }
+                })
+            };
+            return (
+              <Button
+              variant="contained"
+              color="secondary"
+              id="deleteBtn"
+              startIcon={<DeleteIcon />}
+              onClick={handleDelete}
+              sx={{ marginBottom: 2, marginTop: 2, marginLeft: 1 }}>
+                Delete Grade
+              </Button>
+            );
+          }
+      })
 
     }
 
