@@ -7,13 +7,14 @@ import { SchoolClass } from "../../models/schoolClass";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import requests from "../../requests";
+import Discipline from "../../models/discipline";
 
 
 export default function MyClass() {
   let columns: GridColDef[] | null = null;
  
   const [selectedRowData, setSelectedRowData] = useState<any | null>(null);
-  const [discipline, setDiscipline] = useState<string>("");
+  const [discipline, setDiscipline] = useState<Discipline | null>(null);
   const [rate, setRate] = useState<string>("");
   const [isTeacher, setIsTeacher] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
@@ -51,6 +52,12 @@ export default function MyClass() {
 
         if (UserRoles[user?.userRole as number] == "Teacher") {
             setIsTeacher(true);
+            requests.getDiscplineByTeacherId(user?.id)
+            .then((res) => {
+               var discipline = res.data;
+               setDiscipline(discipline);
+               console.log(discipline);
+            })
         }
 
      });
@@ -119,19 +126,35 @@ export default function MyClass() {
   function handleSubmit(){
         var studentUsername = selectedRowData["userName"];
         var studentRate = rate;
-        var studentDiscipline = discipline;
-        console.log(studentUsername);
-        requests.createGrade(studentUsername, studentRate, studentDiscipline);
+        var studentDiscipline = discipline?.name;
 
+        requests.createGrade(studentUsername, studentRate, studentDiscipline);
   }
+
+  const handleChangeRate = (rate : string) => {
+     if(rate <= "1"){
+       setRate("2");
+     }
+     else if (rate >= "6"){
+       setRate("6");
+     }
+     else{
+       setRate(rate);
+     }
+  }
+
   const AddDialog = () => (
     <Dialog open={isOpened} onClose={handleClose}>
       <DialogTitle>Add Grade</DialogTitle>
       <DialogContent>
-      <TextField value={discipline} placeholder="Discipline" onChange={(e) => {setDiscipline(e.target.value)}}/>
+      <TextField value={discipline?.name} placeholder="Discipline" 
+        InputProps={{
+          readOnly: true
+        }}
+      />
       <br />
       <br />
-      <TextField value={rate} placeholder="Rate Student" onChange={(e) => {setRate(e.target.value)}} type="number"/>
+      <TextField value={rate} placeholder="Rate Student" onChange={(e) => { handleChangeRate(e.target.value) }} type="number"/>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>

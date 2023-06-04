@@ -26,6 +26,8 @@ api.interceptors.request.use(
 
 const getSchoolById = (schoolId: string) => api.get(`/School/GetSchoolById?schoolId=${schoolId}`);
 
+const getDiscplineByTeacherId = (teacherId: string ) => api.get(`/Curriculum/GetDisciplineByTeacherId?teacherId=${teacherId}`);
+
 const getAllSchools = () => api.get(`/School/GetAllSchools`);
 
 const getAllUsers = () => api.get(`/Account/GetAllUsers`);
@@ -96,7 +98,7 @@ const createSchoolClass = (year: number, department: string, schoolName: string,
     teacherNames: teacherNames,
   });
 
-const createGrade = (studentUsername: string, rate: string, discipline: string) => {
+const createGrade = (studentUsername: string, rate: string, discipline: string | undefined) => {
   api.post("/Grades/Create",{
     studentUsername: studentUsername,
     number: rate,
@@ -122,6 +124,7 @@ const requests = {
   getSchoolById,
   getAllSchools,
   getAllUsers,
+  getDiscplineByTeacherId,
   getAllGrades,
   getUserById,
   getAllSchoolsClassess,

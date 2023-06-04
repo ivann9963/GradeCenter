@@ -24,7 +24,13 @@ namespace GradeCenter.API.Controllers
             _requestValidator = new RequestValidator(_userManager);
             _modelsFactory = new ModelsFactory();
         }
+        [HttpGet("GetDisciplineByTeacherId")]
+        public async Task<IActionResult> GetDisciplineByTeacherId(string teacherId)
+        {
+            var teacher = _curriculumService.GetDisciplineByTeacherId(teacherId);
 
+            return Ok(teacher);
+        }
         /// <summary>
         /// Accepts a list of disciplines to create a new curriculum. 
         /// Validates the request before proceeding.

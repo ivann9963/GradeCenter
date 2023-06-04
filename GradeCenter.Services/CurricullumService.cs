@@ -1,7 +1,6 @@
 ﻿using GradeCenter.Data;
 using GradeCenter.Data.Models;
 using GradeCenter.Services.interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace GradeCenter.Services
 {
@@ -244,6 +243,19 @@ namespace GradeCenter.Services
                 .ToList();
 
             return schoolClassCurricullum;
+        }
+
+        /// <summary>
+        /// Get teacher entity for respective discipline
+        /// </summary>
+        /// <param name="disciplineName"></param>
+        /// <returns></returns>
+        public Discipline GetDisciplineByTeacherId(string teacherId)
+        {
+            var discipline = _db.Disciplines
+                   .FirstOrDefault(f => f.TeacherId == Guid.Parse(teacherId));
+
+            return discipline;
         }
     }
 }
