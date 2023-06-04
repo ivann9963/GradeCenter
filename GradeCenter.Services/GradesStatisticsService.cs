@@ -68,6 +68,7 @@ namespace GradeCenter.Services
             statistic.ComparedToLastYear = ExtractComparedToLastYear(statistic);
 
             statistic.CreatedOn = DateTime.UtcNow;
+            statistic.StatisticType = StatisticTypes.Grades;
 
             _db.Statistics.Add(statistic);
             _db.SaveChanges();
@@ -147,21 +148,14 @@ namespace GradeCenter.Services
         {
             Statistic statistic = new Statistic();
 
-            if (schoolId != null)
-            {
-                statistic.AverageSchoolRate = AvgSchoolGrade(schoolId, disciplineName);
-                statistic.School = _db.Schools.FirstOrDefault(x => x.Id == schoolId);
-            }
-            else if (schoolClassId != null)
-            {
-                statistic.AverageSchoolClassRate = AvgClassGrade(schoolClassId, disciplineName);
-                statistic.SchoolClass = _db.SchoolClasses.FirstOrDefault(x => x.Id == Guid.Parse(schoolClassId));
-            }
-            else if (teacherId != null)
-            {
-                statistic.AverageTeacherRate = AvgTeacherGrade(teacherId);
-                statistic.Teacher = _db.AspNetUsers.FirstOrDefault(x => x.Id == Guid.Parse(teacherId));
-            }
+            statistic.AverageSchoolRate = AvgSchoolGrade(schoolId, disciplineName);
+            statistic.School = _db.Schools.FirstOrDefault(x => x.Id == schoolId);
+
+            statistic.AverageSchoolClassRate = AvgClassGrade(schoolClassId, disciplineName);
+            statistic.SchoolClass = _db.SchoolClasses.FirstOrDefault(x => x.Id == Guid.Parse(schoolClassId));
+
+            statistic.AverageTeacherRate = AvgTeacherGrade(teacherId);
+            statistic.Teacher = _db.AspNetUsers.FirstOrDefault(x => x.Id == Guid.Parse(teacherId));
 
             return statistic;
         }
@@ -190,7 +184,7 @@ namespace GradeCenter.Services
 
             var avgGrade = school.SchoolClasses.SelectMany(g => g.Curriculum.Where(d => d.Name == disciplineName).SelectMany(g => g.Grades))
                 .ToList().Average(x => x.Rate);
-            
+
             return avgGrade;
         }
     }

@@ -30,5 +30,12 @@ namespace GradeCenter.Data.Models
 
         public DateTime CreatedOn { get; set; }
 
+        public StatisticTypes StatisticType { get; set; }
+    }
+
+    public enum StatisticTypes
+    {
+        Grades = 0,
+        Attendance = 1
     }
 }

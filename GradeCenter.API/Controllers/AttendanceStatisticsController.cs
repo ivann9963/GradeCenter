@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using GradeCenter.Data.Models;
+using GradeCenter.Services.interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GradeCenter.API.Controllers
 {
@@ -8,6 +8,29 @@ namespace GradeCenter.API.Controllers
     [ApiController]
     public class AttendanceStatisticsController : ControllerBase
     {
+        private readonly IAttendanceStatisticsService _attendanceStatisticsService;
 
+        public AttendanceStatisticsController(IAttendanceStatisticsService attendanceStatisticsService)
+        {
+            _attendanceStatisticsService = attendanceStatisticsService;
+        }
+
+        [HttpGet("GetWeekly")]
+        public List<Statistic> GetWeekly()
+        {
+            return _attendanceStatisticsService.GetWeekly();
+        }
+
+        [HttpGet("GetMonthly")]
+        public List<Statistic> GetMonthly()
+        {
+            return _attendanceStatisticsService.GetMonthly();
+        }
+
+        [HttpGet("GetYearly")]
+        public List<Statistic> GetYearly()
+        {
+            return _attendanceStatisticsService.GetYearly();
+        }
     }
 }
