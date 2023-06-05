@@ -81,7 +81,7 @@ export default function Grades (params: Profile){
         columns.push({
             field: "update",
             headerName: "",
-            width: 200,
+            width: 90,
             renderCell: (params: GridRenderCellParams) => {
               const handleOpen = () => {
                 setSelectedRowData(params.row);
@@ -106,7 +106,6 @@ export default function Grades (params: Profile){
                 startIcon={<EditIcon/>}
                 onClick={handleOpen}
                 sx={{ marginBottom: 2, marginTop: 2, marginLeft: 1 }}>
-                  Update Grade
                 </Button>
               );
             }
@@ -115,7 +114,7 @@ export default function Grades (params: Profile){
         columns.push({
           field: "delete",
           headerName: "",
-          width: 200,
+          width: 90,
           renderCell: (params: GridRenderCellParams) => {
             const handleDelete = () => {
               requests.getDisciplineByTeacherId(loggedUser?.id as string)
@@ -145,7 +144,6 @@ export default function Grades (params: Profile){
               startIcon={<DeleteIcon />}
               onClick={handleDelete}
               sx={{ marginBottom: 2, marginTop: 2, marginLeft: 1 }}>
-                Delete Grade
               </Button>
             );
           }
