@@ -43,6 +43,7 @@ namespace GradeCenter.API
             services.AddTransient<ISchoolClassService, SchoolClassService>();
             services.AddTransient<IAttendanceService, AttendanceService>();
             services.AddTransient<IGradeService, GradeService>();
+            services.AddTransient<IStatisticsService, StatisticsService>();
 
             services.AddCors(options =>
             {
