@@ -106,14 +106,14 @@ const createGrade = (studentUsername: string, rate: string, discipline: string |
   })
 }
 
-const updateGrade = (id: string, studentUsername: string, rate: string, discipline: string | undefined) => {
-  api.put("/Grades/Update",{
+const updateGrade = (id: string, studentUsername: string, rate: string, discipline: string | undefined) => api.put("/Grades/Update",
+{
     id: id,
     studentUsername: studentUsername,
     number: rate,
     disciplineName: discipline
-  })
-}
+})
+
 
 const deleteGrade = (id: string | undefined) => api.delete(`/Grades/Delete/?id=${id}`);
 

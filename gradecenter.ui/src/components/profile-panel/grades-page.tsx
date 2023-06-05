@@ -127,7 +127,13 @@ export default function Grades (params: Profile){
                       document.getElementsByClassName("deleteBtn")[0]?.replaceWith("Teacher does not have permission for delete");
                   }
                   else{
-                      requests.deleteGrade(params.row?.id);
+                      requests.deleteGrade(params.row?.id)
+                        .then(() => {
+                           requests.getAllGrades()
+                            .then((allGrades) => {
+                               setGrades(allGrades.data);
+                            })
+                        });
                   }
                 })
             };
@@ -156,7 +162,13 @@ export default function Grades (params: Profile){
           var studentRate = rate;
           var studentDiscipline = discipline?.name;
   
-          requests.updateGrade(id, studentUsername, studentRate, studentDiscipline);
+          requests.updateGrade(id, studentUsername, studentRate, studentDiscipline)
+            .then(() => {
+              requests.getAllGrades()
+                .then((allGrades) => {
+                  setGrades(allGrades.data);
+                })
+            });
     }
   
     const handleChangeRate = (rate : string) => {
