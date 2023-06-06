@@ -31,10 +31,10 @@ namespace GradeCenter.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(AttendanceRequestModel requestModel)
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
-            if (checkedRequest != null)
-                return checkedRequest;
+            //if (checkedRequest != null)
+            //    return checkedRequest;
 
             var mappedAttendanceModel = _modelsFactory.ExtractAttendance(requestModel);
 
@@ -50,7 +50,7 @@ namespace GradeCenter.API.Controllers
         [HttpGet("GetAllAttendances")]
         public async Task<IActionResult> GetAllAttendancesAsync()
         {
-            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles> { UserRoles.Admin, UserRoles.Principle, UserRoles.Student, UserRoles.Teacher });
 
             if (checkedRequest != null)
                 return checkedRequest;

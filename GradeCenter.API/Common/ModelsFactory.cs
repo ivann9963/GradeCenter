@@ -109,9 +109,6 @@ namespace GradeCenter.API.Common
 
         public Attendance ExtractAttendance(AttendanceRequestModel requestModel)
         {
-            if (requestModel.HasAttended.HasValue)
-                return null;
-
             return new Attendance
             {
                 Id = requestModel.Id != null ? Guid.Parse(requestModel.Id) : Guid.Empty,
