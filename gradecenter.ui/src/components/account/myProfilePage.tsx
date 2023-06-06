@@ -6,6 +6,7 @@ import axios from "axios";
 import Personal from "../profile-panel/personal-page";
 import Grades from "../profile-panel/grades-page";
 import requests from "../../requests";
+import Attendance from "../profile-panel/attendance-page";
 
 export default function(){
      let { profileId } = useParams();
@@ -57,6 +58,13 @@ export default function(){
                     <Personal profile={user} />
                 </Typography>
               </Box>
+            )}
+            {tabValue === 2 && (
+              <Box p={3}>
+              <Typography>
+                  <Attendance profile={user} />
+              </Typography>
+            </Box>
             )}
             {tabValue === 3 && (
               <Box p={3}>
