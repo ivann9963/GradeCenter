@@ -100,6 +100,8 @@ const getLoggedUserCurricullum = () => api.get(`/Curriculum/GetLoggedUserCurricu
 
 const getSchoolStatistics = () => api.get('/Statistics/GetSchoolStatistics')
 
+const getClassesStatistics = () => api.get('/Statistics/GetClassStatistics')
+
 const requests = {
   getSchoolById,
   getAllSchools,

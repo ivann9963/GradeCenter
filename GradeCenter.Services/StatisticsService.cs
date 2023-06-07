@@ -48,6 +48,15 @@ namespace GradeCenter.Services
         }
 
 
+        public List<Statistic> GetClassStatistics()
+        {
+            var allSchoolStatistics = _db.Statistics.Include(x => x.SchoolClass)
+                .Where(x => x.SchoolClass != null && x.SchoolClass.Id != Guid.Empty).ToList();
+
+            return allSchoolStatistics;
+        }
+
+
         public void CreateStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName, StatisticTypes statisticType)
         {
             var statistic = new Statistic

@@ -12,6 +12,8 @@ namespace GradeCenter.Services.interfaces
 
         List<Statistic> GetSchoolStatistics();
 
+        List<Statistic> GetClassStatistics();
+
         void CreateStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName, StatisticTypes statisticType);
     }
 }
