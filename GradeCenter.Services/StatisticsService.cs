@@ -1,4 +1,4 @@
-﻿using GradeCenter.Data;
+using GradeCenter.Data;
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services.interfaces;
@@ -39,6 +39,14 @@ namespace GradeCenter.Services
             var (startOfYear, endOfYear) = GetYearBoundaries(DateTime.UtcNow);
             return GetStatistics(statisticTypes, startOfYear, endOfYear);
         }
+
+        public List<Statistic> GetSchoolStatistics()
+        {
+            var allSchoolStatistics = _db.Statistics.Include(x => x.School).Where(x => x.School.Id != null).ToList();
+
+            return allSchoolStatistics;
+        }
+
 
         public void CreateStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName, StatisticTypes statisticType)
         {

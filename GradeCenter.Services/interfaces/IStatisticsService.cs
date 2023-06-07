@@ -1,4 +1,4 @@
-﻿using GradeCenter.Data.Models;
+using GradeCenter.Data.Models;
 
 namespace GradeCenter.Services.interfaces
 {
@@ -9,6 +9,8 @@ namespace GradeCenter.Services.interfaces
         List<Statistic> GetWeekly(StatisticTypes statisticType);
 
         List<Statistic> GetYearly(StatisticTypes statisticType);
+
+        List<Statistic> GetSchoolStatistics();
 
         void CreateStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName, StatisticTypes statisticType);
     }

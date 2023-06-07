@@ -6,17 +6,18 @@ import HomeIcon from "@material-ui/icons/Home";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import PeopleIcon from '@mui/icons-material/People';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 
 export default function Nav() {
   return (
     <div>
       <nav>
         <List>
-          {["Home", "My Class", "My schedulle" ].map((text, index) => (
+          {["Home", "My Class", "My schedulle", "Statistics" ].map((text, index) => (
               <ListItem button key={text} component="a" href={'/' + text.replace(' ', '-').toLowerCase()}>
                 <ListItemIcon>
                   {
-                    [<HomeIcon />, <PeopleIcon />, <CalendarMonthIcon />][index]
+                    [<HomeIcon />, <PeopleIcon />, <CalendarMonthIcon />, <DonutSmallIcon /> ][index]
                   }
                 </ListItemIcon>
                 <ListItemText primary={text} />
