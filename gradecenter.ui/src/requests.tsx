@@ -102,6 +102,8 @@ const getSchoolStatistics = () => api.get('/Statistics/GetSchoolStatistics')
 
 const getClassesStatistics = () => api.get('/Statistics/GetClassStatistics')
 
+const getTeachersStatistics = () => api.get('/Statistics/GetTeacherStatistics')
+
 const requests = {
   getSchoolById,
   getAllSchools,
@@ -118,6 +120,8 @@ const requests = {
   getPeopleInSchool,
   getLoggedUserCurricullum,
   getSchoolStatistics,
+  getClassesStatistics,
+  getTeachersStatistics
 };
 
 export default requests;

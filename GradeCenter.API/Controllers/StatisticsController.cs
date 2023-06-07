@@ -1,4 +1,4 @@
-using GradeCenter.Data.Models;
+﻿using GradeCenter.Data.Models;
 using GradeCenter.Services.interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,11 +38,19 @@ namespace GradeCenter.API.Controllers
         {
             return _statisticsService.GetSchoolStatistics();
         }
+
         [HttpGet("GetClassStatistics")]
         public List<Statistic> GetClassStatistics()
         {
             return _statisticsService.GetClassStatistics();
         }
+
+        [HttpGet("GetTeacherStatistics")]
+        public List<Statistic> GetTeacherStatistics()
+        {
+            return _statisticsService.GetTeacherStatistics();
+        }
+
         /// <summary>
         /// Creates statistics based either for a School, School Class or a Teacher.
         /// The type can be either for Attendances or Grades.

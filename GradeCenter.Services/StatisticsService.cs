@@ -1,4 +1,4 @@
-using GradeCenter.Data;
+﻿using GradeCenter.Data;
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services.interfaces;
@@ -56,6 +56,16 @@ namespace GradeCenter.Services
             return allSchoolStatistics;
         }
 
+
+        public List<Statistic> GetTeacherStatistics()
+        {
+            var allSchoolStatistics = _db.Statistics
+                .Include(x => x.School)
+                .Include(t => t.Teacher)
+                .Where(x => x.Teacher != null && x.Teacher.Id != Guid.Empty).ToList();
+
+            return allSchoolStatistics;
+        }
 
         public void CreateStatistic(string? schoolId, string? schoolClassId, string? teacherId, string? disciplineName, StatisticTypes statisticType)
         {
@@ -358,7 +368,6 @@ namespace GradeCenter.Services
 
             return (startOfMonth, endOfMonth);
         }
-
 
         /// <summary>
         /// Compares this weeks average of all AverageRates
