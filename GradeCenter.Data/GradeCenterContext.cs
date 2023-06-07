@@ -98,22 +98,20 @@ namespace GradeCenter.Data
                 .WithMany(g => g.Grades)
                 .OnDelete(DeleteBehavior.Restrict);
 
-          
-
             modelBuilder.Entity<Statistic>()
                 .HasOne(s => s.School)
                 .WithMany(st => st.Statistics)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Statistic>()
                 .HasOne(sc => sc.SchoolClass)
                 .WithMany(st => st.Statistics)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Statistic>()
                .HasOne(t => t.Teacher)
                .WithMany(st => st.Statistics)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.NoAction);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
@@ -121,7 +119,7 @@ namespace GradeCenter.Data
             base.OnConfiguring(builder);
 
             builder.UseSqlServer(
-                @"Server=.\SQLEXPRESS;Database=GradeCenter;Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;Integrated Security=True");
+                @"Server=localhost,1433;Database=YourDatabaseName;User Id=sa;Password=reallyStrongPwd123;");
         }
     }
 }

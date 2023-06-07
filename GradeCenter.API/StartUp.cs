@@ -69,7 +69,7 @@ namespace GradeCenter.API
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
+            .AddJwtBearer(x =>  
             {
                 x.RequireHttpsMetadata = true;
                 x.SaveToken = true;
@@ -92,13 +92,6 @@ namespace GradeCenter.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GradeCenter v1"));
             }
-
-            //using (var serviceScope = app.ApplicationServices.CreateScope())
-            //{
-            //    var dbContext = serviceScope.ServiceProvider.GetRequiredService<GradeCenterContext>();
-            //    dbContext.Database.Migrate();
-
-            //}
 
             app.UseHttpsRedirection();
 

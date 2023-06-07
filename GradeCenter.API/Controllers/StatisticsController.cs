@@ -43,7 +43,7 @@ namespace GradeCenter.API.Controllers
         /// <param name="schoolId"></param>
         /// <param name="discipline"></param>
         [HttpPost]
-        public void CreateGradesStatistics(string schoolId, string schoolClassIdId, string? teacherId, string discipline, StatisticTypes statisticType)
+        public void CreateGradesStatistics(string? schoolId, string? schoolClassIdId, string? teacherId, string discipline, StatisticTypes statisticType)
         {
             _statisticsService.CreateStatistic(schoolId, schoolClassIdId, teacherId, discipline, statisticType);
         }

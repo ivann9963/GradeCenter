@@ -2,6 +2,7 @@
 using GradeCenter.Data.Models;
 using GradeCenter.Data.Models.Account;
 using GradeCenter.Services.interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GradeCenter.Services
 {
@@ -48,7 +49,8 @@ namespace GradeCenter.Services
                 ComparedToLastMonth = CalculateComparedToLastMonth(statisticType),
                 ComparedToLastYear = CalculateComparedToLastYear(statisticType),
                 CreatedOn = DateTime.UtcNow,
-                StatisticType = statisticType
+                StatisticType = statisticType,
+                DisciplineName = disciplineName
             };
 
             statistic = SetSelectOption(statistic, schoolId, schoolClassId, teacherId);
@@ -198,7 +200,17 @@ namespace GradeCenter.Services
         {
             var teacher = _db.AspNetUsers.FirstOrDefault(u => u.Id == Guid.Parse(teacherId));
 
-            var avgGrade = _db.Disciplines.Where(d => d.TeacherId == Guid.Parse(teacherId)).Average(x => x.Grades.Average(r => r.Rate));
+            var teacherGrades = _db.Disciplines
+                .Include(x => x.Teacher)
+                .Include(x => x.Grades)
+                .Where(d => d.TeacherId == Guid.Parse(teacherId))
+                .SelectMany(g => g.Grades)
+                .ToList();
+
+            if (teacherGrades.Count == 0)
+                return 0;
+            
+            var avgGrade = teacherGrades.Average(r => r.Rate);
 
             return avgGrade;
         }
@@ -212,7 +224,10 @@ namespace GradeCenter.Services
         /// <returns></returns>
         private double AvgClassGrade(string schoolClassId, string? disciplineName)
         {
-            var schoolClass = _db.SchoolClasses.FirstOrDefault(c => c.Id == Guid.Parse(schoolClassId));
+            var schoolClass = _db.SchoolClasses
+                .Include(x => x.Curriculum)
+                .ThenInclude(g => g.Grades)
+                .FirstOrDefault(c => c.Id == Guid.Parse(schoolClassId));
 
             var avgGrade = schoolClass.Curriculum.SelectMany(g => g.Grades).ToList().Average(s => s.Rate);
 
@@ -260,8 +275,10 @@ namespace GradeCenter.Services
             List<Statistic> lastYearStatistics = _db.Statistics.Where(x => x.CreatedOn >= startOfLastYear && x.CreatedOn <= endOfLastYear && x.StatisticType == statisticTypes).ToList();
             double lastYearStatisticsAvg = 0;
 
-            if (lastYearStatistics.Count != 0)
-                lastYearStatisticsAvg = lastYearStatistics.Average(x => x.AverageRate);
+            if (lastYearStatistics.Count == 0)
+                return 0;
+
+            lastYearStatisticsAvg = lastYearStatistics.Average(x => x.AverageRate);
 
             double difference = currentYearStatisticsAvg - lastYearStatisticsAvg;
             double percentageDifference = Math.Round((difference / lastYearStatisticsAvg) * 100, 2);
@@ -301,8 +318,10 @@ namespace GradeCenter.Services
             List<Statistic> lastMonthStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfLastMonth && x.CreatedOn <= endOfLastMonth && x.StatisticType == statisticType).ToList();
             double lastMonthStatisticsAvg = 0;
 
-            if(lastMonthStatistics.Count != 0)
-                lastMonthStatisticsAvg = lastMonthStatistics.Average(x => x.AverageRate);
+            if (lastMonthStatistics.Count == 0)
+                return 0;
+
+            lastMonthStatisticsAvg = lastMonthStatistics.Average(x => x.AverageRate);
 
             double difference = currentMonthStatisticsAvg - lastMonthStatisticsAvg;
             double percentageDifference = Math.Round((difference / lastMonthStatisticsAvg) * 100, 2);
@@ -336,16 +355,20 @@ namespace GradeCenter.Services
 
             double lastWeekStatisticsAvg = 0;
 
-            if (lastWeekStatistics.Count != 0)
-                lastWeekStatisticsAvg = lastWeekStatistics.Average(x => x.AverageRate);
+            if (lastWeekStatistics.Count == 0)
+                return 0;
+            
+            lastWeekStatisticsAvg = lastWeekStatistics.Average(x => x.AverageRate);
 
             var (startOfWeek, endOfWeek) = GetWeekBoundaries(DateTime.Today);
 
             List<Statistic> currentWeekStatistics = _db.Statistics.Where(x => x.CreatedOn > startOfWeek && x.CreatedOn <= endOfWeek && x.StatisticType == statisticType).ToList();
             double currentWeekStatisticsAvg = 0;
 
-            if(currentWeekStatistics.Count != 0)
-                currentWeekStatisticsAvg = currentWeekStatistics.Average(x => x.AverageRate);
+            if (currentWeekStatistics.Count == 0)
+                return 0;
+
+            currentWeekStatisticsAvg = currentWeekStatistics.Average(x => x.AverageRate);
 
             double difference = currentWeekStatisticsAvg - lastWeekStatisticsAvg;
             double percentageDifference = Math.Round((difference / lastWeekStatisticsAvg) * 100, 2);
