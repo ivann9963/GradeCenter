@@ -40,6 +40,8 @@ const getLoggedUser = () => api.get("/Account/GetLoggedUser");
 
 const getAllSchoolsClassess = () => api.get(`/SchoolClass/GetAllClassess`);
 
+const getAllAttendances = () => api.get(`/Attendances/GetAllAttendances`);
+
 const updateUser = (
   userId: string,
   newPassword?: string | null,
@@ -156,6 +158,7 @@ const requests = {
   getSchoolStatistics,
   getClassesStatistics,
   getTeachersStatistics
+  getAllAttendances
 };
 
 export default requests;
