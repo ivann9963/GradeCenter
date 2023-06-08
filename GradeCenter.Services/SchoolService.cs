@@ -83,6 +83,7 @@ namespace GradeCenter.Services
         public IEnumerable<School> GetAllSchools()
         {
             var school = _db.Schools
+                .Include(X => X.People)
                 .Where(school => school.IsActive)
                 .ToList();
 
@@ -142,17 +143,22 @@ namespace GradeCenter.Services
                 return;
 
             var newPrinciple = updatedSchool.People.FirstOrDefault(x => x.UserRole == UserRoles.Principle);
-            var currentSchool = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+
+            var newPrincipleFromDB = _db.AspNetUsers.FirstOrDefault(x => x.Id == newPrinciple.Id);
+            var currentSchool = _db.Schools.FirstOrDefault(x => x.Name.ToLower() == updatedSchool.Name.ToLower());
 
             var currentPrincipleExist = _db.AspNetUsers.Any(u => u.School.Id == updatedSchool.Id && u.UserRole == UserRoles.Principle);
 
             if (currentPrincipleExist)
             {
                 var currentPrinciple = _db.AspNetUsers.FirstOrDefault(x => x.School.Id == updatedSchool.Id && x.UserRole == UserRoles.Principle);
-                currentPrinciple.IsActive = false;
-                currentSchool.People.Remove(currentPrinciple);
+                currentPrinciple.School = null;
             }
-            currentSchool.People.Add(newPrinciple);
+
+            var school = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
+            newPrincipleFromDB.SchoolId = school.Id;
+            newPrincipleFromDB.School = school;
+            newPrincipleFromDB.UserRole = UserRoles.Principle;
 
             await _db.SaveChangesAsync();
         }

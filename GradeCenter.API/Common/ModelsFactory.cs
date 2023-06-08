@@ -25,7 +25,7 @@ namespace GradeCenter.API.Common
 
             return new School
             {
-                //Id = model is SchoolUpdateRequest updateModel ? updateModel.Id : null,
+                Id = model is SchoolUpdateRequest updateModel ? updateModel.Id : null,
                 Name = model.Name,
                 Address = model.Address,
                 People = users
