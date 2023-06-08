@@ -1,23 +1,29 @@
 import { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
-import axios from "axios";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
 import { SchoolClass } from "../../models/schoolClass";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, InputLabel, MenuItem, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import requests from "../../requests";
 import Discipline from "../../models/discipline";
+import { DatePicker } from "@mui/x-date-pickers";
+import Select from "@material-ui/core/Select";
 
 
-export default function MyClass() {
+export default function MyClass({children} : any) {
   let columns: GridColDef[] | null = null;
  
   const [selectedRowData, setSelectedRowData] = useState<any | null>(null);
   const [discipline, setDiscipline] = useState<Discipline | null>(null);
+  const [attendanceDate, setAttendanceDate] = useState<Date | null>(null);
+  const [hasAttended, setHasAttended] =useState<boolean | null>(null);
   const [rate, setRate] = useState<string>("");
   const [isTeacher, setIsTeacher] = useState(false);
-  const [isOpened, setIsOpened] = useState(false);
+  const [isGradeDialogOpened, setGradeDialogOpened] = useState(false);
+  const [isAttendanceDialogOpened, setAttendanceDialogOpened] = useState(false);
   const [user, setUser] = useState<AspNetUser | null>(null);
   const [schoolClass, setSchoolClass] = useState<SchoolClass | null>(null);
   const [students, setStudents] = useState<AspNetUser[] | null>(null);
@@ -100,37 +106,64 @@ export default function MyClass() {
 
   if (isTeacher) {
     columns.push({
-        field: "-",
+        field: "addGrade",
         headerName: "",
         width: 150,
         renderCell: (params: GridRenderCellParams) => {
-        setSelectedRowData(params.row);
-        const handleOpen = () => {
-            setIsOpened(true);
+          const handleOpen = () => {
+            setSelectedRowData(params.row);
+            setGradeDialogOpened(true);
           };
           return (
             <Button
             variant="contained"
             onClick={handleOpen}
             sx={{ marginBottom: 2, marginTop: 2, marginLeft: 1 }}>
-            +
+            + Grade
             </Button>
           );
         }
     })
 
+    columns.push({
+      field: "addAttendance",
+      headerName: "",
+      width: 150,
+      renderCell: (params: GridRenderCellParams) => {
+        const handleOpen = () => {
+          setSelectedRowData(params.row);
+          setAttendanceDialogOpened(true);
+        };
+        return (
+          <Button
+          variant="contained"
+          onClick={handleOpen}
+          sx={{ marginBottom: 2, marginTop: 2, marginLeft: 1 }}>
+          + Attendance
+          </Button>
+        );
+      }
+  })
+
   }
   function handleClose(){
-        setIsOpened(false);
+        setGradeDialogOpened(false)
+        setAttendanceDialogOpened(false);
   }
-  function handleSubmit(){
+  function handleGradeSave(){
         var studentUsername = selectedRowData["userName"];
         var studentRate = rate;
         var studentDiscipline = discipline?.name;
 
         requests.createGrade(studentUsername, studentRate, studentDiscipline);
   }
-
+  function handleAttendanceSave(){
+        var studentUsername = selectedRowData["userName"];
+        var date = attendanceDate as Date;
+        var studentDiscipline = discipline?.name;
+        console.log(studentDiscipline);
+        console.log(date.toString());
+  }
   const handleChangeRate = (rate : string) => {
      if(rate <= "1"){
        setRate("2");
@@ -143,8 +176,8 @@ export default function MyClass() {
      }
   }
 
-  const AddDialog = () => (
-    <Dialog open={isOpened} onClose={handleClose}>
+  const AddGradeDialog = () => (
+    <Dialog open={isGradeDialogOpened} onClose={handleClose}>
       <DialogTitle>Add Grade</DialogTitle>
       <DialogContent>
       <TextField value={discipline?.name} placeholder="Discipline" 
@@ -158,15 +191,52 @@ export default function MyClass() {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleSubmit}>Save</Button>
+        <Button onClick={handleGradeSave}>Save</Button>
       </DialogActions>
     </Dialog>
   );
 
+  const AddAttendance = () => (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <Dialog open={isAttendanceDialogOpened} onClose={handleClose}>
+      <DialogTitle>Add Attendance</DialogTitle>
+      <DialogContent>
+      <TextField value={discipline?.name} placeholder="Discipline" 
+        InputProps={{
+          readOnly: true
+        }}
+      />
+      <br />
+      <br />
+      <DatePicker value={attendanceDate} onChange={(newValue) => {
+            setAttendanceDate(newValue as Date);
+      }}/>
+      <br/>
+      <br/>
+      <InputLabel id="hasAttendedLabel">Has Attended</InputLabel>
+      <Select labelId="hasAttendedLabel"
+              value={hasAttended} 
+              fullWidth={true}
+              label="Has Attended"
+              onChange={(e) => {setHasAttended(e.target.value as any)}}>
+        <MenuItem value={0}>Yes</MenuItem>
+        <MenuItem value={1}>No</MenuItem>
+      </Select>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleAttendanceSave}>Save</Button>
+      </DialogActions>
+    </Dialog>
+    </LocalizationProvider>
+  );
+
+
   return (
 
     <Box sx={{ height: 520, width: "50%", marginLeft:"30%", marginTop:"7%" }}>
-      <AddDialog />
+      <AddGradeDialog />
+      <AddAttendance />
       <Typography variant="h3" align="center">
         {schoolClass != undefined ? `${schoolClass?.year}-${schoolClass?.department}`
             : "Loading..."
