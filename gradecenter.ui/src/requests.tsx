@@ -34,6 +34,10 @@ const getAllUsers = () => api.get(`/Account/GetAllUsers`);
 
 const getAllGrades = () => api.get(`/Grades/GetAllGrades`);
 
+const getUserRelationsByStudentName = (studentId: string) => api.get(`/UserRelations/GetAllUserRelationsByStudentName?studentName=${studentId}`);
+
+const getUserRelationsByParentName = (parentId: string) => api.get(`/UserRelations/GetAllUserRelationsByParentName?parentName=${parentId}`);
+
 const getUserById = (userId: any) => api.get(`/Account/GetUserById/?userId=${userId}`)
 
 const getLoggedUser = () => api.get("/Account/GetLoggedUser");
@@ -147,6 +151,8 @@ const requests = {
   getAllSchools,
   getAllUsers,
   getDisciplineByTeacherId,
+  getUserRelationsByStudentName,
+  getUserRelationsByParentName,
   getAllGrades,
   getUserById,
   getAllSchoolsClassess,

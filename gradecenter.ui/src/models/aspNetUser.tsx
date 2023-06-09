@@ -23,6 +23,7 @@ export class AspNetUser {
   lastName: string | null;
   schoolId: string | null;
   school: any | null;
+  userName: any | null;
   isActive: boolean | null;
   schoolClassId: string | null;
   userRole: UserRoles | null;
@@ -37,6 +38,7 @@ export class AspNetUser {
     lastName: string | null = null,
     schoolId: string | null = null,
     schoolClassId: string | null = null,
+    userName: string | null = null,
     school: School | null = null,
     schoolName: string | null = null,
     isActive: boolean | null = null,
@@ -48,6 +50,7 @@ export class AspNetUser {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.userName = userName;
     this.schoolId = schoolId;
     this.school = school;
     this.schoolName = schoolName;

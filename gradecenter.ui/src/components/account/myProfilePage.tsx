@@ -7,6 +7,7 @@ import Personal from "../profile-panel/personal-page";
 import Grades from "../profile-panel/grades-page";
 import requests from "../../requests";
 import Attendance from "../profile-panel/attendance-page";
+import Family from "../profile-panel/family-page";
 
 export default function(){
      let { profileId } = useParams();
@@ -56,6 +57,13 @@ export default function(){
               <Box p={3}>
                 <Typography>
                     <Personal profile={user} />
+                </Typography>
+              </Box>
+            )}
+            {tabValue === 1 && (
+                <Box p={3}>
+                <Typography>
+                    <Family profile={user} />
                 </Typography>
               </Box>
             )}
