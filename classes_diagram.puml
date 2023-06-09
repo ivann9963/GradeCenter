@@ -9,6 +9,11 @@ class User {
     Grades : List<Grade>
 }
 
+class UserRelation{
+    Child: AspNetUser,
+    Parent: AspNetUser
+}
+
 enum UserRoles {
     Admin : 0
     Principle : 1
