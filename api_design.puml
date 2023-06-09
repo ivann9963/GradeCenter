@@ -101,6 +101,24 @@ interface IGradeService{
    + Delete(id: string)
 }
 
+class UserRelationsController {
+    + GetAllUserRelations()
+    + GetAllUserRelationsByStudentName(studentName: string)
+    + GetAllUserRelationsByParentName(parentName: string)
+}
+
+class UserRelationService {
+    + GetAllUserRelations(): IEnumerable<UserRelation>
+    + GetAllUserRelationsByStudentName(studentName: string): IEnumerable<UserRelation>
+    + GetAllUserRelationsByParentName(studentName: string): IEnumerable<UserRelation>
+}
+
+interface IUserRelationService{
+    + GetAllUserRelations()
+    + GetAllUserRelationsByStudentName(studentName: string)
+    + GetAllUserRelationsByParentName(parentName: string)
+}
+
 class CurricullumService {
     + Create(newCurriculum: Curricullum): Curricullum
     + Update(updatedCurriculum: Curricullum): Curricullum
@@ -140,10 +158,12 @@ SchoolClassController ...> ISchoolClassService: uses
 GradeController ...> IGradeService: uses
 CurricullumController ...> ICurricullumService : uses
 CurricullumController ...> ISchoolService : uses
+UserRelationsController ...> IUserRelationService: uses
 
 AccountController .> RequestValidator : uses
 SchoolController ..> RequestValidator : uses
 GradeController ..> RequestValidator: uses
+UserRelationsController ..> RequestValidator: uses
 SchoolClassController ..> RequestValidator: uses
 CurricullumController ..> RequestValidator : uses
 
