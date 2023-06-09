@@ -39,6 +39,7 @@ namespace GradeCenter.API
 
             services.AddTransient<IAccountService, AccountService>();
             services.AddScoped<ISchoolService, SchoolService>();
+            services.AddScoped<IUserRelationService, UserRelationService>();
             services.AddTransient<ICurriculumService, CurriculumService>();
             services.AddTransient<ISchoolClassService, SchoolClassService>();
             services.AddTransient<IAttendanceService, AttendanceService>();

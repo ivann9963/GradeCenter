@@ -20,6 +20,7 @@ namespace GradeCenter.Data
         public virtual DbSet<SchoolClass> SchoolClasses { get; set; }
         public virtual DbSet<Discipline> Disciplines { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<UserRelation> UserRelation { get; set; }
         public virtual DbSet<Grade> Grades { get; set; }
 
         public virtual DbSet<Statistic> Statistics { get; set; }
