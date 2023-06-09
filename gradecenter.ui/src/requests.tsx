@@ -173,7 +173,7 @@ const requests = {
   getLoggedUserCurricullum,
   getSchoolStatistics,
   getClassesStatistics,
-  getTeachersStatistics
+  getTeachersStatistics,
   getAllAttendances
 };
 
