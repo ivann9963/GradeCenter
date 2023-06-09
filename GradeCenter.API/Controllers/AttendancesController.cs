@@ -29,12 +29,12 @@ namespace GradeCenter.API.Controllers
         /// <param name="requestModel"></param>
         /// <returns></returns>
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(AttendanceRequestModel requestModel)
+        public async Task<IActionResult> Create([FromBody]AttendanceRequestModel requestModel)
         {
-            //var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User, new List<UserRoles>() { UserRoles.Admin, UserRoles.Teacher });
 
-            //if (checkedRequest != null)
-            //    return checkedRequest;
+            if (checkedRequest != null)
+                return checkedRequest;
 
             var mappedAttendanceModel = _modelsFactory.ExtractAttendance(requestModel);
 

@@ -161,8 +161,9 @@ export default function MyClass({children} : any) {
         var studentUsername = selectedRowData["userName"];
         var date = attendanceDate as Date;
         var studentDiscipline = discipline?.name;
-        console.log(studentDiscipline);
-        console.log(date.toString());
+        var attended = hasAttended;
+
+        requests.createAttendance(studentUsername, date.toString(), attended, studentDiscipline);
   }
   const handleChangeRate = (rate : string) => {
      if(rate <= "1"){

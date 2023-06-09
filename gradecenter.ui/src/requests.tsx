@@ -108,6 +108,15 @@ const createGrade = (studentUsername: string, rate: string, discipline: string |
   })
 }
 
+const createAttendance = (studentUsername: string, date:string, hasAttended: boolean | null, discipline: string | undefined) => {
+  api.post("/Attendances/Create", {
+    studentUsername: studentUsername,
+    hasAttended: hasAttended,
+    date: date,
+    disciplineName: discipline
+  })
+}
+
 const updateGrade = (id: string, studentUsername: string, rate: string, discipline: string | undefined) => api.put("/Grades/Update",
 {
     id: id,
@@ -146,6 +155,7 @@ const requests = {
   createGrade,
   updateGrade,
   deleteGrade,
+  createAttendance,
   addChild,
   changeSchool,
   enroll,
