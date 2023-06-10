@@ -33,10 +33,10 @@ export default function Family(params : Profile){
     
     console.log(params.profile);
     useEffect(() => {
-        getAllUserRelationsByUserName();
+        getAllUserRelationsById();
     }, [])
 
-    const getAllUserRelationsByUserName = () => {
+    const getAllUserRelationsById = () => {
             requests.getUserById(params.profile?.id)
                 .then(res => {
                     switch(UserRoles[params.profile?.userRole as number])
