@@ -137,7 +137,9 @@ namespace GradeCenter.Services
         {
             var user = _db?.AspNetUsers?
                 .Include(c => c.ChildrenRelations)
+                .ThenInclude(c => c.Child)
                 .Include(p => p.ParentRelations)
+                .ThenInclude(p => p.Parent)
                 .Include(s => s.SchoolClass)
                 .FirstOrDefault(u => u.Id == Guid.Parse(userId));
 
