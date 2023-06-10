@@ -37,25 +37,28 @@ export default function Family(params : Profile){
     }, [])
 
     const getAllUserRelationsByUserName = () => {
-        switch(UserRoles[params.profile?.userRole as number])
-        {
-            case "Student":
-                requests.getUserRelationsByStudentName(params.profile?.userName)
-                    .then((res) => {
-                        var userRoles = res.data;
-                        setUserRelations(userRoles);
-                    })
-                break;
-            case "Parent":
-                    requests.getUserRelationsByParentName(params.profile?.userName)
-                        .then((res) => {
-                            var userRoles = res.data;
-                            setUserRelations(userRoles);
-                        })
-                break;
-            default:
-                break;
-        }
+            requests.getUserById(params.profile?.id)
+                .then(res => {
+                    switch(UserRoles[params.profile?.userRole as number])
+                    {
+                        case "Student":
+                            var userRelations = res.data.parentRelations
+                                .map((record: any) => {
+                                    return {child: params.profile, parent: record.parent};
+                                });
+                            setUserRelations(userRelations);
+                            break;
+                        case "Parent":
+                            var userRelations = res.data.childrenRelations
+                            .map((record: any) => {
+                                return {parent: params.profile, child: record.child};
+                            });
+                            setUserRelations(userRelations)
+                            break;
+                        default:
+                            break;
+                    }
+                })
     }
 
     function generateRandom() {
