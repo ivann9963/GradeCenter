@@ -70,10 +70,10 @@ const updateUser = (
   api.put(url);
 };
 
-const addChild = (parentId: string, firstName: string, lastName: string) =>
+const addChild = (parentId: string, firstName: string | undefined, lastName: string | undefined) =>
   api.put(`/Account/AddChild?parentId=${parentId}&childFirstName=${firstName}&childLastName=${lastName}`);
 
-const changeSchool = (newSchool: string, userId: string) =>
+const changeSchool = (newSchool: string | undefined, userId: string) =>
   api.put(`/School/Update`, {
     name: newSchool,
     users: [
@@ -84,7 +84,7 @@ const changeSchool = (newSchool: string, userId: string) =>
     ],
   });
 
-const enroll = (userId: string, schoolClassName: string) =>
+const enroll = (userId: string, schoolClassName: string | undefined) =>
   api.put(`/SchoolClass/EnrollForClass`, {
     studentId: userId,
     SchoolClassName: schoolClassName,
@@ -92,7 +92,7 @@ const enroll = (userId: string, schoolClassName: string) =>
 
 const withdraw = (userId: string) => api.put(`/SchoolClass/WithdrawFromClass?studentId=${userId}`);
 
-const createSchoolClass = (year: number, department: string, schoolName: string, teacherNames: string) =>
+const createSchoolClass = (year: number, department: string | undefined, schoolName: string | undefined, teacherNames: string | undefined) =>
   api.post(`/SchoolClass/CreateClass`, {
     year: year,
     department: department,
@@ -100,7 +100,7 @@ const createSchoolClass = (year: number, department: string, schoolName: string,
     teacherNames: teacherNames,
   });
 
-const createGrade = (studentUsername: string, rate: string, discipline: string | undefined) => {
+const createGrade = (studentUsername: string, rate: string | undefined, discipline: string | undefined) => {
   api.post("/Grades/Create",{
     studentUsername: studentUsername,
     number: rate,
@@ -108,7 +108,7 @@ const createGrade = (studentUsername: string, rate: string, discipline: string |
   })
 }
 
-const createAttendance = (studentUsername: string, date:string, hasAttended: boolean | null, discipline: string | undefined) => {
+const createAttendance = (studentUsername: string, date:string | undefined, hasAttended: boolean | null, discipline: string | undefined) => {
   api.post("/Attendances/Create", {
     studentUsername: studentUsername,
     hasAttended: hasAttended,
@@ -117,7 +117,7 @@ const createAttendance = (studentUsername: string, date:string, hasAttended: boo
   })
 }
 
-const updateGrade = (id: string, studentUsername: string, rate: string, discipline: string | undefined) => api.put("/Grades/Update",
+const updateGrade = (id: string, studentUsername: string, rate: string | undefined, discipline: string | undefined) => api.put("/Grades/Update",
 {
     id: id,
     studentUsername: studentUsername,
