@@ -17,9 +17,6 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
   let data: School[] | AspNetUser[] | SchoolClass[] | null = null;
   let columns: GridColDef[] | null = null;
   const [createSchoolClassOpen, setCreateSchoolClassOpen] = React.useState(false);
-  const [newClass, setNewClass] = React.useState("");
-  const [schoolName, setSchoolName] = React.useState("");
-  const [teacherNames, setTeacherNames] = React.useState("");
   const [openTransferList, setOpenTransferList] = React.useState(false);
   const [selectedRowData, setSelectedRowData] = React.useState(null);
   const [selectedItems, setSelectedItems] = React.useState<readonly string[]>([]);
@@ -33,7 +30,13 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
     "Physical Education",
     "Computer Science",
   ]);
+
+  const newClassRef = React.useRef<HTMLInputElement | null>(null);
+  const schoolNameRef = React.useRef<HTMLInputElement | null>(null);
+  const teacherNamesRef = React.useRef<HTMLInputElement | null>(null);
+
   const [right, setRight] = React.useState<readonly string[]>([]);
+
 
   const TransferListDialog = () => {
     const handleCloseTransferList = () => {
@@ -92,8 +95,13 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
   );
 
   const submitCreateNewClass = () => {
-    var year = newClass.length == 2 ? newClass[0] as unknown as number :  `${newClass[0]}${newClass[1]}` as unknown as number;
-    var department =  newClass.length == 2 ? newClass[1] : newClass[2];
+    var year = newClassRef.current?.value.length == 2 ? newClassRef.current.value[0] as unknown as number :
+             `${newClassRef.current?.value[0]}${newClassRef.current?.value[1]}` as unknown as number;
+
+    var department = newClassRef.current?.value.length == 2 ? newClassRef.current.value[1] : newClassRef.current?.value[2];
+    var schoolName = schoolNameRef.current?.value;
+
+    var teacherNames = teacherNamesRef.current?.value;
 
     requests.createSchoolClass(year, department, schoolName, teacherNames);
   };
@@ -102,18 +110,13 @@ export default function AllClassessGrid(params: AllClassessGridParams | null) {
     <Dialog open={createSchoolClassOpen} onClose={() => setCreateSchoolClassOpen(false)}>
       <DialogTitle>Create School Class</DialogTitle>
       <DialogContent>
-        <TextField value={newClass} onChange={(e) => setNewClass(e.target.value)} label="Ex: '8A'.." fullWidth />
+        <TextField inputRef={newClassRef} label="Ex: '8A'.." fullWidth />
         <br />
         <br />
-        <TextField value={schoolName} onChange={(e) => setSchoolName(e.target.value)} label="School Name.." fullWidth />
+        <TextField inputRef={schoolNameRef} label="School Name.." fullWidth />
         <br />
         <br />
-        <TextField
-          value={teacherNames}
-          onChange={(e) => setTeacherNames(e.target.value)}
-          label="Taecher First and Last names.."
-          fullWidth
-        />
+        <TextField inputRef={teacherNamesRef} label="Teacher First and Last names.." fullWidth />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setCreateSchoolClassOpen(false)}>Cancel</Button>
