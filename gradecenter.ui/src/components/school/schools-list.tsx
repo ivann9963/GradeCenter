@@ -1,14 +1,12 @@
 import { Container } from "@mui/system";
-import { Card, CardContent, CardActions, Typography, Button, Grid, Box } from "@mui/material";
+import { Card, CardActions, Typography, Button, Grid, Box } from "@mui/material";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
-import GroupIcon from "@mui/icons-material/Group";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
-import CardHeader from "@mui/material/CardHeader";
 import Divider from "@material-ui/core/Divider";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -18,7 +16,6 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -203,7 +200,7 @@ export default function Schools() {
       <Grid container spacing={3} columns={{ xs: 12, sm: 8, md: 12 }} marginLeft={10} marginTop={1}>
         {schools.map((school, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card elevation={18} className={classes.card} onClick={() => handleCardClick(school["id"])}>
+            <Card elevation={18} className={classes.card}>
               <Box p={1.5}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Link to={`/school-details/${school["id"]}`} className={classes.link}>
@@ -267,6 +264,7 @@ export default function Schools() {
               <CardActions disableSpacing>
                 <Button>Enroll</Button>
                 <Button>Withdraw</Button>
+                <Button onClick={() => handleCardClick(school["id"])}>Details</Button>
               </CardActions>
             </Card>
           </Grid>
