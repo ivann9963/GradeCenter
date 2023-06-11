@@ -1,5 +1,5 @@
 import { AspNetUser, UserRoles } from "../../models/aspNetUser";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, MutableRefObject } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { Grade } from "../../models/grade";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -7,6 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import requests from "../../requests";
 import Discipline from "../../models/discipline";
+import React from "react";
 
 interface Profile {
     profile: AspNetUser | null;
@@ -24,8 +25,9 @@ export default function Grades (params: Profile){
     const [loggedUser, setLoggedUser] = useState<AspNetUser | null>(null);
     const [discipline, setDiscipline] = useState<Discipline | null>(null);
     const [isOpened, setIsOpened] = useState(false);
-    const [rate, setRate] = useState<string>("");
     const [selectedRowData, setSelectedRowData] = useState<any | null>(null);
+
+    const rateRef = React.useRef<HTMLInputElement | null>(null);
     
     const getAllGrades = () => {
         requests.getAllGrades().then((res) => {
@@ -157,7 +159,7 @@ export default function Grades (params: Profile){
     function handleSubmit(){
           var id = selectedRowData["id"];
           var studentUsername = selectedRowData.student.userName;
-          var studentRate = rate;
+          var studentRate = rateRef?.current?.value;
           var studentDiscipline = discipline?.name;
   
           requests.updateGrade(id, studentUsername, studentRate, studentDiscipline)
@@ -168,18 +170,7 @@ export default function Grades (params: Profile){
                 })
             });
     }
-  
-    const handleChangeRate = (rate : string) => {
-       if(rate <= "1"){
-         setRate("2");
-       }
-       else if (rate >= "6"){
-         setRate("6");
-       }
-       else{
-         setRate(rate);
-       }
-     }
+
      const UpdateDialog = () => (
        <Dialog open={isOpened} onClose={handleClose}>
          <DialogTitle>Update Grade</DialogTitle>
@@ -191,7 +182,17 @@ export default function Grades (params: Profile){
          />
          <br />
          <br />
-         <TextField value={rate} placeholder="Rate Student" onChange={(e) => { handleChangeRate(e.target.value) }} type="number"/>
+         <TextField inputRef={rateRef}
+                    placeholder="Rate Student" 
+                    type="number"
+                    onChange={(e) => {
+                      if(Number.parseInt(e.target.value) > 6){
+                         e.target.value = "6";
+                      }
+                      else if(Number.parseInt(e.target.value) < 2){
+                         e.target.value = "2";
+                      }
+                    }}/>
          </DialogContent>
          <DialogActions>
            <Button onClick={handleClose}>Cancel</Button>
