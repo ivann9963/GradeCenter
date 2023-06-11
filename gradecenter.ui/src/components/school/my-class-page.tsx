@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -11,6 +11,7 @@ import requests from "../../requests";
 import Discipline from "../../models/discipline";
 import { DatePicker } from "@mui/x-date-pickers";
 import Select from "@material-ui/core/Select";
+import React from "react";
 
 
 export default function MyClass({children} : any) {
@@ -18,15 +19,16 @@ export default function MyClass({children} : any) {
  
   const [selectedRowData, setSelectedRowData] = useState<any | null>(null);
   const [discipline, setDiscipline] = useState<Discipline | null>(null);
-  const [attendanceDate, setAttendanceDate] = useState<Date | null>(null);
-  const [hasAttended, setHasAttended] =useState<boolean | null>(null);
-  const [rate, setRate] = useState<string>("");
   const [isTeacher, setIsTeacher] = useState(false);
   const [isGradeDialogOpened, setGradeDialogOpened] = useState(false);
   const [isAttendanceDialogOpened, setAttendanceDialogOpened] = useState(false);
   const [user, setUser] = useState<AspNetUser | null>(null);
   const [schoolClass, setSchoolClass] = useState<SchoolClass | null>(null);
   const [students, setStudents] = useState<AspNetUser[] | null>(null);
+
+  const rateRef = React.useRef<HTMLInputElement | null>(null);
+  const attendanceDateRef = React.useRef<HTMLInputElement | null>(null);
+  const hasAttendedRef = React.useRef<HTMLSelectElement | null>(null);
    
   useEffect(() => {
     getLoggedUser();
@@ -150,31 +152,25 @@ export default function MyClass({children} : any) {
         setGradeDialogOpened(false)
         setAttendanceDialogOpened(false);
   }
+  
+
   function handleGradeSave(){
         var studentUsername = selectedRowData["userName"];
-        var studentRate = rate;
+        debugger;
+        var studentRate = rateRef.current?.value; 
         var studentDiscipline = discipline?.name;
 
         requests.createGrade(studentUsername, studentRate, studentDiscipline);
   }
+  
   function handleAttendanceSave(){
         var studentUsername = selectedRowData["userName"];
-        var date = attendanceDate as Date;
+        debugger;
+        var date = attendanceDateRef.current?.value;
         var studentDiscipline = discipline?.name;
-        var attended = hasAttended;
+        var attended = Boolean(hasAttendedRef.current?.value);
 
-        requests.createAttendance(studentUsername, date.toString(), attended, studentDiscipline);
-  }
-  const handleChangeRate = (rate : string) => {
-     if(rate <= "1"){
-       setRate("2");
-     }
-     else if (rate >= "6"){
-       setRate("6");
-     }
-     else{
-       setRate(rate);
-     }
+        requests.createAttendance(studentUsername, date, attended, studentDiscipline);
   }
 
   const AddGradeDialog = () => (
@@ -188,7 +184,17 @@ export default function MyClass({children} : any) {
       />
       <br />
       <br />
-      <TextField value={rate} placeholder="Rate Student" onChange={(e) => { handleChangeRate(e.target.value) }} type="number"/>
+      <TextField inputRef={rateRef} 
+                 onChange={(e) => {
+                   if(Number.parseInt(e.target.value) > 6){
+                      e.target.value = "6";
+                   }
+                   else if(Number.parseInt(e.target.value) < 2){
+                      e.target.value = "2";
+                   }
+                 }}
+                 placeholder="Rate Student" type="number"
+      />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
@@ -209,19 +215,16 @@ export default function MyClass({children} : any) {
       />
       <br />
       <br />
-      <DatePicker value={attendanceDate} onChange={(newValue) => {
-            setAttendanceDate(newValue as Date);
-      }}/>
+      <DatePicker inputRef={attendanceDateRef}/>
       <br/>
       <br/>
       <InputLabel id="hasAttendedLabel">Has Attended</InputLabel>
       <Select labelId="hasAttendedLabel"
-              value={hasAttended} 
               fullWidth={true}
               label="Has Attended"
-              onChange={(e) => {setHasAttended(e.target.value as any)}}>
-        <MenuItem value={0}>Yes</MenuItem>
-        <MenuItem value={1}>No</MenuItem>
+              inputRef={hasAttendedRef}>
+        <MenuItem value={1}>Yes</MenuItem>
+        <MenuItem value={0}>No</MenuItem>
       </Select>
       </DialogContent>
       <DialogActions>
