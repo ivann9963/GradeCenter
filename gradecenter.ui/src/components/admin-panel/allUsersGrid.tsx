@@ -27,12 +27,13 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
   const [userRoles, setUserRoles] = React.useState<Record<number, UserRoles>>({});
   const [childOpen, setChildOpen] = React.useState(false);
   const [currentParentId, setCurrentParentId] = React.useState<string | null>(null);
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [newSchool, setNewSchool] = React.useState("");
   const [schoolOpen, setSchoolOpen] = React.useState(false);
   const [enrollOpen, setEnrollOpen] = React.useState(false);
-  const [newClass, setNewClass] = React.useState("");
+
+  const firstNameRef = React.useRef<HTMLInputElement | null>(null);
+  const lastNameRef = React.useRef<HTMLInputElement | null>(null);
+  const schoolNameRef = React.useRef<HTMLInputElement | null>(null);
+  const newClassNameRef = React.useRef<HTMLInputElement | null>(null);
 
   const handleUserRoleChange = (userId: string, event: SelectChangeEvent<UserRoles>) => {
     const selectedRole = UserRoles[event.target.value as keyof typeof UserRoles];
@@ -46,10 +47,11 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
 
   const SubmitAddChild = async () => {
     // Send your API request here using firstName and lastName
+    var firstName = firstNameRef.current?.value;
+    var lastName = lastNameRef.current?.value;
+
     await requests.addChild(currentParentId!, firstName, lastName);
     // Clear the form fields and close the dialog
-    setFirstName("");
-    setLastName("");
     setCurrentParentId(null);
     setChildOpen(false);
   };
@@ -59,10 +61,10 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
       <DialogTitle>Add Child</DialogTitle>
       <DialogContent>
         <form>
-          <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} label="First Name" fullWidth />
+          <TextField inputRef={firstNameRef} label="First Name" fullWidth />
           <br />
           <br />
-          <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} label="Last Name" fullWidth />
+          <TextField inputRef={lastNameRef} label="Last Name" fullWidth />
         </form>
       </DialogContent>
       <DialogActions>
@@ -74,17 +76,15 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
 
   const SubmitChangeSchool = async () => {
     // Send your API request here using firstName and lastName
-    await requests.changeSchool(newSchool, currentParentId!);
+    await requests.changeSchool(schoolNameRef.current?.value, currentParentId!);
     // Clear the form fields and close the dialog
-    setNewSchool("");
     setCurrentParentId(null);
     setSchoolOpen(false);
   };
 
   const SubmitEnrollForClass = () => {
-    requests.enroll(currentParentId!, newClass);
+    requests.enroll(currentParentId!, newClassNameRef.current?.value);
 
-    setNewClass("");
     setCurrentParentId(null);
     setEnrollOpen(false);
   };
@@ -100,7 +100,7 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
       <DialogTitle>Change School</DialogTitle>
       <DialogContent>
         <form>
-          <TextField value={newSchool} onChange={(e) => setNewSchool(e.target.value)} label="New School.." fullWidth />
+          <TextField inputRef={schoolNameRef} label="New School.." fullWidth />
         </form>
       </DialogContent>
       <DialogActions>
@@ -115,7 +115,7 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
       <DialogTitle>Enroll for Class</DialogTitle>
       <DialogContent>
         <form>
-          <TextField value={newClass} onChange={(e) => setNewClass(e.target.value)} label="New Class.." fullWidth />
+          <TextField inputRef={newClassNameRef} label="New Class.." fullWidth />
         </form>
       </DialogContent>
       <DialogActions>
@@ -125,140 +125,140 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
     </Dialog>
   );
 
+  columns = [
+    { field: "firstName", headerName: "First name", width: 130 },
+    { field: "lastName", headerName: "Last name", width: 130 },
+    { field: "schoolName", headerName: "School", width: 90 },
+    {
+      field: "schoolClass.year",
+      headerName: "Class",
+      width: 90,
+      valueGetter: (params) => params.row.schoolClass?.year + params.row.schoolClass?.department ?? '-',
+    },
+    {
+      field: "isActive",
+      headerName: "Status",
+      width: 90,
+      renderCell: (params: GridRenderCellParams) => {
+        const toggleStatus = () => {
+          const userId = params.id as string;
+          const newStatus = !params.value;
+
+          requests.updateUser(userId, null, null, newStatus, null);
+        };
+
+        return (
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ borderRadius: "12%", height: 40, fontSize: 12 }}
+            color={params.value ? "success" : "error"}
+            onClick={toggleStatus}
+          >
+            <h4>{params.value ? "Active" : "Inactive"}</h4>
+          </Button>
+        );
+      },
+    },
+    {
+      field: "userRole",
+      headerName: "User Role",
+      width: 130,
+      renderCell: (params: GridRenderCellParams) => {
+        const userRoleKey = UserRoles[params.value as keyof typeof UserRoles];
+        return (
+          <Select
+            value={userRoles[params.id as number] || userRoleKey}
+            onChange={(event) => handleUserRoleChange(params.id as string, event)}
+          >
+            {Object.values(UserRoles)
+              .filter((value) => typeof value === "string")
+              .map((role) => (
+                <MenuItem key={role} value={role}>
+                  {role}
+                </MenuItem>
+              ))}
+          </Select>
+        );
+      },
+    },
+    {
+      field: "-",
+      headerName: "-",
+      renderCell: (params: GridRenderCellParams) => {
+        const userRoleKey = UserRoles[params.row.userRole as keyof typeof UserRoles];
+
+        if (userRoleKey.toLocaleString() !== "Parent") {
+          return null;
+        }
+
+        return (
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ borderRadius: "10%", height: 40, fontSize: 13 }}
+            color={"info"}
+            onClick={() => {
+              setChildOpen(true);
+              setCurrentParentId(params.id as string);
+            }}
+          >
+            <h5>Add child</h5>
+          </Button>
+        );
+      },
+    },
+    {
+      field: "",
+      headerName: "-",
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ borderRadius: "10%", height: 40, fontSize: 10 }}
+            color={"primary"}
+            onClick={() => {
+              setSchoolOpen(true);
+              setCurrentParentId(params.row.id as string);
+            }}
+          >
+            <h5>Change School</h5>
+          </Button>
+        );
+      },
+    },
+    {
+      field: "~",
+      headerName: "-",
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ borderRadius: "10%", height: 40, fontSize: 10 }}
+            color={params.row.schoolClass ? "warning" : "secondary"}
+            onClick={() => {
+              if (params.row.schoolClass) {
+                SubmitWithdrawFromClass(params.row.id as string);
+              } else {
+                setCurrentParentId(params.row.id as string);
+                setEnrollOpen(true);
+              }
+            }}
+          >
+            <h4>{params.row.schoolClass ? "Withdraw" : "Enroll"}</h4>
+          </Button>
+        );
+      },
+    },
+  ];
+
   if (params && params.allUsers && params!.allUsers!.length > 0) {
     data = params!.allUsers!.map((user) => ({
       ...user,
       schoolName: user.school?.name,
     }));
-
-    columns = [
-      { field: "firstName", headerName: "First name", width: 130 },
-      { field: "lastName", headerName: "Last name", width: 130 },
-      { field: "schoolName", headerName: "School", width: 90 },
-      {
-        field: "schoolClass.year",
-        headerName: "Class",
-        width: 90,
-        valueGetter: (params) => params.row.schoolClass?.year + params.row.schoolClass?.department ?? '-',
-      },
-      {
-        field: "isActive",
-        headerName: "Status",
-        width: 90,
-        renderCell: (params: GridRenderCellParams) => {
-          const toggleStatus = () => {
-            const userId = params.id as string;
-            const newStatus = !params.value;
-
-            requests.updateUser(userId, null, null, newStatus, null);
-          };
-
-          return (
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ borderRadius: "12%", height: 40, fontSize: 12 }}
-              color={params.value ? "success" : "error"}
-              onClick={toggleStatus}
-            >
-              <h4>{params.value ? "Active" : "Inactive"}</h4>
-            </Button>
-          );
-        },
-      },
-      {
-        field: "userRole",
-        headerName: "User Role",
-        width: 130,
-        renderCell: (params: GridRenderCellParams) => {
-          const userRoleKey = UserRoles[params.value as keyof typeof UserRoles];
-          return (
-            <Select
-              value={userRoles[params.id as number] || userRoleKey}
-              onChange={(event) => handleUserRoleChange(params.id as string, event)}
-            >
-              {Object.values(UserRoles)
-                .filter((value) => typeof value === "string")
-                .map((role) => (
-                  <MenuItem key={role} value={role}>
-                    {role}
-                  </MenuItem>
-                ))}
-            </Select>
-          );
-        },
-      },
-      {
-        field: "-",
-        headerName: "-",
-        renderCell: (params: GridRenderCellParams) => {
-          const userRoleKey = UserRoles[params.row.userRole as keyof typeof UserRoles];
-
-          if (userRoleKey.toLocaleString() !== "Parent") {
-            return null;
-          }
-
-          return (
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ borderRadius: "10%", height: 40, fontSize: 13 }}
-              color={"info"}
-              onClick={() => {
-                setChildOpen(true);
-                setCurrentParentId(params.id as string);
-              }}
-            >
-              <h5>Add child</h5>
-            </Button>
-          );
-        },
-      },
-      {
-        field: "",
-        headerName: "-",
-        renderCell: (params: GridRenderCellParams) => {
-          return (
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ borderRadius: "10%", height: 40, fontSize: 10 }}
-              color={"primary"}
-              onClick={() => {
-                setSchoolOpen(true);
-                setCurrentParentId(params.row.id as string);
-              }}
-            >
-              <h5>Change School</h5>
-            </Button>
-          );
-        },
-      },
-      {
-        field: "~",
-        headerName: "-",
-        renderCell: (params: GridRenderCellParams) => {
-          return (
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ borderRadius: "10%", height: 40, fontSize: 10 }}
-              color={params.row.schoolClass ? "warning" : "secondary"}
-              onClick={() => {
-                if (params.row.schoolClass) {
-                  SubmitWithdrawFromClass(params.row.id as string);
-                } else {
-                  setCurrentParentId(params.row.id as string);
-                  setEnrollOpen(true);
-                }
-              }}
-            >
-              <h4>{params.row.schoolClass ? "Withdraw" : "Enroll"}</h4>
-            </Button>
-          );
-        },
-      },
-    ];
   }
 
   return (
@@ -266,7 +266,6 @@ export default function AllUsersGrid(params: AllUsersGridParams) {
       <DataGrid
         columns={columns!}
         rows={data || []}
-        loading={data!.length === 0}
         rowHeight={48}
         checkboxSelection={false}
       />
