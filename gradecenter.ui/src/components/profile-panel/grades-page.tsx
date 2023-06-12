@@ -117,22 +117,28 @@ export default function Grades (params: Profile){
           field: "delete",
           headerName: "",
           width: 90,
-          renderCell: (params: GridRenderCellParams) => {
+          renderCell: (cellParams: GridRenderCellParams) => {
             const handleDelete = () => {
               requests.getDisciplineByTeacherId(loggedUser?.id as string)
                 .then((res) => {
                   var discipline = res.data;
                   setDiscipline(discipline);
-                  if (params.row.discipline.name != discipline.name) {
+                  if (cellParams.row.discipline.name != discipline.name) {
                       setIsOpened(false);
                       document.getElementsByClassName("deleteBtn")[0]?.replaceWith("Teacher does not have permission for delete");
                   }
                   else{
-                      requests.deleteGrade(params.row?.id)
+                      requests.deleteGrade(cellParams.row?.id)
                         .then(() => {
                            requests.getAllGrades()
-                            .then((allGrades) => {
-                               setGrades(allGrades.data);
+                            .then((res) => {
+                               let grades = res.data;
+                               grades = grades.filter(function(grade: Grade){
+                                   return grade.student?.firstName === params.profile?.firstName 
+                                            && 
+                                          grade.student?.lastName === params.profile?.lastName; 
+                               });
+                               setGrades(grades);
                             })
                         });
                   }
@@ -165,8 +171,14 @@ export default function Grades (params: Profile){
           requests.updateGrade(id, studentUsername, studentRate, studentDiscipline)
             .then(() => {
               requests.getAllGrades()
-                .then((allGrades) => {
-                  setGrades(allGrades.data);
+                .then((res) => {
+                  let grades = res.data;
+                  grades = grades.filter(function(grade: Grade){
+                      return grade.student?.firstName === params.profile?.firstName 
+                               && 
+                             grade.student?.lastName === params.profile?.lastName; 
+                  });
+                  setGrades(grades);
                 })
             });
     }
