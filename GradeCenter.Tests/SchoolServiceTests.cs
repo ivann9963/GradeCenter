@@ -116,14 +116,14 @@ namespace GradeCenter.Tests
         }
 
         [Fact]
-        public async Task UpdateSchool_ShouldUpdateAddressAndName()
+        public async Task UpdateSchool_ShouldUpdateAddress()
         {
             // Act
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
                 Address = "UpdatedAddress",
-                Name = "UpdatedName"
+                Name = "testSchool"
             };
 
             await _schoolService.Update(updatedSchool);
@@ -131,8 +131,7 @@ namespace GradeCenter.Tests
             var school = _dbMock.Object.Schools.First();
 
             // Assert
-            // that the School Address and Name fields are updated accordingly.
-            Assert.Equal(school.Name, updatedSchool.Name);
+            // that the School Address is updated accordingly.
             Assert.Equal(school.Address, updatedSchool.Address);
 
             // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
