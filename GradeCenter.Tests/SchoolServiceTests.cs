@@ -146,15 +146,15 @@ namespace GradeCenter.Tests
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
-                Address = "UpdatedAddress",
-                Name = "UpdatedName",
+                Address = "testAddress",
+                Name = "testSchool",
                 People = new HashSet<AspNetUser>
                 {
                     // Principal
                     new AspNetUser
                     {
-                        FirstName = "John",
-                        LastName = "Doe",
+                        FirstName = "OurNew",
+                        LastName = "Principal",
                         UserRole = UserRoles.Principle
                     },
                     // Teacher
@@ -168,7 +168,6 @@ namespace GradeCenter.Tests
             };
 
             await _schoolService.AddPrincipleToSchool(updatedSchool);
-
             var school = _dbMock.Object.Schools.First();
 
             // Assert
@@ -186,8 +185,8 @@ namespace GradeCenter.Tests
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
-                Address = "UpdatedAddress",
-                Name = "UpdatedName",
+                Address = "testAddress",
+                Name = "testSchool",
                 People = new HashSet<AspNetUser>
                 {
                     new AspNetUser
@@ -227,8 +226,8 @@ namespace GradeCenter.Tests
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
-                Address = "UpdatedAddress",
-                Name = "UpdatedName",
+                Address = "testAddress",
+                Name = "testSchool",
                 People = new HashSet<AspNetUser>
                 {
                     new AspNetUser
@@ -256,8 +255,8 @@ namespace GradeCenter.Tests
             // that the number of students before the update is different
             Assert.NotEqual(numberOfStudentsBeforeUpdate, school.People.Where(x => x.UserRole == UserRoles.Student).ToList().ToArray().Length);
 
-            // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
-            _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Once);
+            // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly twice - once for each student
+            _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Exactly(2));
         }
 
         [Fact]
