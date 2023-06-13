@@ -113,6 +113,17 @@ namespace GradeCenter.Tests
                 UserRole = UserRoles.Principle
             };
 
+            var users = new List<AspNetUser> { loggedUser }.AsQueryable();
+            var usersMock = new Mock<DbSet<AspNetUser>>();
+            usersMock.As<IQueryable<AspNetUser>>().Setup(m => m.Provider).Returns(users.Provider);
+            usersMock.As<IQueryable<AspNetUser>>().Setup(m => m.Expression).Returns(users.Expression);
+            usersMock.As<IQueryable<AspNetUser>>().Setup(m => m.ElementType).Returns(users.ElementType);
+            usersMock.As<IQueryable<AspNetUser>>().Setup(m => m.GetEnumerator()).Returns(users.GetEnumerator());
+
+            // Set up the database mock to return the DbSet mock for Users
+            _userManagerMock.Setup(x => x.CheckPasswordAsync(It.IsAny<AspNetUser>(), "password")).ReturnsAsync(true);
+            _dbMock.Setup(x => x.AspNetUsers).Returns(usersMock.Object);
+
             string newPassword = "newPassword";
             string newPhoneNumber = "0987654321";
 
