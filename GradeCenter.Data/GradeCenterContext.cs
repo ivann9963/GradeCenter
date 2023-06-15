@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace GradeCenter.Data
 {
@@ -119,8 +120,22 @@ namespace GradeCenter.Data
         {
             base.OnConfiguring(builder);
 
-            builder.UseSqlServer(
-                @"Server=localhost,1433;Database=YourDatabaseName;User Id=sa;Password=reallyStrongPwd123;");
+            var osPath = string.Empty;
+
+            osPath = GetOsDbPath(osPath);
+
+            builder.UseSqlServer(osPath);
+        }
+
+        private static string GetOsDbPath(string osPath)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                osPath = "Server=.\\SQLEXPRESS;Database=GradeCenter;Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;Integrated Security=True";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                osPath = @"Server=localhost,1433;Database=YourDatabaseName;User Id=sa;Password=reallyStrongPwd123;";
+            else
+                Console.WriteLine("Running on other OS");
+            return osPath;
         }
     }
 }
