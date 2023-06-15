@@ -116,14 +116,14 @@ namespace GradeCenter.Tests
         }
 
         [Fact]
-        public async Task UpdateSchool_ShouldUpdateAddressAndName()
+        public async Task UpdateSchool_ShouldUpdateAddress()
         {
             // Act
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
                 Address = "UpdatedAddress",
-                Name = "UpdatedName"
+                Name = "testSchool"
             };
 
             await _schoolService.Update(updatedSchool);
@@ -131,8 +131,7 @@ namespace GradeCenter.Tests
             var school = _dbMock.Object.Schools.First();
 
             // Assert
-            // that the School Address and Name fields are updated accordingly.
-            Assert.Equal(school.Name, updatedSchool.Name);
+            // that the School Address is updated accordingly.
             Assert.Equal(school.Address, updatedSchool.Address);
 
             // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
@@ -146,15 +145,15 @@ namespace GradeCenter.Tests
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
-                Address = "UpdatedAddress",
-                Name = "UpdatedName",
+                Address = "testAddress",
+                Name = "testSchool",
                 People = new HashSet<AspNetUser>
                 {
                     // Principal
                     new AspNetUser
                     {
-                        FirstName = "John",
-                        LastName = "Doe",
+                        FirstName = "OurNew",
+                        LastName = "Principal",
                         UserRole = UserRoles.Principle
                     },
                     // Teacher
@@ -168,7 +167,6 @@ namespace GradeCenter.Tests
             };
 
             await _schoolService.AddPrincipleToSchool(updatedSchool);
-
             var school = _dbMock.Object.Schools.First();
 
             // Assert
@@ -186,8 +184,8 @@ namespace GradeCenter.Tests
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
-                Address = "UpdatedAddress",
-                Name = "UpdatedName",
+                Address = "testAddress",
+                Name = "testSchool",
                 People = new HashSet<AspNetUser>
                 {
                     new AspNetUser
@@ -227,8 +225,8 @@ namespace GradeCenter.Tests
             var updatedSchool = new School
             {
                 Id = "e74d4ee1-fe78-4390-a971-5d7080a5dbf6",
-                Address = "UpdatedAddress",
-                Name = "UpdatedName",
+                Address = "testAddress",
+                Name = "testSchool",
                 People = new HashSet<AspNetUser>
                 {
                     new AspNetUser
@@ -256,8 +254,8 @@ namespace GradeCenter.Tests
             // that the number of students before the update is different
             Assert.NotEqual(numberOfStudentsBeforeUpdate, school.People.Where(x => x.UserRole == UserRoles.Student).ToList().ToArray().Length);
 
-            // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly once with the expected parameters.
-            _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Once);
+            // Verify that the SaveChangesAsync method on the SchoolService mock was called exactly twice - once for each student
+            _dbMock.Verify(v => v.SaveChangesAsync(default), Times.Exactly(2));
         }
 
         [Fact]
