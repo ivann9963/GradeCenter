@@ -143,22 +143,18 @@ namespace GradeCenter.Services
                 return;
 
             var newPrinciple = updatedSchool.People.FirstOrDefault(x => x.UserRole == UserRoles.Principle);
-
-            var newPrincipleFromDB = _db.AspNetUsers.FirstOrDefault(x => x.Id == newPrinciple.Id);
             var currentSchool = _db.Schools.FirstOrDefault(x => x.Name.ToLower() == updatedSchool.Name.ToLower());
-
             var currentPrincipleExist = _db.AspNetUsers.Any(u => u.School.Id == updatedSchool.Id && u.UserRole == UserRoles.Principle);
 
             if (currentPrincipleExist)
             {
                 var currentPrinciple = _db.AspNetUsers.FirstOrDefault(x => x.School.Id == updatedSchool.Id && x.UserRole == UserRoles.Principle);
                 currentPrinciple.School = null;
+                currentSchool.People.Remove(currentPrinciple);
             }
 
             var school = _db.Schools.FirstOrDefault(x => x.Id == updatedSchool.Id);
-            newPrincipleFromDB.SchoolId = school.Id;
-            newPrincipleFromDB.School = school;
-            newPrincipleFromDB.UserRole = UserRoles.Principle;
+            currentSchool.People.Add(newPrinciple);
 
             await _db.SaveChangesAsync();
         }
@@ -181,16 +177,11 @@ namespace GradeCenter.Services
                 return;
 
             var currentSchool = _db.Schools.FirstOrDefault(x => x.Name == updatedSchool.Name);
-
             var newStudents = updatedSchool.People.Where(x => x.UserRole.HasValue && x.UserRole == UserRoles.Student).ToList();
-
             foreach (var student in newStudents)
             {
-                var currentSudents = _db.Users.FirstOrDefault(u => u.Id == student.Id);
-                currentSudents.SchoolId = currentSchool.Id;
-                currentSudents.School = currentSchool;
-
-                _db.SaveChanges();
+                currentSchool.People.Add(student);
+                _db.SaveChangesAsync();
             }
         }
 
