@@ -56,7 +56,7 @@ namespace GradeCenter.Services
                     new Claim(ClaimTypes.Name, user.UserName),
                 }),
 
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Expires = DateTime.UtcNow.AddMinutes(120),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

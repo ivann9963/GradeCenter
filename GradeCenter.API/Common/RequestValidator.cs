@@ -31,6 +31,9 @@ public class RequestValidator
 
     public async Task<AspNetUser> GetLoggedUser(ClaimsPrincipal user)
     {
+        if (user == null || user.Identity == null || user.Identity.Name == null)
+            return null;
+
         return await _userManager.FindByNameAsync(user.Identity.Name);
     }
 

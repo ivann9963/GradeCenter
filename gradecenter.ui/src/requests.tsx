@@ -10,16 +10,16 @@ const api = axios.create({
   },
 });
 
-api.interceptors.request.use(
-  (config) => {
-    if (!sessionStorage["jwt"]) {
+api.interceptors.response.use(
+  function (response) {
+    return response;
+  }, 
+  function (error) {
+    if (error.response.status === 401) {
+      sessionStorage['jwt'] = null;
+      
       window.location.href = "/login";
     }
-
-    return config;
-  },
-  (error) => {
-    window.location.href = "/login";
     return Promise.reject(error);
   }
 );
