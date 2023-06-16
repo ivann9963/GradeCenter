@@ -55,7 +55,7 @@ export default function Schools() {
   }, []);
 
   const getAllSchools = () => {
-    const url = `https://localhost:7273/api/School/GetAllSchools`;
+    const url = `https://localhost:7273/api/School/GetAllActiveSchools`;
 
     axios({
       method: "get",

@@ -20,7 +20,30 @@ export default function AllSchoolsGrid(params: AllSchoolsGridParams | null) {
     columns = [
       { field: "name", headerName: "Name", width: 100 },
       { field: "address", headerName: "Address", width: 150 },
-      { field: "isActive", headerName: "Active", width: 100 },
+      { field: "isActive", headerName: "Active", width: 100,
+      renderCell: (params: GridRenderCellParams) => {
+        const toggleStatus = () => {
+          console.log(params.row.isActive)
+          if(params.row.isActive == true) {
+            requests.deleteSchool(params.row.name);
+          } else {
+            requests.activateSchool(params.row.name);
+          }
+        };
+
+        return (
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ borderRadius: "12%", height: 40, fontSize: 12 }}
+            color={params.value ? "success" : "error"}
+            onClick={toggleStatus}
+          >
+            <h4>{params.row.isActive ? "Active" : "Inactive"}</h4>
+          </Button>
+        );
+      },
+     },
     ];
   }
 

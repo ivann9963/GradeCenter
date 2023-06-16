@@ -35,6 +35,12 @@ namespace GradeCenter.API.Controllers
             return Ok(_schoolService.GetAllSchools());
         }
 
+        [HttpGet("GetAllActiveSchools")]
+        public IActionResult GetAllActiveSchools()
+        {
+            return Ok(_schoolService.GetAllActiveSchools());
+        }
+
         [HttpGet("GetSchoolById")]
         public async Task<IActionResult> GetSchoolById(string schoolId)
         {
@@ -151,8 +157,8 @@ namespace GradeCenter.API.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete(string name)
+        [HttpDelete("Deactivate")]
+        public async Task<IActionResult> Deactivate(string name)
         {
             var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
 
@@ -160,6 +166,24 @@ namespace GradeCenter.API.Controllers
                 return checkedRequest;
 
             await _schoolService.Delete(name);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Activate an object of type School in the database.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpPut("Activate")]
+        public async Task<IActionResult> Activate(string name)
+        {
+            var checkedRequest = await _requestValidator.ValidateRequest(ModelState, User);
+
+            if (checkedRequest != null)
+                return checkedRequest;
+
+            await _schoolService.Activate(name);
 
             return Ok();
         }

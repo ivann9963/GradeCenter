@@ -27,7 +27,6 @@ namespace GradeCenter.Services
         public School? GetSchoolByName(string name)
         {
             var school = _db?.Schools
-                   .Where(school => school.IsActive)
                    .FirstOrDefault(school => school.Name.ToLower() == name.ToLower());
 
             return school;
@@ -84,7 +83,20 @@ namespace GradeCenter.Services
         {
             var school = _db.Schools
                 .Include(X => X.People)
-                .Where(school => school.IsActive)
+                .ToList();
+
+            return school;
+        }
+
+         /// <summary>
+        /// Gets all active school entries from the database.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<School> GetAllActiveSchools()
+        {
+            var school = _db.Schools
+                .Include(x => x.People)
+                .Where(x => x.IsActive)
                 .ToList();
 
             return school;
@@ -199,6 +211,24 @@ namespace GradeCenter.Services
                 return;
 
             school.IsActive = false;
+
+            await _db.SaveChangesAsync();
+        }
+
+        // <summary>
+        /// Activates an existing School entity instance
+        /// in the database.
+        /// </summary>
+        /// <param name="schoolName"></param>
+        /// <returns></returns>
+        public async Task Activate(string schoolName)
+        {
+            var school = GetSchoolByName(schoolName);
+
+            if (school == null)
+                return;
+
+            school.IsActive = true;
 
             await _db.SaveChangesAsync();
         }

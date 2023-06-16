@@ -30,6 +30,8 @@ const getDisciplineByTeacherId = (teacherId: string ) => api.get(`/Curriculum/Ge
 
 const getAllSchools = () => api.get(`/School/GetAllSchools`);
 
+const getAllActiveSchools = () => api.get(`/School/GetAllActiveSchools`);
+
 const getAllUsers = () => api.get(`/Account/GetAllUsers`);
 
 const getAllGrades = () => api.get(`/Grades/GetAllGrades`);
@@ -142,9 +144,14 @@ const getClassesStatistics = () => api.get('/Statistics/GetClassStatistics')
 
 const getTeachersStatistics = () => api.get('/Statistics/GetTeacherStatistics')
 
+const deactivateSchool = (name: string) => api.delete(`/School/Deactivate?name=${name}`)
+
+const activateSchool = (name: string) => api.put(`/School/Activate?name=${name}`)
+
 const requests = {
   getSchoolById,
   getAllSchools,
+  getAllActiveSchools,
   getAllUsers,
   getDisciplineByTeacherId,
   getAllGrades,
@@ -168,7 +175,9 @@ const requests = {
   getSchoolStatistics,
   getClassesStatistics,
   getTeachersStatistics,
-  getAllAttendances
+  getAllAttendances,
+  deleteSchool: deactivateSchool,
+  activateSchool
 };
 
 export default requests;
