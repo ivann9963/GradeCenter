@@ -6,24 +6,7 @@ import MyClass from "../school/my-class-page";
 
 
 const Home = () => {
-  const [user, setUser] = useState<AspNetUser | null>(null);
-  
-  useEffect(() => {
-    requests.getLoggedUser().then((res) => {
-       const user = res.data;
-       setUser(user);
-    });
-  }, []);
-
-  const component: any = (): any => {
-    if(user?.userRole as number == UserRoles.Admin) {
-      return <Schools />
-    } else {
-      return <MyClass />
-    }
-  }
-
-  return component();
+  return <Schools />;
 };
 
 export default Home;

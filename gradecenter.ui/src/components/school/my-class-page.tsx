@@ -47,6 +47,7 @@ export default function MyClass({children} : any) {
         switch (UserRoles[user?.userRole as number]) {
             case "Teacher":
             case "Student":
+            case "Admin":
                 requests.getUserById(user?.id)
                 .then((res) => {
                     const schoolClass = res.data["schoolClass"];
@@ -243,7 +244,7 @@ export default function MyClass({children} : any) {
       <AddAttendance />
       <Typography variant="h3" align="center">
         {schoolClass != undefined ? `${schoolClass?.year}-${schoolClass?.department}`
-            : "Loading..."
+            : ""
         }
       </Typography>
       <DataGrid

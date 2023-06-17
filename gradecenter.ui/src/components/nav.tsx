@@ -21,13 +21,17 @@ export default function Nav() {
     });
   }, []);
 
-  const menuItems = ["Home", "My schedulle" ];
-  
+  const menuItems: string[] = [];
+
   if(userRole == UserRoles.Admin) {
-    menuItems.splice(1, 0, "My Class");
+    menuItems.splice(0, 0, "Home");
     menuItems.splice(3, 0, "Statistics");
   }
-
+  
+  if(userRole == UserRoles.Teacher || userRole == UserRoles.Student || userRole == UserRoles.Parent) {
+    menuItems.splice(0, 0, "My Class");
+    menuItems.splice(1, 0, "My schedulle");
+  }
 
   return (
     <div>

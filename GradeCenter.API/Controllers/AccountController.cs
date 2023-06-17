@@ -93,6 +93,9 @@ namespace GradeCenter.API.Controllers
         {
             AspNetUser loggedUser = await _userManager.FindByNameAsync(User.Identity.Name);
 
+            loggedUser = _accountService.GetUserById(loggedUser.Id.ToString());
+
+
             return loggedUser;
         }
 
